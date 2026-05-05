@@ -6,116 +6,135 @@ namespace FilterTheSpire2.FilterTheSpire2Code.Helpers;
 
 public static class RelicModelMappings
 {
+    static RelicModelMappings()
+    {
+    }
+    
     private static readonly Dictionary<NeowOptions, RelicModel> NeowMappings = new()
     {
-        { NeowOptions.ArcaneScroll, new ArcaneScroll() },
-        { NeowOptions.BoomingConch, new BoomingConch() },
-        { NeowOptions.CursedPearl, new CursedPearl() },
-        { NeowOptions.GoldenPearl, new GoldenPearl() },
-        { NeowOptions.HeftyTablet, new HeftyTablet() },
-        { NeowOptions.LargeCapsule, new LargeCapsule() },
-        { NeowOptions.LavaRock, new LavaRock() },
-        { NeowOptions.LeadPaperweight, new LeadPaperweight() },
-        { NeowOptions.LeafyPoultice, new LeafyPoultice() },
-        { NeowOptions.LostCoffer, new LostCoffer() },
-        { NeowOptions.MassiveScroll, new MassiveScroll() },
-        { NeowOptions.NeowsTalisman, new NeowsTalisman() },
-        { NeowOptions.NeowsTorment, new NeowsTorment() },
-        { NeowOptions.NewLeaf, new NewLeaf() },
-        { NeowOptions.NutritiousOyster, new NutritiousOyster() },
-        { NeowOptions.PhialHolster, new PhialHolster() },
-        { NeowOptions.Pomander, new Pomander() },
-        { NeowOptions.PrecariousShears, new PrecariousShears() },
-        { NeowOptions.PreciseScissors, new PreciseScissors() },
-        { NeowOptions.SilverCrucible, new SilverCrucible() },
-        { NeowOptions.SmallCapsule, new SmallCapsule() },
-        { NeowOptions.StoneHumidifier, new StoneHumidifier() },
-        { NeowOptions.NeowsBones, new NeowsBones() },
-        { NeowOptions.WingedBoots, new WingedBoots() },
+        { NeowOptions.ArcaneScroll, ModelDb.Relic<ArcaneScroll>() },
+        { NeowOptions.BoomingConch, ModelDb.Relic<BoomingConch>() },
+        { NeowOptions.CursedPearl, ModelDb.Relic<CursedPearl>() },
+        { NeowOptions.GoldenPearl, ModelDb.Relic<GoldenPearl>() },
+        { NeowOptions.HeftyTablet, ModelDb.Relic<HeftyTablet>() },
+        { NeowOptions.LargeCapsule, ModelDb.Relic<LargeCapsule>() },
+        { NeowOptions.LavaRock, ModelDb.Relic<LavaRock>() },
+        { NeowOptions.LeadPaperweight, ModelDb.Relic<LeadPaperweight>() },
+        { NeowOptions.LeafyPoultice, ModelDb.Relic<LeafyPoultice>() },
+        { NeowOptions.LostCoffer, ModelDb.Relic<LostCoffer>() },
+        { NeowOptions.MassiveScroll, ModelDb.Relic<MassiveScroll>() },
+        { NeowOptions.NeowsTalisman, ModelDb.Relic<NeowsTalisman>() },
+        { NeowOptions.NeowsTorment, ModelDb.Relic<NeowsTorment>() },
+        { NeowOptions.NewLeaf, ModelDb.Relic<NewLeaf>() },
+        { NeowOptions.NutritiousOyster, ModelDb.Relic<NutritiousOyster>() },
+        { NeowOptions.PhialHolster, ModelDb.Relic<PhialHolster>() },
+        { NeowOptions.Pomander, ModelDb.Relic<Pomander>() },
+        { NeowOptions.PrecariousShears, ModelDb.Relic<PrecariousShears>() },
+        { NeowOptions.PreciseScissors, ModelDb.Relic<PreciseScissors>() },
+        { NeowOptions.SilverCrucible, ModelDb.Relic<SilverCrucible>() },
+        { NeowOptions.SmallCapsule, ModelDb.Relic<SmallCapsule>() },
+        { NeowOptions.StoneHumidifier, ModelDb.Relic<StoneHumidifier>() },
+        { NeowOptions.NeowsBones, ModelDb.Relic<NeowsBones>() },
+        { NeowOptions.WingedBoots, ModelDb.Relic<WingedBoots>() },
     };
 
     private static readonly Dictionary<OrobasOptions, RelicModel> OrobasMappings = new()
     {
-        { OrobasOptions.AlchemicalCoffer, new AlchemicalCoffer() },
-        { OrobasOptions.ArchaicTooth, new ArchaicTooth() },
-        { OrobasOptions.Driftwood, new Driftwood() },
-        { OrobasOptions.ElectricShrymp, new ElectricShrymp() },
-        { OrobasOptions.GlassEye, new GlassEye() },
-        { OrobasOptions.PrismaticGem, new PrismaticGem() },
-        { OrobasOptions.RadiantPearl, new RadiantPearl() },
-        { OrobasOptions.SandCastle, new SandCastle() },
-        { OrobasOptions.SeaGlass, new SeaGlass() },
-        { OrobasOptions.TouchOfOrobas, new TouchOfOrobas() },
+        { OrobasOptions.AlchemicalCoffer, ModelDb.Relic<AlchemicalCoffer>() },
+        { OrobasOptions.ArchaicTooth, ModelDb.Relic<ArchaicTooth>() },
+        { OrobasOptions.Driftwood, ModelDb.Relic<Driftwood>() },
+        { OrobasOptions.ElectricShrymp, ModelDb.Relic<ElectricShrymp>() },
+        { OrobasOptions.GlassEye, ModelDb.Relic<GlassEye>() },
+        { OrobasOptions.PrismaticGem, ModelDb.Relic<PrismaticGem>() },
+        { OrobasOptions.RadiantPearl, ModelDb.Relic<RadiantPearl>() },
+        { OrobasOptions.SandCastle, ModelDb.Relic<SandCastle>() },
+        { OrobasOptions.SeaGlass, ModelDb.Relic<SeaGlass>() },
+        { OrobasOptions.TouchOfOrobas, ModelDb.Relic<TouchOfOrobas>() },
     };
 
     private static readonly Dictionary<PaelOptions, RelicModel> PaelMappings = new()
     {
-        { PaelOptions.PaelsBlood, new PaelsBlood() },
-        { PaelOptions.PaelsClaw, new PaelsClaw() },
-        { PaelOptions.PaelsEye, new PaelsEye() },
-        { PaelOptions.PaelsFlesh, new PaelsFlesh() },
-        { PaelOptions.PaelsGrowth, new PaelsGrowth() },
-        { PaelOptions.PaelsHorn, new PaelsHorn() },
-        { PaelOptions.PaelsLegion, new PaelsLegion() },
-        { PaelOptions.PaelsTears, new PaelsTears() },
-        { PaelOptions.PaelsTooth, new PaelsTooth() },
-        { PaelOptions.PaelsWing, new PaelsWing() },
+        { PaelOptions.PaelsBlood, ModelDb.Relic<PaelsBlood>() },
+        { PaelOptions.PaelsClaw, ModelDb.Relic<PaelsClaw>() },
+        { PaelOptions.PaelsEye, ModelDb.Relic<PaelsEye>() },
+        { PaelOptions.PaelsFlesh, ModelDb.Relic<PaelsFlesh>() },
+        { PaelOptions.PaelsGrowth, ModelDb.Relic<PaelsGrowth>() },
+        { PaelOptions.PaelsHorn, ModelDb.Relic<PaelsHorn>() },
+        { PaelOptions.PaelsLegion, ModelDb.Relic<PaelsLegion>() },
+        { PaelOptions.PaelsTears, ModelDb.Relic<PaelsTears>() },
+        { PaelOptions.PaelsTooth, ModelDb.Relic<PaelsTooth>() },
+        { PaelOptions.PaelsWing, ModelDb.Relic<PaelsWing>() },
     };
 
     private static readonly Dictionary<TezcataraOptions, RelicModel> TezcataraMappings = new()
     {
-        { TezcataraOptions.BiiigHug, new BiiigHug() },
-        { TezcataraOptions.GoldenCompass, new GoldenCompass() },
-        { TezcataraOptions.NutritiousSoup, new NutritiousSoup() },
-        { TezcataraOptions.PumpkinCandle, new PumpkinCandle() },
-        { TezcataraOptions.SealOfGold, new SealOfGold() },
-        { TezcataraOptions.Storybook, new Storybook() },
-        { TezcataraOptions.ToastyMittens, new ToastyMittens() },
-        { TezcataraOptions.ToyBox, new ToyBox() },
-        { TezcataraOptions.VeryHotCocoa, new VeryHotCocoa() },
-        { TezcataraOptions.YummyCookie, new YummyCookie() },
+        { TezcataraOptions.BiiigHug, ModelDb.Relic<BiiigHug>() },
+        { TezcataraOptions.GoldenCompass, ModelDb.Relic<GoldenCompass>() },
+        { TezcataraOptions.NutritiousSoup, ModelDb.Relic<NutritiousSoup>() },
+        { TezcataraOptions.PumpkinCandle, ModelDb.Relic<PumpkinCandle>() },
+        { TezcataraOptions.SealOfGold, ModelDb.Relic<SealOfGold>() },
+        { TezcataraOptions.Storybook, ModelDb.Relic<Storybook>() },
+        { TezcataraOptions.ToastyMittens, ModelDb.Relic<ToastyMittens>() },
+        { TezcataraOptions.ToyBox, ModelDb.Relic<ToyBox>() },
+        { TezcataraOptions.VeryHotCocoa, ModelDb.Relic<VeryHotCocoa>() },
+        { TezcataraOptions.YummyCookie, ModelDb.Relic<YummyCookie>() },
     };
-    
+
     private static readonly Dictionary<NonupeipeOptions, RelicModel> NonupeipeMappings = new()
     {
-        { NonupeipeOptions.BeautifulBracelet, new BeautifulBracelet() },
-        { NonupeipeOptions.BlessedAntler, new BlessedAntler() },
-        { NonupeipeOptions.BrilliantScarf, new BrilliantScarf() },
-        { NonupeipeOptions.DelicateFrond, new DelicateFrond() },
-        { NonupeipeOptions.DiamondDiadem, new DiamondDiadem() },
-        { NonupeipeOptions.FurCoat, new FurCoat() },
-        { NonupeipeOptions.Glitter, new Glitter() },
-        { NonupeipeOptions.JewelryBox, new JewelryBox() },
-        { NonupeipeOptions.LoomingFruit, new LoomingFruit() },
-        { NonupeipeOptions.SignetRing, new SignetRing() },
+        { NonupeipeOptions.BeautifulBracelet, ModelDb.Relic<BeautifulBracelet>() },
+        { NonupeipeOptions.BlessedAntler, ModelDb.Relic<BlessedAntler>() },
+        { NonupeipeOptions.BrilliantScarf, ModelDb.Relic<BrilliantScarf>() },
+        { NonupeipeOptions.DelicateFrond, ModelDb.Relic<DelicateFrond>() },
+        { NonupeipeOptions.DiamondDiadem, ModelDb.Relic<DiamondDiadem>() },
+        { NonupeipeOptions.FurCoat, ModelDb.Relic<FurCoat>() },
+        { NonupeipeOptions.Glitter, ModelDb.Relic<Glitter>() },
+        { NonupeipeOptions.JewelryBox, ModelDb.Relic<JewelryBox>() },
+        { NonupeipeOptions.LoomingFruit, ModelDb.Relic<LoomingFruit>() },
+        { NonupeipeOptions.SignetRing, ModelDb.Relic<SignetRing>() },
     };
 
     private static readonly Dictionary<TanxOptions, RelicModel> TanxMappings = new()
     {
-        { TanxOptions.Claws, new Claws() },
-        { TanxOptions.Crossbow, new Crossbow() },
-        { TanxOptions.IronClub, new IronClub() },
-        { TanxOptions.MeatCleaver, new MeatCleaver() },
-        { TanxOptions.Sai, new Sai() },
-        { TanxOptions.SpikedGauntlets, new SpikedGauntlets() },
-        { TanxOptions.TanxsWhistle, new TanxsWhistle() },
-        { TanxOptions.ThrowingAxe, new ThrowingAxe() },
-        { TanxOptions.TriBoomerang, new TriBoomerang() },
-        { TanxOptions.WarHammer, new WarHammer() },
+        { TanxOptions.Claws, ModelDb.Relic<Claws>() },
+        { TanxOptions.Crossbow, ModelDb.Relic<Crossbow>() },
+        { TanxOptions.IronClub, ModelDb.Relic<IronClub>() },
+        { TanxOptions.MeatCleaver, ModelDb.Relic<MeatCleaver>() },
+        { TanxOptions.Sai, ModelDb.Relic<Sai>() },
+        { TanxOptions.SpikedGauntlets, ModelDb.Relic<SpikedGauntlets>() },
+        { TanxOptions.TanxsWhistle, ModelDb.Relic<TanxsWhistle>() },
+        { TanxOptions.ThrowingAxe, ModelDb.Relic<ThrowingAxe>() },
+        { TanxOptions.TriBoomerang, ModelDb.Relic<TriBoomerang>() },
+        { TanxOptions.WarHammer, ModelDb.Relic<WarHammer>() },
     };
 
     private static readonly Dictionary<VakuuOptions, RelicModel> VakuuMappings = new()
     {
-        { VakuuOptions.BloodSoakedRose, new BloodSoakedRose() },
-        { VakuuOptions.ChoicesParadox, new ChoicesParadox() },
-        { VakuuOptions.DistinguishedCape, new DistinguishedCape() },
-        { VakuuOptions.Fiddle, new Fiddle() },
-        { VakuuOptions.JeweledMask, new JeweledMask() },
-        { VakuuOptions.LordsParasol, new LordsParasol() },
-        { VakuuOptions.MusicBox, new MusicBox() },
-        { VakuuOptions.PreservedFog, new PreservedFog() },
-        { VakuuOptions.SereTalon, new SereTalon() },
-        { VakuuOptions.WhisperingEarring, new WhisperingEarring() },
+        { VakuuOptions.BloodSoakedRose, ModelDb.Relic<BloodSoakedRose>() },
+        { VakuuOptions.ChoicesParadox, ModelDb.Relic<ChoicesParadox>() },
+        { VakuuOptions.DistinguishedCape, ModelDb.Relic<DistinguishedCape>() },
+        { VakuuOptions.Fiddle, ModelDb.Relic<Fiddle>() },
+        { VakuuOptions.JeweledMask, ModelDb.Relic<JeweledMask>() },
+        { VakuuOptions.LordsParasol, ModelDb.Relic<LordsParasol>() },
+        { VakuuOptions.MusicBox, ModelDb.Relic<MusicBox>() },
+        { VakuuOptions.PreservedFog, ModelDb.Relic<PreservedFog>() },
+        { VakuuOptions.SereTalon, ModelDb.Relic<SereTalon>() },
+        { VakuuOptions.WhisperingEarring, ModelDb.Relic<WhisperingEarring>() },
+    };
+
+    private static readonly Dictionary<DarvOptions, RelicModel> DarvMappings = new()
+    {
+        { DarvOptions.Astrolabe, ModelDb.Relic<Astrolabe>() },
+        { DarvOptions.BlackStar, ModelDb.Relic<BlackStar>() },
+        { DarvOptions.CallingBell, ModelDb.Relic<CallingBell>() },
+        { DarvOptions.EmptyCage, ModelDb.Relic<EmptyCage>() },
+        { DarvOptions.PandorasBox, ModelDb.Relic<PandorasBox>() },
+        { DarvOptions.RunicPyramid, ModelDb.Relic<RunicPyramid>() },
+        { DarvOptions.SneckoEye, ModelDb.Relic<SneckoEye>() },
+        { DarvOptions.EctoplasmAct2, ModelDb.Relic<Ectoplasm>() },
+        { DarvOptions.SozuAct2, ModelDb.Relic<Sozu>() },
+        { DarvOptions.PhilosophersStoneAct3, ModelDb.Relic<PhilosophersStone>() },
+        { DarvOptions.VelvetChokerAct3, ModelDb.Relic<VelvetChoker>() },
     };
     
     public static RelicModel? GetRelicModel(NeowOptions option)
@@ -151,5 +170,10 @@ public static class RelicModelMappings
     public static RelicModel? GetRelicModel(VakuuOptions option)
     {
         return VakuuMappings.GetValueOrDefault(option);
+    }
+    
+    public static RelicModel? GetRelicModel(DarvOptions option)
+    {
+        return DarvMappings.GetValueOrDefault(option);
     }
 }

@@ -11,6 +11,7 @@ internal class BeginRunForAllPlayersPatch
     [HarmonyPrefix]
     private static void StartSearcher(ref string seed, List<ModifierModel> modifiers)
     {
+        FilterManager.InitializeFiltersFromSettings();
         Console.WriteLine("start seed: "  + seed);
         if (FilterManager.HasFilters())
         {

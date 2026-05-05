@@ -16,6 +16,7 @@ public static class RelicModelFactory
             NonupeipeOptions n => RelicModelMappings.GetRelicModel(n),
             TanxOptions t => RelicModelMappings.GetRelicModel(t),
             VakuuOptions v => RelicModelMappings.GetRelicModel(v),
+            DarvOptions d => RelicModelMappings.GetRelicModel(d),
             _ => throw new NotSupportedException($"Unsupported enum {e.GetType()}")
         };
     }

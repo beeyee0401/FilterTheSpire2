@@ -20,8 +20,5 @@ public partial class MainFile : Node
         Harmony harmony = new(ModId);
         ModConfigRegistry.Register(ModId, new FilterTheSpire2Config());
         harmony.PatchAll();
-        FilterManager.InitializeFiltersFromSettings();
     }
-
-    
 }
