@@ -36,4 +36,10 @@ internal class FilterTheSpire2Config : SimpleModConfig
     public static Act1Locations Act1Locations { get; set; } = Act1Locations.Any;
     public static Act2Locations Act2Locations { get; set; } = Act2Locations.Hive;
     public static Act3Locations Act3Locations { get; set; } = Act3Locations.Glory;
+
+    // TODO: Change the ancient relic selectors to a screen with rendered images and descriptions that are selectable
+    public override void SetupConfigUI(Control optionContainer)
+    {
+        base.SetupConfigUI(optionContainer);
+    }
 }

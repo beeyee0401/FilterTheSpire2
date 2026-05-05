@@ -1,4 +1,5 @@
 using BaseLib.Config;
+using FilterTheSpire2.FilterTheSpire2Code.Filters;
 using Godot;
 using HarmonyLib;
 using MegaCrit.Sts2.Core.Modding;
@@ -19,5 +20,8 @@ public partial class MainFile : Node
         Harmony harmony = new(ModId);
         ModConfigRegistry.Register(ModId, new FilterTheSpire2Config());
         harmony.PatchAll();
+        FilterManager.InitializeFiltersFromSettings();
     }
+
+    
 }

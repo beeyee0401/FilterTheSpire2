@@ -13,6 +13,8 @@ public static class SeedSearcher
 {
     private static int _numThreads = 4;
 
+    public static string? FoundSeed; 
+
     // --------------------------------------------------------------------------------
 
     // This runner is responsible for initiating and joining all the child tasks - the children do the work
@@ -81,23 +83,19 @@ public static class SeedSearcher
         if (_runner == null)
             return;
 
-        foreach (SeedSearcherThread t in _runner.Threads)
+        foreach (var t in _runner.Threads.Where(t => t.FoundWinningSeed))
         {
-            if (t.FoundWinningSeed)
-            {
-                Console.WriteLine("Updating the seed to match a winning result:");
-                Console.WriteLine("Seed: " + t.StringSeed);
-                Console.WriteLine("Timestamp: " + t.SeedSourceTimestamp);
+            Console.WriteLine("Updating the seed to match a winning result:");
+            Console.WriteLine("Seed: " + t.StringSeed);
+            Console.WriteLine("Timestamp: " + t.SeedSourceTimestamp);
 
-                Settings.Seed = t.Seed;
-                Settings.SeedSet = true;
-                Settings.SeedSourceTimestamp = t.SeedSourceTimestamp;
-                SeedHelper.CachedSeed = null;
+            FoundSeed = t.StringSeed;
+            // Settings.Seed = t.Seed;
+            // Settings.SeedSet = true;
+            // Settings.SeedSourceTimestamp = t.SeedSourceTimestamp;
+            // SeedHelper.CachedSeed = null;
 
-                RestartHelper.Restart();
-
-                return;
-            }
+            return;
         }
 
         Console.WriteLine("ERROR: no winning seed found - called before finished?");

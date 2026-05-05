@@ -1,3 +1,4 @@
+using FilterTheSpire2.FilterTheSpire2Code.Filters;
 using MegaCrit.Sts2.Core.Entities.Rngs;
 using MegaCrit.Sts2.Core.Helpers;
 
@@ -43,8 +44,6 @@ public class SeedSearcherThread
             // Unironically kind of like having the delay because it makes the animations cooler lol
             // Without it, there's literally no animation in the base use cases as it goes too fast and finishes in a
             // split second
-
-            // TODO: put this behind a config option. (I'm leaving it now because I can and you can't stop me)
             try
             {
                 Thread.Sleep(10);
@@ -65,6 +64,6 @@ public class SeedSearcherThread
         SeedSourceTimestamp = sTime + _offset;
         Seed = seed;
 
-        return FilterManager.ValidateFilters(Seed);
+        return FilterManager.ValidateFilters(StringSeed);
     }
 }

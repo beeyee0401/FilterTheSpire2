@@ -26,7 +26,7 @@ public enum TanxOptions
     SpikedGauntlets,
     TanxsWhistle,
     ThrowingAxe,
-    TriBoomerangOption,
+    TriBoomerang,
     WarHammer
 }
 
