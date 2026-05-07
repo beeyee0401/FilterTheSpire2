@@ -1,4 +1,4 @@
-namespace FilterTheSpire2.FilterTheSpire2Code.DropdownOptions;
+namespace FilterTheSpire2.FilterTheSpire2Code.Ancients.Config;
 
 public enum NeowOptions
 {

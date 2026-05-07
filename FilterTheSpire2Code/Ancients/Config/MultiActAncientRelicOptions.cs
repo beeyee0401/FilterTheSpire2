@@ -1,4 +1,4 @@
-namespace FilterTheSpire2.FilterTheSpire2Code.DropdownOptions;
+namespace FilterTheSpire2.FilterTheSpire2Code.Ancients.Config;
 
 public enum DarvOptions
 {
@@ -6,6 +6,7 @@ public enum DarvOptions
     Astrolabe,
     BlackStar,
     CallingBell,
+    DustyTome,
     EmptyCage,
     PandorasBox,
     RunicPyramid,

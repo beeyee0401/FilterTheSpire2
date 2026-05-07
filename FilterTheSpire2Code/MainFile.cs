@@ -1,4 +1,5 @@
 using BaseLib.Config;
+using FilterTheSpire2.FilterTheSpire2Code.Config;
 using FilterTheSpire2.FilterTheSpire2Code.Filters;
 using Godot;
 using HarmonyLib;

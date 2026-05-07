@@ -1,4 +1,4 @@
-namespace FilterTheSpire2.FilterTheSpire2Code.DropdownOptions;
+namespace FilterTheSpire2.FilterTheSpire2Code.ActLocations;
 
 public enum Act1Locations
 {

@@ -2,26 +2,31 @@ using FilterTheSpire2.FilterTheSpire2Code.Filters;
 using HarmonyLib;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Multiplayer.Game.Lobby;
+using MegaCrit.Sts2.Core.Runs;
 
 namespace FilterTheSpire2.FilterTheSpire2Code.Patches;
 
 [HarmonyPatch(typeof(StartRunLobby), "BeginRunForAllPlayers")]
 internal class BeginRunForAllPlayersPatch
-{ 
+{
     [HarmonyPrefix]
-    private static void StartSearcher(ref string seed, List<ModifierModel> modifiers)
+    private static void StartSearcher(
+        StartRunLobby __instance,
+        ref string seed)
     {
-        FilterManager.InitializeFiltersFromSettings();
-        Console.WriteLine("start seed: "  + seed);
-        if (FilterManager.HasFilters())
+        if (__instance.GameMode == GameMode.Standard)
         {
-            SeedSearcher.SeedSearcher.SearchForSeed();
-            while (!SeedSearcher.SeedSearcher.IsFinished())
+            Console.WriteLine("Starting seed: " + seed);
+        
+            var result = SeedSearcher.SeedSearcher.SearchForSeed(__instance.Players[0].character);
+
+            if (result == null)
             {
-            
+                return;
             }
-            seed = SeedSearcher.SeedSearcher.FoundSeed!;
+
+            Console.WriteLine("Found seed: " + result.StringSeed);
+            seed = result.StringSeed;
         }
-        Console.WriteLine("found seed: "  + seed);
     }
 }

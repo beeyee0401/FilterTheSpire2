@@ -1,4 +1,5 @@
-using FilterTheSpire2.FilterTheSpire2Code.DropdownOptions;
+using FilterTheSpire2.FilterTheSpire2Code.Ancients;
+using FilterTheSpire2.FilterTheSpire2Code.Ancients.Config;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.Relics;
 
@@ -127,6 +128,7 @@ public static class RelicModelMappings
         { DarvOptions.Astrolabe, ModelDb.Relic<Astrolabe>() },
         { DarvOptions.BlackStar, ModelDb.Relic<BlackStar>() },
         { DarvOptions.CallingBell, ModelDb.Relic<CallingBell>() },
+        { DarvOptions.DustyTome, ModelDb.Relic<DustyTome>() },
         { DarvOptions.EmptyCage, ModelDb.Relic<EmptyCage>() },
         { DarvOptions.PandorasBox, ModelDb.Relic<PandorasBox>() },
         { DarvOptions.RunicPyramid, ModelDb.Relic<RunicPyramid>() },

@@ -1,7 +1,7 @@
 {
   "FILTERTHESPIRE2-ANCIENTS_SECTION.title": "Ancient options",
   "FILTERTHESPIRE2-ANCIENT_RELICS_SECTION.title": "Ancient relic options",
-  "FILTERTHESPIRE2-ACT_LOCATIONS_SECTION.title": "Act locations",
+  "FILTERTHESPIRE2-ACT_LOCATIONS_SECTION.title": "Act locations - Does nothing right now",
 
   "FILTERTHESPIRE2-NEOW_OPTIONS.title": "Neow options",
   "FILTERTHESPIRE2-NEOW_OPTIONS.ArcaneScroll": "Arcane Scroll",
@@ -28,8 +28,8 @@
   "FILTERTHESPIRE2-NEOW_OPTIONS.NeowsBones": "Neow's Bones",
   "FILTERTHESPIRE2-NEOW_OPTIONS.WingedBoots": "Winged Boots",
   
-  "FILTERTHESPIRE2-ACT2_ANCIENTS.title": "Act 2 ancients",
-  "FILTERTHESPIRE2-ACT3_ANCIENTS.title": "Act 3 ancients",
+  "FILTERTHESPIRE2-ACT2_ANCIENT.title": "Act 2 ancients",
+  "FILTERTHESPIRE2-ACT3_ANCIENT.title": "Act 3 ancients",
   
   "FILTERTHESPIRE2-OROBAS_OPTIONS.title": "Orobas options",
   "FILTERTHESPIRE2-OROBAS_OPTIONS.AlchemicalCoffer": "Alchemical Coffer",
@@ -82,7 +82,7 @@
   "FILTERTHESPIRE2-TANX_OPTIONS.SpikedGauntlets": "Spiked Gauntlets",
   "FILTERTHESPIRE2-TANX_OPTIONS.TanxsWhistle": "Tanx's Whistle",
   "FILTERTHESPIRE2-TANX_OPTIONS.ThrowingAxe": "Throwing Axe",
-  "FILTERTHESPIRE2-TANX_OPTIONS.TriBoomerangOption": "Tri Boomerang Option",
+  "FILTERTHESPIRE2-TANX_OPTIONS.TriBoomerang": "Tri-Boomerang",
   "FILTERTHESPIRE2-TANX_OPTIONS.WarHammer": "War Hammer",
 
   "FILTERTHESPIRE2-VAKUU_OPTIONS.title": "Vakuu options",
@@ -96,6 +96,19 @@
   "FILTERTHESPIRE2-VAKUU_OPTIONS.SereTalon": "Sere Talon",
   "FILTERTHESPIRE2-VAKUU_OPTIONS.WhisperingEarring": "Whispering Earring",
 
+  "FILTERTHESPIRE2-DARV_OPTIONS.title": "Darv options",
+  "FILTERTHESPIRE2-DARV_OPTIONS.BlackStar": "Black Star",
+  "FILTERTHESPIRE2-DARV_OPTIONS.CallingBell": "Calling Bell",
+  "FILTERTHESPIRE2-DARV_OPTIONS.EmptyCage": "Empty Cage",
+  "FILTERTHESPIRE2-DARV_OPTIONS.PandorasBox": "Pandora's Box",
+  "FILTERTHESPIRE2-DARV_OPTIONS.DustyTome": "Dusty Tome",
+  "FILTERTHESPIRE2-DARV_OPTIONS.RunicPyramid": "Runic Pyramid",
+  "FILTERTHESPIRE2-DARV_OPTIONS.SneckoEye": "Snecko Eye",
+  "FILTERTHESPIRE2-DARV_OPTIONS.EctoplasmAct2": "Ectoplasm",
+  "FILTERTHESPIRE2-DARV_OPTIONS.SozuAct2": "Sozu",
+  "FILTERTHESPIRE2-DARV_OPTIONS.PhilosophersStoneAct3": "Philosopher's Stone",
+  "FILTERTHESPIRE2-DARV_OPTIONS.VelvetChokerAct3": "Velvet Choker",
+  
   "FILTERTHESPIRE2-ACT1_LOCATIONS.title": "Act 1 location",
   "FILTERTHESPIRE2-ACT2_LOCATIONS.title": "Act 2 location",
   "FILTERTHESPIRE2-ACT3_LOCATIONS.title": "Act 3 location"

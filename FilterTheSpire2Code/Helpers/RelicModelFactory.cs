@@ -1,4 +1,5 @@
-using FilterTheSpire2.FilterTheSpire2Code.DropdownOptions;
+using FilterTheSpire2.FilterTheSpire2Code.Ancients;
+using FilterTheSpire2.FilterTheSpire2Code.Ancients.Config;
 using MegaCrit.Sts2.Core.Models;
 
 namespace FilterTheSpire2.FilterTheSpire2Code.Helpers;
