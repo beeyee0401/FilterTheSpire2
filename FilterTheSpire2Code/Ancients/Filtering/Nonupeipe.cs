@@ -15,7 +15,7 @@ public class Nonupeipe : AbstractAncient
 
     public override bool CheckOptions(uint seed, RelicModel relic)
     {
-        var rng = GetEventRng(seed);
+        var rng = RngHelper.GetEventRng(seed, Id!);
         var list = new List<NonupeipeOptions>()
         {
             NonupeipeOptions.BlessedAntler,

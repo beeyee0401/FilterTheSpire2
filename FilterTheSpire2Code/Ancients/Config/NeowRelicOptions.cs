@@ -15,7 +15,7 @@ public enum NeowOptions
     LeadPaperweight,
     LeafyPoultice,
     LostCoffer,
-    MassiveScroll,
+    // MassiveScroll, multiplayer only
     NeowsTalisman,
     NeowsTorment,
     NewLeaf,
@@ -24,6 +24,7 @@ public enum NeowOptions
     Pomander,
     PrecariousShears,
     PreciseScissors,
+    ScrollBoxes,
     SilkenTress,
     SilverCrucible,
     SmallCapsule,

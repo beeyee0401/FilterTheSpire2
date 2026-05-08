@@ -15,7 +15,7 @@ public class Tezcatara : AbstractAncient
 
     public override bool CheckOptions(uint seed, RelicModel relic)
     {
-        var rng = GetEventRng(seed);
+        var rng = RngHelper.GetEventRng(seed, Id!);
         var list1 = new List<TezcataraOptions>()
         {
             TezcataraOptions.VeryHotCocoa,

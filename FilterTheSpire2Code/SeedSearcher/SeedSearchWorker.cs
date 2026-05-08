@@ -33,10 +33,10 @@ public sealed class SeedSearchWorker(
                 }
 
                 // Optional pacing for visual/debug purposes
-                // if (_request.DelayMs > 0)
-                // {
-                //     Thread.Sleep(_request.DelayMs);
-                // }
+                if (request.DelayMs > 0)
+                {
+                    Thread.Sleep(request.DelayMs);
+                }
             }
         }
         finally
@@ -50,7 +50,7 @@ public sealed class SeedSearchWorker(
         var timestamp = DateTime.UtcNow.Ticks * 100 + offset;
 
         var stringSeed = SeedHelper.GetRandomSeed();
-        // var stringSeed = "6PB2SMM4NM";
+        // var stringSeed = "149D3F5BU5";
         
         var seed =
             (uint)StringHelper.GetDeterministicHashCode(stringSeed) +

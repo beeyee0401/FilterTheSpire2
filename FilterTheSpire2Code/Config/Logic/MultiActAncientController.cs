@@ -32,23 +32,12 @@ public static class MultiActAncientController
         foreach (var item in source)
         {
             var option =  (DarvOptions)item.Value!;
-            if (!newRelicList.Contains(option))
+            if (newRelicList.Contains(option))
             {
-                continue;
+                newItems.Add(item);
             }
-            newItems.Add(item);
         }
-        items.Clear();
-        items.AddRange(newItems);
         
-        try
-        {
-            dropdown._Ready();
-        } 
-        catch (Exception)
-        {
-            // This is the only way to refresh a dropdown, and it errors on duplicate signals
-            // Godot fails silently without killing execution, just letting this be for now
-        }
+        ConfigDropdownUtilities.RefreshDropdownItems(dropdown, newItems);
     }
 }

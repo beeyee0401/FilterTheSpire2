@@ -6,6 +6,8 @@ using FilterTheSpire2.FilterTheSpire2Code.Ancients;
 using FilterTheSpire2.FilterTheSpire2Code.Ancients.Config;
 using FilterTheSpire2.FilterTheSpire2Code.Config.Logic;
 using Godot;
+using MegaCrit.Sts2.Core.Helpers;
+using MegaCrit.Sts2.Core.Nodes.CommonUi;
 using MegaCrit.Sts2.Core.Nodes.Screens.Settings;
 
 namespace FilterTheSpire2.FilterTheSpire2Code.Config;
@@ -13,53 +15,87 @@ namespace FilterTheSpire2.FilterTheSpire2Code.Config;
 [ConfigHoverTipsByDefault]
 public class FilterTheSpire2Config : SimpleModConfig
 {
-    [ConfigSection("AncientsSection")]
-    public static NeowOptions NeowOptions { get; set; } = NeowOptions.Any;
+    [ConfigSection("AncientsSection")] public static NeowOptions NeowOptions { get; set; } = NeowOptions.Any;
     public static Ancient Act2Ancient { get; set; } = Ancient.Any;
     public static Ancient Act3Ancient { get; set; } = Ancient.Any;
-    
+
     [ConfigSection("AncientRelicsSection")]
     [ConfigVisibleIf(nameof(Act2Ancient), Ancient.Orobas)]
     public static OrobasOptions OrobasOptions { get; set; } = OrobasOptions.Any;
-    
+
     [ConfigVisibleIf(nameof(Act2Ancient), Ancient.Pael)]
     public static PaelOptions PaelOptions { get; set; } = PaelOptions.Any;
-    
+
     [ConfigVisibleIf(nameof(Act2Ancient), Ancient.Tezcatara)]
     public static TezcataraOptions TezcataraOptions { get; set; } = TezcataraOptions.Any;
-    
+
     [ConfigVisibleIf(nameof(Act3Ancient), Ancient.Nonupeipe)]
     public static NonupeipeOptions NonupeipeOptions { get; set; } = NonupeipeOptions.Any;
-    
+
     [ConfigVisibleIf(nameof(Act3Ancient), Ancient.Tanx)]
     public static TanxOptions TanxOptions { get; set; } = TanxOptions.Any;
-    
+
     [ConfigVisibleIf(nameof(Act3Ancient), Ancient.Vakuu)]
     public static VakuuOptions VakuuOptions { get; set; } = VakuuOptions.Any;
-    
+
     [ConfigVisibleIf(nameof(ShouldShowMultiActOptions))]
     public static DarvOptions DarvOptions { get; set; } = DarvOptions.Any;
-    
+
     [ConfigSection("ActLocationsSection")]
-    public static Act1Locations Act1Locations { get; set; } = Act1Locations.Any;
-    public static Act2Locations Act2Locations { get; set; } = Act2Locations.Hive;
-    public static Act3Locations Act3Locations { get; set; } = Act3Locations.Glory;
-    
+    // [ConfigHideInUI]
+    public static ActLocations.ActLocations Act1Locations { get; set; } = ActLocations.ActLocations.Any;
+
+    // [ConfigHideInUI]
+    public static ActLocations.ActLocations Act2Locations { get; set; } = ActLocations.ActLocations.Hive;
+
+    // [ConfigHideInUI]
+    public static ActLocations.ActLocations Act3Locations { get; set; } = ActLocations.ActLocations.Glory;
+
     public override void SetupConfigUI(Control optionContainer)
     {
+        // var locationSection = CreateCollapsibleSection("Act Locations");
+        // optionContainer.AddChild(locationSection);
+        // NConfigOptionRow optionRow = CreateRawDropdownControl();
+        // optionRow.UniqueNameInOwner = true;
+
         base.SetupConfigUI(optionContainer);
+
+        for (var i = 1; i <= 3; i++)
+        {
+            var (dropdown, items) = ConfigDropdownUtilities.GetDropdownListItems(optionContainer, $"%Act{i}Locations");
+            var allActLocations = items.ToList();
+            
+            var newItems = new List<NConfigDropdownItem.ItemData>();
+            foreach (var actLocationItem in allActLocations)
+            {
+                var actLocation = (ActLocations.ActLocations)actLocationItem.Value!;
+                if (ActLocationRules.IsValidForAct(i, actLocation))
+                {
+                    newItems.Add(actLocationItem);
+                }
+            }
+            ConfigDropdownUtilities.RefreshDropdownItems(dropdown, newItems);
+        }
+
+        var resetContainer = optionContainer.GetNodeOrNull<Control>("ResetDefaultsButtonContainer");
+        if (resetContainer != null)
+        {
+            optionContainer.MoveChild(resetContainer, -1);
+        }
+
+        SetupFocusNeighbors(optionContainer); // Fix controller focus order
 
         AncientConfigController.SetupAncientDropdownConfig(optionContainer);
         MultiActAncientController.UpdateMultiActAncientActSpecificRelics(optionContainer);
     }
-    
+
     private static bool ShouldShowMultiActOptions(MemberInfo memberInfo)
     {
         if (memberInfo is not PropertyInfo propertyInfo) return false;
 
         return propertyInfo.Name switch
         {
-            nameof(DarvOptions) => Act2Ancient == Ancient.Darv || 
+            nameof(DarvOptions) => Act2Ancient == Ancient.Darv ||
                                    Act3Ancient == Ancient.Darv,
             _ => false
         };

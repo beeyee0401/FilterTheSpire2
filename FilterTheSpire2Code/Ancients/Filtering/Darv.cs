@@ -18,8 +18,7 @@ public class Darv : AbstractAncient
 
     public override bool CheckOptions(uint seed, RelicModel relic)
     {
-        // return true;
-        var rng = GetEventRng(seed);
+        var rng = RngHelper.GetEventRng(seed, Id!);
         var source = new List<List<DarvOptions>>()
         {
             new() {DarvOptions.Astrolabe},

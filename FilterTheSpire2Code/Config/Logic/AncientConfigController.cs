@@ -77,7 +77,9 @@ public static class AncientConfigController
 
         var items = (List<NConfigDropdownItem.ItemData>?)itemsField?.GetValue(dropdown);
         if (items == null)
+        {
             return;
+        }
         
         var source = MasterItems[act];
 
@@ -109,9 +111,6 @@ public static class AncientConfigController
             ));
         }
         
-        items.Clear();
-        items.AddRange(rebuilt);
-        
         // Update the currently selected index since the list items have shifted
         var currentDisplayIndexField = dropdown.GetType()
             .GetField("_currentDisplayIndex", BindingFlags.NonPublic | BindingFlags.Instance);
@@ -123,14 +122,6 @@ public static class AncientConfigController
             currentDisplayIndexField.SetValue(dropdown, newIndex);
         }
 
-        try
-        {
-            dropdown._Ready();
-        } 
-        catch (Exception)
-        {
-            // This is the only way to refresh a dropdown, and it errors on duplicate signals
-            // Godot fails silently without killing execution, just letting this be for now
-        }
+        ConfigDropdownUtilities.RefreshDropdownItems(dropdown, rebuilt);
     }
 }

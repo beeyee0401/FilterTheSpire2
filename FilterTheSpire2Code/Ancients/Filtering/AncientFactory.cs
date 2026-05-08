@@ -12,10 +12,11 @@ public static class AncientFactory
     /// <param name="actNum">This is used for the multi-act ancients, such as Darv</param>
     /// <returns></returns>
     /// <exception cref="NotSupportedException"></exception>
-    public static AbstractAncient? GetAncient(Ancient ancient, int actNum)
+    public static AbstractAncient GetAncient(Ancient ancient, int actNum)
     {
         return ancient switch
         {
+            Ancient.Neow => new Neow(),
             Ancient.Orobas => new Orobas(),
             Ancient.Pael => new Pael(),
             Ancient.Tezcatara => new Tezcatara(),
@@ -23,7 +24,7 @@ public static class AncientFactory
             Ancient.Nonupeipe => new Nonupeipe(),
             Ancient.Tanx => new Tanx(),
             Ancient.Vakuu => new Vakuu(),
-            Ancient.Any => null,
+            Ancient.Any => throw new NotSupportedException("Unsupported Ancient type"),
             _ => throw new NotSupportedException("Unsupported Ancient type")
         };
     }

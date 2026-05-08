@@ -15,7 +15,7 @@ public class Orobas : AbstractAncient
 
     public override bool CheckOptions(uint seed, RelicModel relic)
     {
-        var rng = GetEventRng(seed);
+        var rng = RngHelper.GetEventRng(seed, Id!);
         rng.NextItem([0]);
 
         var list1 = new List<OrobasOptions>

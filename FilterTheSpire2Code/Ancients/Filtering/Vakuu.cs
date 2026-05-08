@@ -15,7 +15,7 @@ public class Vakuu : AbstractAncient
 
     public override bool CheckOptions(uint seed, RelicModel relic)
     {
-        var rng = GetEventRng(seed);
+        var rng = RngHelper.GetEventRng(seed, Id!);
         var list1 = new List<VakuuOptions>()
         {
             VakuuOptions.BloodSoakedRose,

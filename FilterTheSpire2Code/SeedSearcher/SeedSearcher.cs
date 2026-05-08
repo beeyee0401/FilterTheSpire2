@@ -18,7 +18,7 @@ public static class SeedSearcher
         {
             Character = character,
             Filters = filters,
-            ThreadCount = 1
+            ThreadCount = 4
         };
         var runner = new SeedSearchRunner(request);
 
