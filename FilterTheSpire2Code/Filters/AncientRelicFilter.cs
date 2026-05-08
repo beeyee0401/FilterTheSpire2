@@ -11,7 +11,6 @@ using MegaCrit.Sts2.Core.Models.Events;
 using MegaCrit.Sts2.Core.Random;
 using MegaCrit.Sts2.Core.Runs;
 using MegaCrit.Sts2.Core.Unlocks;
-using Darv = MegaCrit.Sts2.Core.Models.Events.Darv;
 
 namespace FilterTheSpire2.FilterTheSpire2Code.Filters;
 
@@ -23,6 +22,18 @@ public class AncientRelicFilter(Ancient selectedAncient, RelicModel? relicModel,
         var unlockState = UnlockState.all;
         var player = Player.CreateForNewRun(request.Character, unlockState, 1UL);
         
+        var actList = ActModel.GetRandomList(rng, unlockState, false)
+            .Select(a => a.ToMutable()).ToList();
+        
+        // Must be called before Neow because this sets the Player's runstate
+        var runState = RunState.CreateForNewRun(
+            [player], 
+            actList, 
+            [], 
+            GameMode.Standard, 
+            10, 
+            seed);
+        
         if (actNum == 1)
         {
             var neow = ModelDb.AncientEvent<Neow>();
@@ -32,16 +43,6 @@ public class AncientRelicFilter(Ancient selectedAncient, RelicModel? relicModel,
         } 
         else if (actNum > 1)
         {
-            var actList = ActModel.GetRandomList(rng, unlockState, false)
-                .Select(a => a.ToMutable()).ToList();
-            var runState = RunState.CreateForNewRun(
-                [player], 
-                actList, 
-                [], 
-                GameMode.Standard, 
-                10, 
-                seed);
-            
             // This is the number of increments it gets to before generating the rooms for the acts, we don't care about stuff before this
             const int startingRngCounter = 230;
             

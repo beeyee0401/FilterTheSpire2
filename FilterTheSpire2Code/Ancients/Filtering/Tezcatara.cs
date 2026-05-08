@@ -27,7 +27,6 @@ public class Tezcatara : AbstractAncient
         {
             TezcataraOptions.BiiigHug,
             TezcataraOptions.Storybook,
-            TezcataraOptions.SealOfGold,
             TezcataraOptions.ToastyMittens
         };
         
@@ -35,7 +34,8 @@ public class Tezcatara : AbstractAncient
         {
             TezcataraOptions.GoldenCompass,
             TezcataraOptions.PumpkinCandle,
-            TezcataraOptions.ToyBox
+            TezcataraOptions.ToyBox,
+            TezcataraOptions.SealOfGold,
         };
 
         var optionLists = new List<List<TezcataraOptions>>()
