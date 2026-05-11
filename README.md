@@ -1,6 +1,8 @@
 Filter the Spire 2 is a mod for Slay the Spire 2 to find vanilla seeds with specific criteria.
 This mod will mainly support the beta branch of Slay the Spire 2 while it's in Early Access.
 
+Requires all available unlocks to be finished.
+
 <img width="1517" height="1225" alt="image" src="https://github.com/user-attachments/assets/0a4b09d6-bd86-49f9-bd0b-4992565a06e5" />
 
 <img width="1580" height="1002" alt="image" src="https://github.com/user-attachments/assets/6f70614e-1f6b-42b1-b926-42e501ac53be" />
