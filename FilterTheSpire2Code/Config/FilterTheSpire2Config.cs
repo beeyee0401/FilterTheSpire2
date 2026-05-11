@@ -2,13 +2,10 @@ using System.Reflection;
 using BaseLib.Config;
 using BaseLib.Config.UI;
 using FilterTheSpire2.FilterTheSpire2Code.ActLocations;
-using FilterTheSpire2.FilterTheSpire2Code.Ancients;
 using FilterTheSpire2.FilterTheSpire2Code.Ancients.Config;
 using FilterTheSpire2.FilterTheSpire2Code.Config.Logic;
+using FilterTheSpire2.FilterTheSpire2Code.Relics;
 using Godot;
-using MegaCrit.Sts2.Core.Helpers;
-using MegaCrit.Sts2.Core.Nodes.CommonUi;
-using MegaCrit.Sts2.Core.Nodes.Screens.Settings;
 
 namespace FilterTheSpire2.FilterTheSpire2Code.Config;
 
@@ -40,6 +37,9 @@ public class FilterTheSpire2Config : SimpleModConfig
 
     [ConfigVisibleIf(nameof(ShouldShowMultiActOptions))]
     public static DarvOptions DarvOptions { get; set; } = DarvOptions.Any;
+    
+    [ConfigSection("RelicsSection")]
+    public static ShopRelicOptions ShopRelic { get; set; } = ShopRelicOptions.Any;
 
     [ConfigSection("ActLocationsSection")]
     // [ConfigHideInUI]
@@ -53,11 +53,6 @@ public class FilterTheSpire2Config : SimpleModConfig
 
     public override void SetupConfigUI(Control optionContainer)
     {
-        // var locationSection = CreateCollapsibleSection("Act Locations");
-        // optionContainer.AddChild(locationSection);
-        // NConfigOptionRow optionRow = CreateRawDropdownControl();
-        // optionRow.UniqueNameInOwner = true;
-
         base.SetupConfigUI(optionContainer);
 
         for (var i = 1; i <= 3; i++)

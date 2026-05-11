@@ -1,32 +1,162 @@
-using FilterTheSpire2.FilterTheSpire2Code.Filters;
+using FilterTheSpire2.FilterTheSpire2Code.SeedSearcher;
+using Godot;
 using HarmonyLib;
+using MegaCrit.Sts2.Core.Helpers;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Multiplayer.Game.Lobby;
+using MegaCrit.Sts2.Core.Nodes.CommonUi;
+using MegaCrit.Sts2.Core.Nodes.Screens.CharacterSelect;
 using MegaCrit.Sts2.Core.Runs;
-
-namespace FilterTheSpire2.FilterTheSpire2Code.Patches;
 
 [HarmonyPatch(typeof(StartRunLobby), "BeginRunForAllPlayers")]
 internal class BeginRunForAllPlayersPatch
 {
-    [HarmonyPrefix]
-    private static void StartSearcher(
-        StartRunLobby __instance,
-        ref string seed)
-    {
-        if (__instance.GameMode == GameMode.Standard)
-        {
-            Console.WriteLine("Starting seed: " + seed);
-        
-            var result = SeedSearcher.SeedSearcher.SearchForSeed(__instance.Players[0].character);
+    private static bool _searching = false;
 
-            if (result == null)
+    [HarmonyPrefix]
+    private static bool Prefix(StartRunLobby __instance, ref string seed, List<ModifierModel> modifiers)
+    {
+        if (_searching || __instance.GameMode != GameMode.Standard)
+        {
+            return true;
+        }
+
+        var capturedSeed = seed;
+        var capturedModifiers = modifiers;
+
+        TaskHelper.RunSafely(SearchAndBegin(__instance, capturedSeed, capturedModifiers));
+        return false;
+    }
+
+    private static async Task SearchAndBegin(
+        StartRunLobby instance,
+        string seed,
+        List<ModifierModel> modifiers)
+    {
+        using var cts = new CancellationTokenSource();
+        var searcher = new SeedSearcher();
+
+        var screen = instance.LobbyListener as NCharacterSelectScreen;
+        CanvasLayer? overlay = null;
+        RichTextLabel? statusLabel = null;
+
+        if (screen != null)
+        {
+            (overlay, statusLabel) = BuildOverlay(searcher, screen, cts);
+            screen.AddChild(overlay);
+        }
+
+        var searchTask = Task.Run(() =>
+            searcher.SearchForSeed(instance.Players[0].character)?.StringSeed, cts.Token);
+
+        string? foundSeed;
+        try
+        {
+            while (!searchTask.IsCompleted && !cts.IsCancellationRequested)
             {
-                return;
+                var count = searcher.Runner?.TotalSeedsExamined;
+                if (statusLabel != null)
+                {
+                    Callable.From(() =>
+                        statusLabel.Text = $"Searching for seed...\n{count:N0} examined"
+                    ).CallDeferred();
+                }
+
+                await Task.Delay(100, cts.Token);
             }
 
-            Console.WriteLine("Found seed: " + result.StringSeed);
-            seed = result.StringSeed;
+            foundSeed = await searchTask;
+            
+            if (!cts.IsCancellationRequested && foundSeed != null && statusLabel != null)
+            {
+                var finalCount = searcher.Runner?.TotalSeedsExamined;
+                Callable.From(() =>
+                    statusLabel.Text = $"Seed found!\nExamined [color=yellow]{finalCount:N0}[/color] seeds"
+                ).CallDeferred();
+
+                await Task.Delay(1500, cts.Token);
+            }
+        }
+        finally
+        {
+            overlay?.QueueFree();
+        }
+
+        if (cts.IsCancellationRequested)
+        {
+            instance.SetReady(false);
+            RestoreScreenUi(screen);
+            return;
+        }
+
+        _searching = true;
+        try
+        {
+            AccessTools.Method(typeof(StartRunLobby), "BeginRunForAllPlayers")
+                .Invoke(instance, [foundSeed ?? seed, modifiers]);
+        }
+        finally
+        {
+            _searching = false;
+        }
+    }
+
+    private static (CanvasLayer overlay, RichTextLabel  statusLabel) BuildOverlay(
+        SeedSearcher searcher,
+        NCharacterSelectScreen? screen,
+        CancellationTokenSource cts)
+    {
+        var overlay = new CanvasLayer();
+
+        var panel = new Panel();
+        panel.SetAnchorsPreset(Control.LayoutPreset.Center);
+        panel.CustomMinimumSize = new Vector2(300, 120);
+
+        var vbox = new VBoxContainer();
+        vbox.SetAnchorsPreset(Control.LayoutPreset.FullRect);
+        vbox.AddThemeConstantOverride("separation", 16);
+
+        var label = new RichTextLabel
+        {
+            BbcodeEnabled = true,
+            Text = "Searching for seed...",
+            FitContent = true,
+            AutowrapMode = TextServer.AutowrapMode.Off,
+        };
+
+        var cancelButton = new Button { Text = "Cancel" };
+        cancelButton.Pressed += () =>
+        {
+            cts.Cancel();
+            label.Text = "Cancelling...";
+            cancelButton.Disabled = true;
+            searcher.Cancel();
+            RestoreScreenUi(screen);
+        };
+
+        vbox.AddChild(label);
+        vbox.AddChild(cancelButton);
+        panel.AddChild(vbox);
+        overlay.AddChild(panel);
+
+        return (overlay, label);
+    }
+
+    private static void RestoreScreenUi(NCharacterSelectScreen? screen)
+    {
+        if (screen == null)
+        {
+            return;
+        }
+
+        var t = Traverse.Create(screen);
+        t.Field("_embarkButton").GetValue<NConfirmButton>().Enable();
+        t.Field("_backButton").GetValue<NBackButton>().Enable();
+
+        var container = t.Field("_charButtonContainer").GetValue<Control>();
+        foreach (var btn in container.GetChildren().OfType<NCharacterSelectButton>())
+        {
+            btn.Enable();
         }
     }
 }

@@ -4,9 +4,11 @@ using MegaCrit.Sts2.Core.Models;
 
 namespace FilterTheSpire2.FilterTheSpire2Code.SeedSearcher;
 
-public static class SeedSearcher
+public class SeedSearcher
 {
-    public static SeedSearchResult? SearchForSeed(CharacterModel character)
+    public SeedSearchRunner? Runner { get; private set; }
+    
+    public SeedSearchResult? SearchForSeed(CharacterModel character)
     {
         var filters = FilterManager.CreateFiltersFromSettings();
         if (filters.Count == 0)
@@ -18,12 +20,17 @@ public static class SeedSearcher
         {
             Character = character,
             Filters = filters,
-            ThreadCount = 4
+            ThreadCount = 6
         };
-        var runner = new SeedSearchRunner(request);
+        Runner = new SeedSearchRunner(request);
 
-        runner.Run();
+        Runner.Run();
 
-        return runner.Result;
+        return Runner.Result;
+    }
+
+    public void Cancel()
+    {
+        Runner?.Cancel();
     }
 }

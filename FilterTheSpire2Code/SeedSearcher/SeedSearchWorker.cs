@@ -1,4 +1,5 @@
 using FilterTheSpire2.FilterTheSpire2Code.Filters;
+using FilterTheSpire2.FilterTheSpire2Code.Helpers;
 using MegaCrit.Sts2.Core.Entities.Rngs;
 using MegaCrit.Sts2.Core.Helpers;
 
@@ -14,34 +15,28 @@ public sealed class SeedSearchWorker(
     {
         long seedsExamined = 0;
 
-        try
+        while (!token.IsCancellationRequested)
         {
-            while (!token.IsCancellationRequested)
+            seedsExamined++;
+            runner.AddSeedsExamined(seedsExamined);
+
+            var result = TryRandomSeed();
+
+            if (result != null)
             {
-                seedsExamined++;
+                var won = runner.TrySetWinner(result);
 
-                var result = TryRandomSeed();
-
-                if (result != null)
+                if (won)
                 {
-                    var won = runner.TrySetWinner(result);
-
-                    if (won)
-                    {
-                        break;
-                    }
-                }
-
-                // Optional pacing for visual/debug purposes
-                if (request.DelayMs > 0)
-                {
-                    Thread.Sleep(request.DelayMs);
+                    break;
                 }
             }
-        }
-        finally
-        {
-            runner.AddSeedsExamined(seedsExamined);
+
+            // Optional pacing for visual/debug purposes
+            if (request.DelayMs > 0)
+            {
+                Thread.Sleep(request.DelayMs);
+            }
         }
     }
 
@@ -49,16 +44,16 @@ public sealed class SeedSearchWorker(
     {
         var timestamp = DateTime.UtcNow.Ticks * 100 + offset;
 
-        var stringSeed = SeedHelper.GetRandomSeed();
+        var stringSeed = RngHelper.GetRandomSeed(offset);
         // var stringSeed = "149D3F5BU5";
-        
+
         var seed =
             (uint)StringHelper.GetDeterministicHashCode(stringSeed) +
             (uint)StringHelper.GetDeterministicHashCode(
                 StringHelper.SnakeCase(nameof(RunRngType.UpFront)));
 
         var passed = FilterManager.ValidateFilters(request, stringSeed);
-        
+
         if (!passed)
         {
             return null;

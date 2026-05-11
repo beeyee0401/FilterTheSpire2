@@ -1,0 +1,32 @@
+namespace FilterTheSpire2.FilterTheSpire2Code.Relics;
+
+public enum ShopRelicOptions
+{
+    Any,
+    BeltBuckle,
+    Bread,
+    BurningSticks,
+    Cauldron,
+    CharacterShopRelic,
+    ChemicalX,
+    DingyRug,
+    DollysMirror,
+    DragonFruit,
+    GhostSeed,
+    GnarledHammer,
+    Kifuda,
+    LavaLamp,
+    LeesWaffle,
+    MembershipCard,
+    MiniatureTent,
+    MysticLighter,
+    Orrery,
+    PunchDagger,
+    RingingTriangle,
+    RoyalStamp,
+    ScreamingFlagon,
+    SlingOfCourage,
+    TheAbacus,
+    Toolbox,
+    WingCharm,
+}

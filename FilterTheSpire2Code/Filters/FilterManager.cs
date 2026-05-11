@@ -1,6 +1,7 @@
 using FilterTheSpire2.FilterTheSpire2Code.Ancients.Config;
 using FilterTheSpire2.FilterTheSpire2Code.Config;
 using FilterTheSpire2.FilterTheSpire2Code.Helpers;
+using FilterTheSpire2.FilterTheSpire2Code.Relics;
 using FilterTheSpire2.FilterTheSpire2Code.SeedSearcher;
 
 namespace FilterTheSpire2.FilterTheSpire2Code.Filters;
@@ -88,6 +89,8 @@ public static class FilterManager
                 FilterTheSpire2Config.Act2Ancient == Ancient.Darv ? 2 : 3);
         }
 
+        AddShopRelicFilter(filters);
+
         return filters;
     }
     
@@ -105,5 +108,14 @@ public static class FilterManager
                 : FilterTheSpire2Config.Act3Ancient,
             isAnyVal ? null : RelicModelFactory.GetRelicModel(configVal)!,
             actNum));
+    }
+
+    private static void AddShopRelicFilter(
+        List<IFilter> filters)
+    {
+        if (FilterTheSpire2Config.ShopRelic != ShopRelicOptions.Any)
+        {
+            filters.Add(new ShopRelicFilter(FilterTheSpire2Config.ShopRelic));
+        }
     }
 }

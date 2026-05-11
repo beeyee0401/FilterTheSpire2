@@ -47,7 +47,7 @@ public sealed class SeedSearchRunner(SeedSearchRequest request)
         Console.WriteLine($"Timestamp: {result.SeedSourceTimestamp}");
 
         // Stop all workers
-        _cts.Cancel();
+        Cancel();
 
         return true;
     }
@@ -56,4 +56,11 @@ public sealed class SeedSearchRunner(SeedSearchRequest request)
     {
         Interlocked.Add(ref _totalSeedsExamined, count);
     }
+
+    public void Cancel()
+    {
+        _cts.Cancel();
+    }
+    
+    public long TotalSeedsExamined => _totalSeedsExamined;
 }
