@@ -1,7 +1,15 @@
 Filter the Spire 2 is a mod for Slay the Spire 2 to find vanilla seeds with specific criteria.
 This mod will mainly support the beta branch of Slay the Spire 2 while it's in Early Access.
 
-Requires all available unlocks to be finished.
+# Before you start
+1. This mod is primarily supporting the beta branch at this time, in the future I may separate releases, but for now, mostly supporting Beta
+2. Filter the Spire is unfinished. I want to add more filters and fix any bugs that may come up.
+3. Dependent on [BaseLib](https://github.com/Alchyr/BaseLib-StS2)
+4. This mod assumes ALL available unlocks are finished. If you don't have a relic unlocked, it changes the entire list for RNG. Possibly looking to adjust this to look at your current unlocks, but it's simpler to not have to check the logic as a first release
+5. Does not support multiplayer
+6. Many relics have conditional mid-run checks to see if they can spawn, this mod assumes you meet them, because this mod will not choose your path or know your deck at the time the relic would appear.
+    - For example, Nonupeipe only adds Beautiful Bracelet to the pool if you have at least 4 cards to enchant with Swift, this mod assumes that you will
+7. English support only so far
 
 <img width="1517" height="1225" alt="image" src="https://github.com/user-attachments/assets/0a4b09d6-bd86-49f9-bd0b-4992565a06e5" />
 
