@@ -1,4 +1,6 @@
 {
+  "FILTERTHESPIRE2-CHARACTER.hover.desc": "Only needed if you want to set character specific filters",
+  
   "FILTERTHESPIRE2-ANCIENTS_SECTION.title": "Ancient filters",
   "FILTERTHESPIRE2-ANCIENT_RELICS_SECTION.title": "Ancient relic filters",
   "FILTERTHESPIRE2-RELICS_SECTION.title": "General relic filters",

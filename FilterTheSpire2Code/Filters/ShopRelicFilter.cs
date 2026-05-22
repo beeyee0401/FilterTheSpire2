@@ -1,3 +1,4 @@
+using FilterTheSpire2.FilterTheSpire2Code.Helpers;
 using FilterTheSpire2.FilterTheSpire2Code.Relics;
 using FilterTheSpire2.FilterTheSpire2Code.SeedSearcher;
 using MegaCrit.Sts2.Core.Extensions;
@@ -40,9 +41,8 @@ public class ShopRelicFilter(ShopRelicOptions shopRelicOption) : IFilter
             ShopRelicOptions.CharacterShopRelic,
         };
         
-        const int startingRngCounter = 205;
         var runRng = new RunRngSet(seed);
-        var upfrontRng = new Rng(runRng.UpFront.Seed, startingRngCounter);
+        var upfrontRng = new Rng(runRng.UpFront.Seed, RngHelper.RngCounters.ShopRelicPoolCounter);
 
         list.UnstableShuffle(upfrontRng);
         var option = list.Last();

@@ -3,6 +3,7 @@ using BaseLib.Config;
 using BaseLib.Config.UI;
 using FilterTheSpire2.FilterTheSpire2Code.ActLocations;
 using FilterTheSpire2.FilterTheSpire2Code.Ancients.Config;
+using FilterTheSpire2.FilterTheSpire2Code.Characters;
 using FilterTheSpire2.FilterTheSpire2Code.Config.Logic;
 using FilterTheSpire2.FilterTheSpire2Code.Relics;
 using Godot;
@@ -12,7 +13,11 @@ namespace FilterTheSpire2.FilterTheSpire2Code.Config;
 [ConfigHoverTipsByDefault]
 public class FilterTheSpire2Config : SimpleModConfig
 {
-    [ConfigSection("AncientsSection")] public static NeowOptions NeowOptions { get; set; } = NeowOptions.Any;
+    // [ConfigHoverTip]
+    // public static CharacterOptions Character { get; set; } = CharacterOptions.Any;
+    
+    [ConfigSection("AncientsSection")] 
+    public static NeowOptions NeowOptions { get; set; } = NeowOptions.Any;
     public static Ancient Act2Ancient { get; set; } = Ancient.Any;
     public static Ancient Act3Ancient { get; set; } = Ancient.Any;
 
@@ -40,6 +45,9 @@ public class FilterTheSpire2Config : SimpleModConfig
     
     [ConfigSection("RelicsSection")]
     public static ShopRelicOptions ShopRelic { get; set; } = ShopRelicOptions.Any;
+    // public static RelicOptions CommonRelic { get; set; } = RelicOptions.Any;
+    // public static UncommonRelicOptions UncommonRelic { get; set; } = UncommonRelicOptions.Any;
+    // public static RareRelicOptions RareRelic { get; set; } = RareRelicOptions.Any;
 
     [ConfigSection("ActLocationsSection")]
     // [ConfigHideInUI]

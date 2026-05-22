@@ -6,6 +6,15 @@ namespace FilterTheSpire2.FilterTheSpire2Code.Helpers;
 
 public static class RngHelper
 {
+    public static class RngCounters
+    {
+        public const int CommonRelicPoolCounter = 112;
+        public const int UncommonRelicPoolCounter = 143;
+        public const int RareRelicPoolCounter = 168;
+        public const int ShopRelicPoolCounter = 205;
+        public const int AncientCounter = 230;
+    }
+    
     public static Rng GetEventRng(uint seed, string eventId)
     {
         return new Rng((uint) (seed + 1UL + (ulong) StringHelper.GetDeterministicHashCode(eventId)));

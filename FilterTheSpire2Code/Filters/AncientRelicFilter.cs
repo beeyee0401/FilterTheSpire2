@@ -33,11 +33,8 @@ public class AncientRelicFilter(Ancient selectedAncient, RelicModel? relicModel,
         } 
         else if (actNum > 1)
         {
-            // This is the number of increments it gets to before generating the rooms for the acts, we don't care about stuff before this
-            const int startingRngCounter = 230;
-            
             var runRng = new RunRngSet(seed);
-            var upfrontRng = new Rng(runRng.UpFront.Seed, startingRngCounter);
+            var upfrontRng = new Rng(runRng.UpFront.Seed, RngHelper.RngCounters.AncientCounter);
 
             var multiActAncients = AncientRules.MultiActAncientsAndRelics.Keys
                 .Select(a => AncientMapping.AncientEvents[a]).ToList();

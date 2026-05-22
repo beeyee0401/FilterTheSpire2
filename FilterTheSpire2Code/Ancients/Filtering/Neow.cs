@@ -24,8 +24,8 @@ public class Neow : AbstractAncient
             NeowOptions.LeafyPoultice,
             NeowOptions.NeowsBones,
             NeowOptions.PrecariousShears,
+            NeowOptions.SilkenTress,
             NeowOptions.SilverCrucible,
-            NeowOptions.ScrollBoxes
         };
 
         var cursedOption = rng.NextItem(cursedOptions);
@@ -43,7 +43,7 @@ public class Neow : AbstractAncient
             NeowOptions.NewLeaf,
             NeowOptions.PhialHolster,
             NeowOptions.PreciseScissors,
-            NeowOptions.SilkenTress,
+            NeowOptions.ScrollBoxes,
             NeowOptions.WingedBoots
         };
 
