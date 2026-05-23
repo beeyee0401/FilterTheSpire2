@@ -5,9 +5,9 @@ using MegaCrit.Sts2.Core.Models.Events;
 
 namespace FilterTheSpire2.FilterTheSpire2Code.Helpers;
 
-public class AncientMapping
+public static class AncientMapping
 {
-    public static Dictionary<Ancient, AncientEventModel> AncientEvents = new()
+    public static readonly Dictionary<Ancient, AncientEventModel> AncientEvents = new()
     {
         { Ancient.Orobas, ModelDb.AncientEvent<Orobas>() },
         { Ancient.Pael, ModelDb.AncientEvent<Pael>() },

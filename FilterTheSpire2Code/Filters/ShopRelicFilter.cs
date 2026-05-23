@@ -1,51 +1,11 @@
 using FilterTheSpire2.FilterTheSpire2Code.Helpers;
 using FilterTheSpire2.FilterTheSpire2Code.Relics;
-using FilterTheSpire2.FilterTheSpire2Code.SeedSearcher;
-using MegaCrit.Sts2.Core.Extensions;
-using MegaCrit.Sts2.Core.Random;
-using MegaCrit.Sts2.Core.Runs;
+using MegaCrit.Sts2.Core.Entities.Relics;
 
 namespace FilterTheSpire2.FilterTheSpire2Code.Filters;
 
-public class ShopRelicFilter(ShopRelicOptions shopRelicOption) : IFilter
+public class ShopRelicFilter(RelicOptions relicOption) : BaseRelicFilter(relicOption)
 {
-    public bool IsSeedValid(SeedSearchRequest request, string seed)
-    {
-        var list = new List<ShopRelicOptions>
-        {
-            ShopRelicOptions.BeltBuckle,
-            ShopRelicOptions.Bread,
-            ShopRelicOptions.BurningSticks,
-            ShopRelicOptions.Cauldron,
-            ShopRelicOptions.ChemicalX,
-            ShopRelicOptions.DingyRug,
-            ShopRelicOptions.DollysMirror,
-            ShopRelicOptions.DragonFruit,
-            ShopRelicOptions.GhostSeed,
-            ShopRelicOptions.GnarledHammer,
-            ShopRelicOptions.Kifuda,
-            ShopRelicOptions.LavaLamp,
-            ShopRelicOptions.LeesWaffle,
-            ShopRelicOptions.MembershipCard,
-            ShopRelicOptions.MiniatureTent,
-            ShopRelicOptions.MysticLighter,
-            ShopRelicOptions.Orrery,
-            ShopRelicOptions.PunchDagger,
-            ShopRelicOptions.RingingTriangle,
-            ShopRelicOptions.RoyalStamp,
-            ShopRelicOptions.ScreamingFlagon,
-            ShopRelicOptions.SlingOfCourage,
-            ShopRelicOptions.TheAbacus,
-            ShopRelicOptions.Toolbox,
-            ShopRelicOptions.WingCharm,
-            ShopRelicOptions.CharacterShopRelic,
-        };
-        
-        var runRng = new RunRngSet(seed);
-        var upfrontRng = new Rng(runRng.UpFront.Seed, RngHelper.RngCounters.ShopRelicPoolCounter);
-
-        list.UnstableShuffle(upfrontRng);
-        var option = list.Last();
-        return option == shopRelicOption;
-    }
+    protected override RelicRarity RelicRarity => RelicRarity.Shop;
+    protected override int RelicCounter => RngHelper.RngCounters.ShopRelicPoolCounter;
 }

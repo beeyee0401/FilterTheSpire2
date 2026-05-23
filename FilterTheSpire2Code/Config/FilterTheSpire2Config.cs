@@ -13,8 +13,8 @@ namespace FilterTheSpire2.FilterTheSpire2Code.Config;
 [ConfigHoverTipsByDefault]
 public class FilterTheSpire2Config : SimpleModConfig
 {
-    // [ConfigHoverTip]
-    // public static CharacterOptions Character { get; set; } = CharacterOptions.Any;
+    [ConfigHoverTip]
+    public static CharacterOptions Character { get; set; } = CharacterOptions.Any;
     
     [ConfigSection("AncientsSection")] 
     public static NeowOptions NeowOptions { get; set; } = NeowOptions.Any;
@@ -44,10 +44,10 @@ public class FilterTheSpire2Config : SimpleModConfig
     public static DarvOptions DarvOptions { get; set; } = DarvOptions.Any;
     
     [ConfigSection("RelicsSection")]
-    public static ShopRelicOptions ShopRelic { get; set; } = ShopRelicOptions.Any;
-    // public static RelicOptions CommonRelic { get; set; } = RelicOptions.Any;
-    // public static UncommonRelicOptions UncommonRelic { get; set; } = UncommonRelicOptions.Any;
-    // public static RareRelicOptions RareRelic { get; set; } = RareRelicOptions.Any;
+    public static RelicOptions CommonRelic { get; set; } = RelicOptions.Any;
+    public static RelicOptions UncommonRelic { get; set; } = RelicOptions.Any;
+    public static RelicOptions RareRelic { get; set; } = RelicOptions.Any;
+    public static RelicOptions ShopRelic { get; set; } = RelicOptions.Any;
 
     [ConfigSection("ActLocationsSection")]
     // [ConfigHideInUI]
@@ -90,6 +90,7 @@ public class FilterTheSpire2Config : SimpleModConfig
 
         AncientConfigController.SetupAncientDropdownConfig(optionContainer);
         MultiActAncientController.UpdateMultiActAncientActSpecificRelics(optionContainer);
+        CharacterConfigController.SetupCharacterDropdownConfig(optionContainer);
     }
 
     private static bool ShouldShowMultiActOptions(MemberInfo memberInfo)

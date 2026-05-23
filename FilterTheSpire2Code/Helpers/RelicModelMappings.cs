@@ -143,36 +143,6 @@ public static class RelicModelMappings
         { DarvOptions.PhilosophersStoneAct3, ModelDb.Relic<PhilosophersStone>() },
         { DarvOptions.VelvetChokerAct3, ModelDb.Relic<VelvetChoker>() },
     };
-
-    private static readonly Dictionary<ShopRelicOptions, RelicModel> ShopRelicMappings = new()
-    {
-        { ShopRelicOptions.BeltBuckle, ModelDb.Relic<BeltBuckle>() },
-        { ShopRelicOptions.Bread, ModelDb.Relic<Bread>() },
-        { ShopRelicOptions.BurningSticks, ModelDb.Relic<BurningSticks>() },
-        { ShopRelicOptions.Cauldron, ModelDb.Relic<Cauldron>() },
-        { ShopRelicOptions.ChemicalX, ModelDb.Relic<ChemicalX>() },
-        { ShopRelicOptions.DingyRug, ModelDb.Relic<DingyRug>() },
-        { ShopRelicOptions.DollysMirror, ModelDb.Relic<DollysMirror>() },
-        { ShopRelicOptions.DragonFruit, ModelDb.Relic<DragonFruit>() },
-        { ShopRelicOptions.GhostSeed, ModelDb.Relic<GhostSeed>() },
-        { ShopRelicOptions.GnarledHammer, ModelDb.Relic<GnarledHammer>() },
-        { ShopRelicOptions.Kifuda, ModelDb.Relic<Kifuda>() },
-        { ShopRelicOptions.LavaLamp, ModelDb.Relic<LavaLamp>() },
-        { ShopRelicOptions.LeesWaffle, ModelDb.Relic<LeesWaffle>() },
-        { ShopRelicOptions.MembershipCard, ModelDb.Relic<MembershipCard>() },
-        { ShopRelicOptions.MiniatureTent, ModelDb.Relic<MiniatureTent>() },
-        { ShopRelicOptions.MysticLighter, ModelDb.Relic<MysticLighter>() },
-        { ShopRelicOptions.Orrery, ModelDb.Relic<Orrery>() },
-        { ShopRelicOptions.PunchDagger, ModelDb.Relic<PunchDagger>() },
-        { ShopRelicOptions.RingingTriangle, ModelDb.Relic<RingingTriangle>() },
-        { ShopRelicOptions.RoyalStamp, ModelDb.Relic<RoyalStamp>() },
-        { ShopRelicOptions.ScreamingFlagon, ModelDb.Relic<ScreamingFlagon>() },
-        { ShopRelicOptions.SlingOfCourage, ModelDb.Relic<SlingOfCourage>() },
-        { ShopRelicOptions.TheAbacus, ModelDb.Relic<TheAbacus>() },
-        { ShopRelicOptions.Toolbox, ModelDb.Relic<Toolbox>() },
-        { ShopRelicOptions.WingCharm, ModelDb.Relic<WingCharm>() },
-        { ShopRelicOptions.CharacterShopRelic, null! }
-    };
     
     public static RelicModel? GetRelicModel(NeowOptions option)
     {
@@ -212,10 +182,5 @@ public static class RelicModelMappings
     public static RelicModel? GetRelicModel(DarvOptions option)
     {
         return DarvMappings.GetValueOrDefault(option);
-    }
-
-    public static RelicModel? GetRelicModel(ShopRelicOptions option)
-    {
-        return ShopRelicMappings.GetValueOrDefault(option);
     }
 }

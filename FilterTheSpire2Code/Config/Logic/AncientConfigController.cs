@@ -1,6 +1,5 @@
 using System.Reflection;
 using BaseLib.Config.UI;
-using FilterTheSpire2.FilterTheSpire2Code.Ancients;
 using FilterTheSpire2.FilterTheSpire2Code.Ancients.Config;
 using Godot;
 
@@ -34,7 +33,9 @@ public static class AncientConfigController
 
         // store original master list once
         if (!MasterItems.ContainsKey(act))
+        {
             MasterItems[act] = items.ToList();
+        }
 
         RebuildDropdownForAct(act, dropdown, optionContainer);
     }
@@ -72,15 +73,6 @@ public static class AncientConfigController
     
     private static void RebuildDropdownForAct(int act, NConfigDropdown dropdown, Control optionContainer)
     {
-        var itemsField = dropdown.GetType()
-            .GetField("_items", BindingFlags.NonPublic | BindingFlags.Instance);
-
-        var items = (List<NConfigDropdownItem.ItemData>?)itemsField?.GetValue(dropdown);
-        if (items == null)
-        {
-            return;
-        }
-        
         var source = MasterItems[act];
 
         var rebuilt = new List<NConfigDropdownItem.ItemData>();

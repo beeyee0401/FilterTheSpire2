@@ -8,8 +8,8 @@ public static class RngHelper
 {
     public static class RngCounters
     {
-        public const int CommonRelicPoolCounter = 112;
-        public const int UncommonRelicPoolCounter = 143;
+        public const int UncommonRelicPoolCounter = 112;
+        public const int CommonRelicPoolCounter = 143;
         public const int RareRelicPoolCounter = 168;
         public const int ShopRelicPoolCounter = 205;
         public const int AncientCounter = 230;

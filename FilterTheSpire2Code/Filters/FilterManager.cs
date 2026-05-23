@@ -10,13 +10,22 @@ public static class FilterManager
 {
     public static bool ValidateFilters(SeedSearchRequest request, string seed)
     {
-        return request.Filters.All(f => f.IsSeedValid(request, seed));;
+        return request.Filters
+            .All(f => f.IsSeedValid(request, seed));;
     }
 
     public static List<IFilter> CreateFiltersFromSettings()
     {
         var filters = new List<IFilter>();
 
+        HandleAncientFilters(filters);
+        AddGenericRelicFilters(filters);
+
+        return filters;
+    }
+
+    private static void HandleAncientFilters(List<IFilter> filters)
+    {
         if (FilterTheSpire2Config.NeowOptions != NeowOptions.Any)
         {
             AddAncientRelicFilterIfNeeded(
@@ -88,10 +97,6 @@ public static class FilterManager
                 DarvOptions.Any,
                 FilterTheSpire2Config.Act2Ancient == Ancient.Darv ? 2 : 3);
         }
-
-        AddShopRelicFilter(filters);
-
-        return filters;
     }
     
     private static void AddAncientRelicFilterIfNeeded<TEnum>(
@@ -110,10 +115,25 @@ public static class FilterManager
             actNum));
     }
 
-    private static void AddShopRelicFilter(
+    private static void AddGenericRelicFilters(
         List<IFilter> filters)
     {
-        if (FilterTheSpire2Config.ShopRelic != ShopRelicOptions.Any)
+        if (FilterTheSpire2Config.CommonRelic != RelicOptions.Any)
+        {
+            filters.Add(new CommonRelicFilter(FilterTheSpire2Config.CommonRelic));
+        }
+
+        if (FilterTheSpire2Config.UncommonRelic != RelicOptions.Any)
+        {
+            filters.Add(new UncommonRelicFilter(FilterTheSpire2Config.UncommonRelic));
+        }
+        
+        if (FilterTheSpire2Config.RareRelic != RelicOptions.Any)
+        {
+            filters.Add(new RareRelicFilter(FilterTheSpire2Config.RareRelic));
+        }
+        
+        if (FilterTheSpire2Config.ShopRelic != RelicOptions.Any)
         {
             filters.Add(new ShopRelicFilter(FilterTheSpire2Config.ShopRelic));
         }
