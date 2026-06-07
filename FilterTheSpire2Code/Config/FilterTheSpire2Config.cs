@@ -10,7 +10,6 @@ using Godot;
 
 namespace FilterTheSpire2.FilterTheSpire2Code.Config;
 
-[ConfigHoverTipsByDefault]
 public class FilterTheSpire2Config : SimpleModConfig
 {
     [ConfigHoverTip]
@@ -24,6 +23,8 @@ public class FilterTheSpire2Config : SimpleModConfig
     [ConfigSection("AncientRelicsSection")]
     [ConfigVisibleIf(nameof(Act2Ancient), Ancient.Orobas)]
     public static OrobasOptions OrobasOptions { get; set; } = OrobasOptions.Any;
+    [ConfigVisibleIf(nameof(ShouldShowSeaGlassCharacters))]
+    public static CharacterOptions SeaGlassCharacter { get; set; } = CharacterOptions.Any;
 
     [ConfigVisibleIf(nameof(Act2Ancient), Ancient.Pael)]
     public static PaelOptions PaelOptions { get; set; } = PaelOptions.Any;
@@ -103,5 +104,12 @@ public class FilterTheSpire2Config : SimpleModConfig
                                    Act3Ancient == Ancient.Darv,
             _ => false
         };
+    }
+
+    private static bool ShouldShowSeaGlassCharacters()
+    {
+        return Character != CharacterOptions.Any && 
+               Act2Ancient == Ancient.Orobas && 
+               OrobasOptions == OrobasOptions.SeaGlass;
     }
 }

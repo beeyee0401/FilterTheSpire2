@@ -1,6 +1,7 @@
 using FilterTheSpire2.FilterTheSpire2Code.Ancients.Config;
+using FilterTheSpire2.FilterTheSpire2Code.Characters;
+using FilterTheSpire2.FilterTheSpire2Code.Config;
 using FilterTheSpire2.FilterTheSpire2Code.Helpers;
-using MegaCrit.Sts2.Core.Extensions;
 using MegaCrit.Sts2.Core.Models;
 
 namespace FilterTheSpire2.FilterTheSpire2Code.Ancients.Filtering;
@@ -16,7 +17,18 @@ public class Orobas : AbstractAncient
     public override bool CheckOptions(uint seed, RelicModel relic)
     {
         var rng = RngHelper.GetEventRng(seed, Id!);
-        rng.NextItem([0]);
+        CharacterOptions? seaGlassChar = null;
+        if (FilterTheSpire2Config.Character != CharacterOptions.Any && 
+            FilterTheSpire2Config.SeaGlassCharacter != CharacterOptions.Any && 
+            FilterTheSpire2Config.OrobasOptions == OrobasOptions.SeaGlass)
+        {
+            seaGlassChar = rng.NextItem(CharacterMapping.AllCharacters
+                .Where(c => c != FilterTheSpire2Config.Character));
+        }
+        else
+        {
+            rng.NextItem([0]);
+        }
 
         var list1 = new List<OrobasOptions>
         {
@@ -49,7 +61,7 @@ public class Orobas : AbstractAncient
         foreach (var optionList in optionLists)
         {
             var optionId =  RelicModelMappings.GetRelicModel(rng.NextItem(optionList))!.Id;
-            if (optionId == relic.Id)
+            if (optionId == relic.Id && (seaGlassChar == null || seaGlassChar == FilterTheSpire2Config.SeaGlassCharacter))
             {
                 return true;
             }
