@@ -9,8 +9,10 @@ namespace FilterTheSpire2.FilterTheSpire2Code.Config.Logic;
 
 public static class ConfigDropdownUtilities
 {
-    // Cache FieldInfo lookups — reflection is expensive, these never change
+    // Cache lookups — reflection is expensive, these never change
     private static readonly Dictionary<(Type, string), FieldInfo?> FieldCache = new();
+    private static readonly Dictionary<(Type, string), PropertyInfo?> PropertyCache = new();
+    private static readonly Dictionary<(Type, string), MethodInfo?> MethodCache = new();
 
     public static FieldInfo? GetCachedField(this Type type, string name, BindingFlags flags)
     {
@@ -22,6 +24,30 @@ public static class ConfigDropdownUtilities
         fi = type.GetField(name, flags);
         FieldCache[key] = fi;
         return fi;
+    }
+    
+    public static PropertyInfo? GetCachedProperty(this Type type, string name, BindingFlags flags)
+    {
+        var key = (type, name);
+        if (PropertyCache.TryGetValue(key, out var pi))
+        {
+            return pi;
+        }
+        pi = type.GetProperty(name, flags);
+        PropertyCache[key] = pi;
+        return pi;
+    }
+    
+    private static MethodInfo? GetCachedMethod(this Type type, string name)
+    {
+        var key = (type, name);
+        if (MethodCache.TryGetValue(key, out var mi))
+        {
+            return mi;
+        }
+        mi = type.GetMethod(name);
+        MethodCache[key] = mi;
+        return mi;
     }
     
     public static (NConfigDropdown dropdown, List<NConfigDropdownItem.ItemData> dropdownItems) GetDropdownListItems(
@@ -81,7 +107,7 @@ public static class ConfigDropdownUtilities
                     var labelField = typeof(NSettingsDropdown).GetCachedField("_currentOptionLabel",
                         BindingFlags.NonPublic | BindingFlags.Instance);
                     var label = labelField!.GetValue(dropdown);
-                    label!.GetType().GetMethod("SetTextAutoSize")?.Invoke(label, [configItem.Data.Text]);
+                    label!.GetType().GetCachedMethod("SetTextAutoSize")?.Invoke(label, [configItem.Data.Text]);
                     configItem.Data.OnSet();
                 })));
             child.Init(i);

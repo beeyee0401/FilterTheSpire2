@@ -1,4 +1,3 @@
-using System.Reflection;
 using BaseLib.Config;
 using BaseLib.Config.UI;
 using FilterTheSpire2.FilterTheSpire2Code.ActLocations;
@@ -108,16 +107,10 @@ public class FilterTheSpire2Config : SimpleModConfig
         CharacterConfigController.SetupCharacterDropdownConfig(optionContainer);
     }
 
-    private static bool ShouldShowMultiActOptions(MemberInfo memberInfo)
+    private static bool ShouldShowMultiActOptions()
     {
-        if (memberInfo is not PropertyInfo propertyInfo) return false;
-
-        return propertyInfo.Name switch
-        {
-            nameof(DarvOptions) => Act2Ancient == Ancient.Darv ||
-                                   Act3Ancient == Ancient.Darv,
-            _ => false
-        };
+        return Act2Ancient == Ancient.Darv ||
+               Act3Ancient == Ancient.Darv;
     }
 
     private static bool ShouldShowLeafyPoulticeOptions()

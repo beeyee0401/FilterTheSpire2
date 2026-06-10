@@ -246,7 +246,7 @@ public static class CharacterConfigController
     private static void ResetCardOptions(string propName)
     {
         var property = typeof(FilterTheSpire2Config)
-            .GetProperty(propName, BindingFlags.Public | BindingFlags.Static);
+            .GetCachedProperty(propName, BindingFlags.Public | BindingFlags.Static);
 
         if (property == null)
         {

@@ -1,9 +1,6 @@
-using System.Reflection;
 using BaseLib.Config.UI;
-using FilterTheSpire2.FilterTheSpire2Code.Ancients;
 using FilterTheSpire2.FilterTheSpire2Code.Ancients.Config;
 using Godot;
-using MegaCrit.Sts2.Core.Models;
 
 namespace FilterTheSpire2.FilterTheSpire2Code.Config.Logic;
 
