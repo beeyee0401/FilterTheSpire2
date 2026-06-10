@@ -175,8 +175,6 @@ public static class FilterManager
 
                 break;
             }
-            default:
-                throw new ArgumentOutOfRangeException();
         }
     }
 }
