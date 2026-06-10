@@ -1,4 +1,5 @@
 using System.Text;
+using MegaCrit.Sts2.Core.Entities.Rngs;
 using MegaCrit.Sts2.Core.Helpers;
 using MegaCrit.Sts2.Core.Random;
 
@@ -18,6 +19,16 @@ public static class RngHelper
     public static Rng GetEventRng(uint seed, string eventId)
     {
         return new Rng((uint) (seed + 1UL + (ulong) StringHelper.GetDeterministicHashCode(eventId)));
+    }
+
+    public static Rng GetPlayerRngType(uint seed, PlayerRngType playerRngType)
+    {
+        return new Rng(seed + 1, StringHelper.SnakeCase(playerRngType.ToString()));
+    }
+    
+    public static Rng GetRunRngType(uint seed, RunRngType runRngType)
+    {
+        return new Rng(seed, StringHelper.SnakeCase(runRngType.ToString()));
     }
 
     public static string GetRandomSeed(long offset, int length = 10)

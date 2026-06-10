@@ -1,4 +1,5 @@
 using FilterTheSpire2.FilterTheSpire2Code.Ancients.Config;
+using FilterTheSpire2.FilterTheSpire2Code.Cards;
 using FilterTheSpire2.FilterTheSpire2Code.Config;
 using FilterTheSpire2.FilterTheSpire2Code.Helpers;
 using FilterTheSpire2.FilterTheSpire2Code.Relics;
@@ -19,6 +20,7 @@ public static class FilterManager
         var filters = new List<IFilter>();
 
         HandleAncientFilters(filters);
+        AddNeowRelicOutcomeFilters(filters);
         AddGenericRelicFilters(filters);
 
         return filters;
@@ -136,6 +138,45 @@ public static class FilterManager
         if (FilterTheSpire2Config.ShopRelic != RelicOptions.Any)
         {
             filters.Add(new ShopRelicFilter(FilterTheSpire2Config.ShopRelic));
+        }
+    }
+
+    /// <summary>
+    /// For specifically the outcome of what Neow relic is chosen. Such as card transforms or specific relics
+    /// </summary>
+    /// <param name="filters"></param>
+    private static void AddNeowRelicOutcomeFilters(List<IFilter> filters)
+    {
+        switch (FilterTheSpire2Config.NeowOptions)
+        {
+            case NeowOptions.NewLeaf:
+                if (FilterTheSpire2Config.NewLeafOption != CardOptions.Any)
+                {
+                    filters.Add(new NewLeafFilter(FilterTheSpire2Config.NewLeafOption));
+                }
+                break;
+            case NeowOptions.LeafyPoultice:
+            {
+                var cardOptions = new List<CardOptions>();
+                if (FilterTheSpire2Config.LeafyPoulticeOption1 != CardOptions.Any)
+                {
+                    cardOptions.Add(FilterTheSpire2Config.LeafyPoulticeOption1);
+                }
+
+                if (FilterTheSpire2Config.LeafyPoulticeOption2 != CardOptions.Any)
+                {
+                    cardOptions.Add(FilterTheSpire2Config.LeafyPoulticeOption2);
+                }
+
+                if (cardOptions.Count != 0)
+                {
+                    filters.Add(new LeafyPoulticeFilter(cardOptions));
+                }
+
+                break;
+            }
+            default:
+                throw new ArgumentOutOfRangeException();
         }
     }
 }

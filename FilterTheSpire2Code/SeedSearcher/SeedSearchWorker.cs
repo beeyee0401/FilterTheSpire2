@@ -45,7 +45,7 @@ public sealed class SeedSearchWorker(
         var timestamp = DateTime.UtcNow.Ticks * 100 + offset;
 
         var stringSeed = RngHelper.GetRandomSeed(offset);
-        // var stringSeed = "149D3F5BU5";
+        // var stringSeed = "4AETSHEBKD";
 
         var seed =
             (uint)StringHelper.GetDeterministicHashCode(stringSeed) +

@@ -5,6 +5,7 @@ using MegaCrit.Sts2.Core.Helpers;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Multiplayer.Game.Lobby;
 using MegaCrit.Sts2.Core.Nodes.CommonUi;
+using MegaCrit.Sts2.Core.Nodes.GodotExtensions;
 using MegaCrit.Sts2.Core.Nodes.Screens.CharacterSelect;
 using MegaCrit.Sts2.Core.Runs;
 
@@ -16,7 +17,7 @@ internal class BeginRunForAllPlayersPatch
     [HarmonyPrefix]
     private static bool Prefix(StartRunLobby __instance, ref string seed, List<ModifierModel> modifiers)
     {
-        if (_searching || __instance.GameMode != GameMode.Standard)
+        if (_searching || __instance.GameMode != GameMode.Standard || __instance.Players.Count > 1)
         {
             return true;
         }
@@ -40,9 +41,22 @@ internal class BeginRunForAllPlayersPatch
         CanvasLayer? overlay = null;
         RichTextLabel? statusLabel = null;
 
+        var leftArrowWasVisible = false;
+        var rightArrowWasVisible = false;
+
         if (screen != null)
         {
-            (overlay, statusLabel) = BuildOverlay(searcher, screen, cts);
+            var ap = Traverse.Create(Traverse.Create(screen).Field("_ascensionPanel").GetValue<NAscensionPanel>());
+            var leftArrow = ap.Field("_leftArrow").GetValue<NButton>();
+            var rightArrow = ap.Field("_rightArrow").GetValue<NButton>();
+
+            leftArrowWasVisible = leftArrow.Visible;
+            rightArrowWasVisible = rightArrow.Visible;
+
+            leftArrow.Visible = false;
+            rightArrow.Visible = false;
+            
+            (overlay, statusLabel) = BuildOverlay(searcher, screen, cts, leftArrowWasVisible, rightArrowWasVisible);
             screen.AddChild(overlay);
         }
 
@@ -85,13 +99,16 @@ internal class BeginRunForAllPlayersPatch
         if (cts.IsCancellationRequested)
         {
             instance.SetReady(false);
-            RestoreScreenUi(screen);
+            RestoreScreenUi(screen, leftArrowWasVisible, rightArrowWasVisible);
             return;
         }
 
         _searching = true;
         try
         {
+            // Attempt to label it a Custom run since it's essentially seeded. This doesn't work
+            // AccessTools.Property(typeof(StartRunLobby), "GameMode").SetValue(instance, GameMode.Custom);
+            // AccessTools.Property(typeof(StartRunLobby), "Seed").SetValue(instance, foundSeed ?? seed);
             AccessTools.Method(typeof(StartRunLobby), "BeginRunForAllPlayers")
                 .Invoke(instance, [foundSeed ?? seed, modifiers]);
         }
@@ -104,7 +121,9 @@ internal class BeginRunForAllPlayersPatch
     private static (CanvasLayer overlay, RichTextLabel  statusLabel) BuildOverlay(
         SeedSearcher searcher,
         NCharacterSelectScreen? screen,
-        CancellationTokenSource cts)
+        CancellationTokenSource cts,
+        bool leftArrowWasVisible,
+        bool rightArrowWasVisible)
     {
         var overlay = new CanvasLayer();
 
@@ -131,7 +150,7 @@ internal class BeginRunForAllPlayersPatch
             label.Text = "Cancelling...";
             cancelButton.Disabled = true;
             searcher.Cancel();
-            RestoreScreenUi(screen);
+            RestoreScreenUi(screen, leftArrowWasVisible, rightArrowWasVisible);
         };
 
         vbox.AddChild(label);
@@ -142,7 +161,7 @@ internal class BeginRunForAllPlayersPatch
         return (overlay, label);
     }
 
-    private static void RestoreScreenUi(NCharacterSelectScreen? screen)
+    private static void RestoreScreenUi(NCharacterSelectScreen? screen, bool leftArrowWasVisible, bool rightArrowWasVisible)
     {
         if (screen == null)
         {
@@ -158,5 +177,10 @@ internal class BeginRunForAllPlayersPatch
         {
             btn.Enable();
         }
+
+        var ascensionPanel = t.Field("_ascensionPanel").GetValue<NAscensionPanel>();
+        var ap = Traverse.Create(ascensionPanel);
+        ap.Field("_leftArrow").GetValue<NButton>().Visible = leftArrowWasVisible;
+        ap.Field("_rightArrow").GetValue<NButton>().Visible = rightArrowWasVisible;
     }
 }

@@ -3,6 +3,7 @@ using BaseLib.Config;
 using BaseLib.Config.UI;
 using FilterTheSpire2.FilterTheSpire2Code.ActLocations;
 using FilterTheSpire2.FilterTheSpire2Code.Ancients.Config;
+using FilterTheSpire2.FilterTheSpire2Code.Cards;
 using FilterTheSpire2.FilterTheSpire2Code.Characters;
 using FilterTheSpire2.FilterTheSpire2Code.Config.Logic;
 using FilterTheSpire2.FilterTheSpire2Code.Relics;
@@ -21,8 +22,21 @@ public class FilterTheSpire2Config : SimpleModConfig
     public static Ancient Act3Ancient { get; set; } = Ancient.Any;
 
     [ConfigSection("AncientRelicsSection")]
+    [ConfigVisibleIf(nameof(ShouldShowNewLeafOptions))]
+    [ConfigOverrideLocalization("CARD_OPTIONS")]
+    public static CardOptions NewLeafOption { get; set; } = CardOptions.Any;
+    
+    [ConfigVisibleIf(nameof(ShouldShowLeafyPoulticeOptions))]
+    [ConfigOverrideLocalization("CARD_OPTIONS")]
+    public static CardOptions LeafyPoulticeOption1 { get; set; } = CardOptions.Any;
+    
+    [ConfigVisibleIf(nameof(ShouldShowLeafyPoulticeOptions))]
+    [ConfigOverrideLocalization("CARD_OPTIONS")]
+    public static CardOptions LeafyPoulticeOption2 { get; set; } = CardOptions.Any;
+    
     [ConfigVisibleIf(nameof(Act2Ancient), Ancient.Orobas)]
     public static OrobasOptions OrobasOptions { get; set; } = OrobasOptions.Any;
+    
     [ConfigVisibleIf(nameof(ShouldShowSeaGlassCharacters))]
     public static CharacterOptions SeaGlassCharacter { get; set; } = CharacterOptions.Any;
 
@@ -106,6 +120,18 @@ public class FilterTheSpire2Config : SimpleModConfig
         };
     }
 
+    private static bool ShouldShowLeafyPoulticeOptions()
+    {
+        return Character != CharacterOptions.Any && 
+               NeowOptions == NeowOptions.LeafyPoultice;
+    }
+    
+    private static bool ShouldShowNewLeafOptions()
+    {
+        return Character != CharacterOptions.Any && 
+               NeowOptions == NeowOptions.NewLeaf;
+    }
+    
     private static bool ShouldShowSeaGlassCharacters()
     {
         return Character != CharacterOptions.Any && 

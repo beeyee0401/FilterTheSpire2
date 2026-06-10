@@ -105,7 +105,7 @@ public static class AncientConfigController
         
         // Update the currently selected index since the list items have shifted
         var currentDisplayIndexField = dropdown.GetType()
-            .GetField("_currentDisplayIndex", BindingFlags.NonPublic | BindingFlags.Instance);
+            .GetCachedField("_currentDisplayIndex", BindingFlags.NonPublic | BindingFlags.Instance);
         var currentDisplayIndex = (int)currentDisplayIndexField?.GetValue(dropdown)!;
         if (currentDisplayIndex >= 0)
         {

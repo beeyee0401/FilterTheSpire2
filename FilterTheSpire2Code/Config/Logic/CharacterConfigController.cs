@@ -1,6 +1,7 @@
 using System.Reflection;
 using BaseLib.Config;
 using BaseLib.Config.UI;
+using FilterTheSpire2.FilterTheSpire2Code.Cards;
 using FilterTheSpire2.FilterTheSpire2Code.Characters;
 using FilterTheSpire2.FilterTheSpire2Code.Relics;
 using Godot;
@@ -12,50 +13,60 @@ namespace FilterTheSpire2.FilterTheSpire2Code.Config.Logic;
 public static class CharacterConfigController
 {
     private static CharacterOptions _currentCharacterSelection;
-    private static readonly Dictionary<RelicRarity, NConfigDropdown> Dropdowns = new();
-    private static readonly Dictionary<RelicRarity, List<NConfigDropdownItem.ItemData>> MasterItems = new();
+    private static readonly Dictionary<RelicRarity, NConfigDropdown> RelicDropdowns = new();
+    private static readonly Dictionary<RelicRarity, List<NConfigDropdownItem.ItemData>> RelicMasterItems = new();
+    private static readonly Dictionary<string, NConfigDropdown> CardDropdowns = new();
+    private static readonly Dictionary<string, List<NConfigDropdownItem.ItemData>> CardMasterItems = new();
 
     public static void SetupCharacterDropdownConfig(Control optionContainer)
     {
         _currentCharacterSelection = FilterTheSpire2Config.Character;
         RebuildCharacterDropdown(optionContainer);
-        SetDropdownsFromCharacter(optionContainer, RelicRarity.Common, nameof(FilterTheSpire2Config.CommonRelic));
-        SetDropdownsFromCharacter(optionContainer, RelicRarity.Uncommon, nameof(FilterTheSpire2Config.UncommonRelic));
-        SetDropdownsFromCharacter(optionContainer, RelicRarity.Rare, nameof(FilterTheSpire2Config.RareRelic));
-        SetDropdownsFromCharacter(optionContainer, RelicRarity.Shop, nameof(FilterTheSpire2Config.ShopRelic));
+        SetRelicDropdownsFromCharacter(optionContainer, RelicRarity.Common, nameof(FilterTheSpire2Config.CommonRelic));
+        SetRelicDropdownsFromCharacter(optionContainer, RelicRarity.Uncommon, nameof(FilterTheSpire2Config.UncommonRelic));
+        SetRelicDropdownsFromCharacter(optionContainer, RelicRarity.Rare, nameof(FilterTheSpire2Config.RareRelic));
+        SetRelicDropdownsFromCharacter(optionContainer, RelicRarity.Shop, nameof(FilterTheSpire2Config.ShopRelic));
+        SetCardDropdownsFromCharacter(optionContainer, nameof(FilterTheSpire2Config.LeafyPoulticeOption1));
+        SetCardDropdownsFromCharacter(optionContainer, nameof(FilterTheSpire2Config.LeafyPoulticeOption2));
+        SetCardDropdownsFromCharacter(optionContainer, nameof(FilterTheSpire2Config.NewLeafOption));
+    }
+    
+    private static void SyncAllDropdowns(bool shouldCheckToReset)
+    {
+        foreach (var kvp in RelicDropdowns)
+        {
+            RebuildDropdownForCharacter(kvp.Key, kvp.Value, GetRelicOption(kvp.Key), shouldCheckToReset);
+        }
+        
+        foreach (var kvp in CardDropdowns)
+        {
+            RebuildCardDropdownForCharacter(kvp.Key, kvp.Value, shouldCheckToReset);
+        }
     }
     
     #region "Dropdowns dependent on character"
     private static void RegisterDropdown(RelicRarity relicRarity, NConfigDropdown dropdown)
     {
-        Dropdowns[relicRarity] = dropdown;
+        RelicDropdowns[relicRarity] = dropdown;
     }
     
-    private static void SetDropdownsFromCharacter(Control optionContainer, RelicRarity relicRarity, string propName)
+    private static void SetRelicDropdownsFromCharacter(Control optionContainer, RelicRarity relicRarity, string propName)
     {
         var (dropdown, items) = ConfigDropdownUtilities.GetDropdownListItems(optionContainer, propName);
         
         RegisterDropdown(relicRarity, dropdown);
         
-        if (!MasterItems.ContainsKey(relicRarity))
+        if (!RelicMasterItems.ContainsKey(relicRarity))
         {
-            MasterItems[relicRarity] = items.ToList();
+            RelicMasterItems[relicRarity] = items.ToList();
         }
         
         RebuildDropdownForCharacter(relicRarity, dropdown, GetRelicOption(relicRarity), false);
     }
     
-    private static void SyncAllDropdowns(bool shouldCheckToReset)
-    {
-        foreach (var kvp in Dropdowns)
-        {
-            RebuildDropdownForCharacter(kvp.Key, kvp.Value, GetRelicOption(kvp.Key), shouldCheckToReset);
-        }
-    }
-    
     private static void RebuildDropdownForCharacter(RelicRarity relicRarity, NConfigDropdown dropdown, RelicOptions dropdownSelection, bool shouldCheckToReset)
     {
-        var source = MasterItems[relicRarity];
+        var source = RelicMasterItems[relicRarity];
 
         var relicPool = RelicRules.GetRelicPool(relicRarity).ToList();
         
@@ -88,7 +99,7 @@ public static class CharacterConfigController
             if (characterSpecificRelics.Contains(dropdownSelection))
             {
                 var currentOptionLabelField = dropdown.GetType()
-                    .GetField("_currentOptionLabel", BindingFlags.NonPublic | BindingFlags.Instance);
+                    .GetCachedField("_currentOptionLabel", BindingFlags.NonPublic | BindingFlags.Instance);
                 var currentOptionLabel = (MegaLabel)currentOptionLabelField?.GetValue(dropdown)!;
                 currentOptionLabel.SetTextAutoSize(nameof(RelicOptions.Any));
                 ResetRelicOption(relicRarity);
@@ -169,6 +180,81 @@ public static class CharacterConfigController
         }
         
         ConfigDropdownUtilities.RefreshDropdownItems(dropdown, rebuilt);
+    }
+    #endregion
+    
+    #region "Card dropdown"
+    private static void RegisterCardDropdown(string propName, NConfigDropdown dropdown)
+    {
+        CardDropdowns[propName] = dropdown;
+    }
+    
+    private static void SetCardDropdownsFromCharacter(Control optionContainer, string propName)
+    {
+        var (dropdown, items) = ConfigDropdownUtilities.GetDropdownListItems(optionContainer, propName);
+
+        RegisterCardDropdown(propName, dropdown);
+
+        if (!CardMasterItems.ContainsKey(propName))
+        {
+            CardMasterItems[propName] = items.ToList();
+        }
+
+        RebuildCardDropdownForCharacter(propName, dropdown, false);
+    }
+    
+    private static void RebuildCardDropdownForCharacter(
+        string propName,
+        NConfigDropdown dropdown,
+        bool shouldCheckToReset)
+    {
+        var source = CardMasterItems[propName];
+        var cardPool = CardRules.GetCardPool(_currentCharacterSelection);
+        var rebuilt = new List<NConfigDropdownItem.ItemData>();
+
+        foreach (var item in source)
+        {
+            var value = (CardOptions)item.Value!;
+
+            if (value == CardOptions.Any)
+            {
+                rebuilt.Add(item);
+                continue;
+            }
+
+            if (!cardPool.Contains(value))
+            {
+                continue;
+            }
+
+            rebuilt.Add(item);
+        }
+        
+        if (shouldCheckToReset)
+        {
+            var currentOptionLabelField = dropdown.GetType()
+                .GetCachedField("_currentOptionLabel", BindingFlags.NonPublic | BindingFlags.Instance);
+            var currentOptionLabel =
+                (MegaLabel)currentOptionLabelField?.GetValue(dropdown)!;
+            currentOptionLabel.SetTextAutoSize(nameof(CardOptions.Any));
+            ResetCardOptions(propName);
+        }
+
+        ConfigDropdownUtilities.RefreshDropdownItems(dropdown, rebuilt);
+    }
+    
+    private static void ResetCardOptions(string propName)
+    {
+        var property = typeof(FilterTheSpire2Config)
+            .GetProperty(propName, BindingFlags.Public | BindingFlags.Static);
+
+        if (property == null)
+        {
+            throw new InvalidOperationException($"Property '{propName}' not found.");
+        }
+
+        property.SetValue(null, CardOptions.Any);
+        ModConfig.SaveDebounced<FilterTheSpire2Config>();
     }
     #endregion
 }
