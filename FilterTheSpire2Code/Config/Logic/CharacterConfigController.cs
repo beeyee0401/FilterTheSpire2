@@ -18,6 +18,19 @@ public static class CharacterConfigController
     private static readonly Dictionary<string, NConfigDropdown> CardDropdowns = new();
     private static readonly Dictionary<string, List<NConfigDropdownItem.ItemData>> CardMasterItems = new();
 
+    private readonly struct CharacterOnSetHandler(
+        CharacterOptions character,
+        Action originalOnSet)
+    {
+        public void Invoke()
+        {
+            originalOnSet.Invoke();
+            var shouldCheckToResetRelicDropdowns = character != _currentCharacterSelection;
+            _currentCharacterSelection = character;
+            SyncAllDropdowns(shouldCheckToResetRelicDropdowns);
+        }
+    }
+    
     public static void SetupCharacterDropdownConfig(Control optionContainer)
     {
         _currentCharacterSelection = FilterTheSpire2Config.Character;
@@ -153,14 +166,8 @@ public static class CharacterConfigController
     #region "Character dropdown"
     private static Action WrapOnSet(CharacterOptions character, Action originalOnSet)
     {
-        return () =>
-        {
-            originalOnSet.Invoke();
-            
-            var shouldCheckToResetRelicDropdowns = character != _currentCharacterSelection;
-            _currentCharacterSelection = character;
-            SyncAllDropdowns(shouldCheckToResetRelicDropdowns);
-        };
+        var handler = new CharacterOnSetHandler(character, originalOnSet);
+        return handler.Invoke;
     }
     
     private static void RebuildCharacterDropdown(Control optionContainer)

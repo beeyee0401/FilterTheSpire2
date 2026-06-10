@@ -103,7 +103,10 @@ public class FilterTheSpire2Config : SimpleModConfig
         SetupFocusNeighbors(optionContainer); // Fix controller focus order
 
         AncientConfigController.SetupAncientDropdownConfig(optionContainer);
-        MultiActAncientController.UpdateMultiActAncientActSpecificRelics(optionContainer);
+        if (ShouldShowMultiActOptions())
+        {
+            MultiActAncientController.UpdateMultiActAncientActSpecificRelics(optionContainer);
+        }
         CharacterConfigController.SetupCharacterDropdownConfig(optionContainer);
     }
 

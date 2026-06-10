@@ -11,6 +11,19 @@ public static class AncientConfigController
     private static readonly Dictionary<int, List<NConfigDropdownItem.ItemData>> MasterItems = new();
     private static readonly Dictionary<int, NConfigDropdown> Dropdowns = new();
 
+    private readonly struct AncientOnSetHandler(int act, Ancient value, Action originalOnSet, Control optionContainer)
+    {
+        public void Invoke()
+        {
+            originalOnSet.Invoke();
+            var shouldUpdateAncientDropdowns = AncientRules.MultiActAncientsAndRelics.ContainsKey(CurrentSelection[act]);
+            var shouldUpdateMultiActOptionsDropdown = AncientRules.MultiActAncientsAndRelics.ContainsKey(value);
+            CurrentSelection[act] = value;
+            if (shouldUpdateAncientDropdowns || shouldUpdateMultiActOptionsDropdown)
+                SyncAllDropdowns(optionContainer, shouldUpdateMultiActOptionsDropdown);
+        }
+    }
+    
     public static void SetupAncientDropdownConfig(Control optionContainer)
     {
         CurrentSelection[2] = FilterTheSpire2Config.Act2Ancient;
@@ -42,20 +55,8 @@ public static class AncientConfigController
     
     private static Action WrapOnSet(int act, Ancient value, Action originalOnSet, Control optionContainer)
     {
-        return () =>
-        {
-            originalOnSet.Invoke();
-
-            // We do not need to refresh if a dropdown was not updated to or from a multi-act ancient
-            var shouldUpdateAncientDropdowns = AncientRules.MultiActAncientsAndRelics.ContainsKey(CurrentSelection[act]);
-            var shouldUpdateMultiActOptionsDropdown = AncientRules.MultiActAncientsAndRelics.ContainsKey(value);
-            CurrentSelection[act] = value;
-
-            if (shouldUpdateAncientDropdowns || shouldUpdateMultiActOptionsDropdown)
-            {
-                SyncAllDropdowns(optionContainer, shouldUpdateMultiActOptionsDropdown);
-            }
-        };
+        var handler = new AncientOnSetHandler(act, value, originalOnSet, optionContainer);
+        return handler.Invoke;
     }
 
     private static void SyncAllDropdowns(Control optionContainer, bool shouldUpdateMultiActOptionsDropdown)
