@@ -116,13 +116,13 @@ public class FilterTheSpire2Config : SimpleModConfig
                Act3Ancient == Ancient.Darv;
     }
 
-    private static bool ShouldShowLeafyPoulticeOptions()
+    public static bool ShouldShowLeafyPoulticeOptions()
     {
         return Character != CharacterOptions.Any && 
                NeowOptions == NeowOptions.LeafyPoultice;
     }
     
-    private static bool ShouldShowNewLeafOptions()
+    public static bool ShouldShowNewLeafOptions()
     {
         return Character != CharacterOptions.Any && 
                NeowOptions == NeowOptions.NewLeaf;

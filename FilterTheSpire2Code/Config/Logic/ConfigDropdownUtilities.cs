@@ -74,45 +74,75 @@ public static class ConfigDropdownUtilities
         var items = (List<NConfigDropdownItem.ItemData>?)itemsField?.GetValue(dropdown);
         return items == null ? (dropdown, []) : (dropdown, items);
     }
-
-    public static void RefreshDropdownItems(NConfigDropdown dropdown, List<NConfigDropdownItem.ItemData> newItems)
+    
+    public static void RefreshDropdownItems(
+        NConfigDropdown dropdown,
+        List<NConfigDropdownItem.ItemData> newItems)
     {
-        // Get _dropdownItems via reflection (inherited from NSettingsDropdown)
         var dropdownItemsField = typeof(NSettingsDropdown).GetCachedField("_dropdownItems",
             BindingFlags.NonPublic | BindingFlags.Instance);
-        var dropdownItems = (Control)dropdownItemsField!.GetValue(dropdown)!;
-            
-        // Clear existing child nodes
-        foreach (var child in dropdownItems.GetChildren())
-        {
-            dropdownItems.RemoveChild(child);
-            child.QueueFree();
-        }
-            
-        // Rebuild child nodes (mirrors _Ready logic)
+        var dropdownItems =
+            (Control)dropdownItemsField?.GetValue(dropdown)!;
+
+        var children = dropdownItems.GetChildren();
+        var existingCount = children.Count;
         for (var i = 0; i < newItems.Count; i++)
         {
-            var child = NConfigDropdownItem.Create(newItems[i]);
-            dropdownItems.AddChildSafely(child);
-            child.Connect(NDropdownItem.SignalName.Selected,
-                Callable.From(new Action<NDropdownItem>(item =>
-                {
-                    if (item is not NConfigDropdownItem configItem)
-                    {
-                        return;
-                    }
-                    dropdown.Call("CloseDropdown");
-            
-                    // Update display label via reflection
-                    var labelField = typeof(NSettingsDropdown).GetCachedField("_currentOptionLabel",
-                        BindingFlags.NonPublic | BindingFlags.Instance);
-                    var label = labelField!.GetValue(dropdown);
-                    label!.GetType().GetCachedMethod("SetTextAutoSize")?.Invoke(label, [configItem.Data.Text]);
-                    configItem.Data.OnSet();
-                })));
-            child.Init(i);
+            NConfigDropdownItem item;
+            if (i < existingCount)
+            {
+                item = (NConfigDropdownItem) children[i];
+                item.Data = newItems[i];
+            }
+            else
+            {
+                item = NConfigDropdownItem.Create(newItems[i]);
+                dropdownItems.AddChildSafely(item);
+                ConnectDropdownItem(item, dropdown);
+            }
+
+            item.Init(i);
         }
-            
-        dropdownItems.GetParent<NDropdownContainer>().RefreshLayout();
+        
+        for (var i = existingCount - 1; i >= newItems.Count; i--)
+        {
+            dropdownItems.RemoveChild(children[i]);
+            children[i].QueueFree();
+        }
+
+        if (existingCount != newItems.Count)
+        {
+            dropdownItems.GetParent<NDropdownContainer>()
+                .RefreshLayout();
+        }
+    }
+    
+    private static void ConnectDropdownItem(
+        NConfigDropdownItem item,
+        NConfigDropdown dropdown)
+    {
+        var labelField = typeof(NSettingsDropdown).GetCachedField("_currentOptionLabel", 
+            BindingFlags.NonPublic | BindingFlags.Instance);
+        var label = labelField?.GetValue(dropdown);
+        var setTextMethod =
+            label?.GetType().GetCachedMethod("SetTextAutoSize");
+
+        item.Connect(
+            NDropdownItem.SignalName.Selected,
+            Callable.From(new Action<NDropdownItem>(selected =>
+            {
+                if (selected is not NConfigDropdownItem configItem)
+                {
+                    return;
+                }
+
+                dropdown.Call("CloseDropdown");
+
+                setTextMethod?.Invoke(
+                    label,
+                    [configItem.Data.Text]);
+
+                configItem.Data.OnSet();
+            })));
     }
 }
