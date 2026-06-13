@@ -183,6 +183,14 @@ public static class FilterManager
                 }
                 break;
             }
+            case NeowOptions.LostCoffer:
+            {
+                if (FilterTheSpire2Config.LostCofferOption != CardOptions.Any)
+                {
+                    filters.Add(new LostCofferFilter([FilterTheSpire2Config.LostCofferOption]));
+                }
+                break;
+            }
         }
     }
 }

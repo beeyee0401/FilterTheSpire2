@@ -23,7 +23,7 @@ public class CardRarityOdds(Rng rng, float initialOffset = -0.05f)
         float ascensionValue,
         float fallbackValue)
     {
-        return (int)level > (int)AscensionLevel.Scarcity ? fallbackValue : ascensionValue;
+        return (int)level > (int)AscensionLevel.Scarcity ? ascensionValue : fallbackValue;
     }
 
     private static float GetRegularCommonOdds(AscensionLevel level) => GetValueForAscension(level, 0.615f, 0.6f);

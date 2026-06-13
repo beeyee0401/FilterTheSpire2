@@ -10,6 +10,8 @@ namespace FilterTheSpire2.FilterTheSpire2Code.Filters;
 public class LeadPaperweightFilter(List<CardOptions> cardOptions) : 
     BaseCardRewardFilter(CardRarityOddsType.RegularEncounter, cardOptions, 1, 2)
 {
+    protected override bool IsCharacterRequired => false;
+
     protected override Rng GetRewardRng(uint seed)
     {
         return RngHelper.GetPlayerRngType(seed, PlayerRngType.Rewards);
@@ -17,6 +19,6 @@ public class LeadPaperweightFilter(List<CardOptions> cardOptions) :
 
     protected override List<CardDefinition> GetCardPool()
     {
-        return CardRules.CardDefinitionPools[CharacterOptions.Any].ToList();
+        return CardRules.AvailableCardDefinitionPools[CharacterOptions.Any].ToList();
     }
 }

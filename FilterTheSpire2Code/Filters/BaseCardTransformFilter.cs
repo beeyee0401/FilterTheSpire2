@@ -28,7 +28,7 @@ public abstract class BaseCardTransformFilter(List<CardOptions> cardOptions, int
         
         var baseRng = new Rng((uint) StringHelper.GetDeterministicHashCode(seed));
         var rng = GetTransformRng(baseRng.Seed);
-        var cardPool = CardRules.CardPools[FilterTheSpire2Config.Character];
+        var cardPool = CardRules.AvailableCardPools[FilterTheSpire2Config.Character];
         var remaining = requestedCards
             .GroupBy(c => c)
             .ToDictionary(g => g.Key, g => g.Count());

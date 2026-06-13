@@ -37,6 +37,10 @@ public class FilterTheSpire2Config : SimpleModConfig
     [ConfigOverrideLocalization("CARD_OPTIONS")]
     public static CardOptions LeadPaperweightOption { get; set; } = CardOptions.Any;
     
+    [ConfigVisibleIf(nameof(ShouldShowLostCofferOptions))]
+    [ConfigOverrideLocalization("CARD_OPTIONS")]
+    public static CardOptions LostCofferOption { get; set; } = CardOptions.Any;
+    
     [ConfigVisibleIf(nameof(Act2Ancient), Ancient.Orobas)]
     public static OrobasOptions OrobasOptions { get; set; } = OrobasOptions.Any;
     
@@ -118,7 +122,7 @@ public class FilterTheSpire2Config : SimpleModConfig
     private static void SetupColorlessCardDropdown(Control optionContainer, string propName)
     {
         var (dropdown, items) = ConfigDropdownUtilities.GetDropdownListItems(optionContainer, propName);
-        var cardPool = CardRules.CardPools[CharacterOptions.Any];
+        var cardPool = CardRules.AvailableCardPools[CharacterOptions.Any];
         var rebuilt = new List<NConfigDropdownItem.ItemData>();
 
         foreach (var item in items)
@@ -158,6 +162,12 @@ public class FilterTheSpire2Config : SimpleModConfig
     {
         return Character != CharacterOptions.Any && 
                NeowOptions == NeowOptions.NewLeaf;
+    }
+    
+    public static bool ShouldShowLostCofferOptions()
+    {
+        return Character != CharacterOptions.Any && 
+               NeowOptions == NeowOptions.LostCoffer;
     }
     
     private static bool ShouldShowSeaGlassCharacters()

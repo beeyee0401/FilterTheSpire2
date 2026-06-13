@@ -43,6 +43,7 @@ public static class CharacterConfigController
         SetCardDropdownsFromCharacter(optionContainer, nameof(FilterTheSpire2Config.LeafyPoulticeOption1));
         SetCardDropdownsFromCharacter(optionContainer, nameof(FilterTheSpire2Config.LeafyPoulticeOption2));
         SetCardDropdownsFromCharacter(optionContainer, nameof(FilterTheSpire2Config.NewLeafOption));
+        SetCardDropdownsFromCharacter(optionContainer, nameof(FilterTheSpire2Config.LostCofferOption));
     }
     
     private static void SyncAllDropdowns(bool shouldCheckToReset)
@@ -217,7 +218,7 @@ public static class CharacterConfigController
         bool shouldCheckToReset)
     {
         var source = CardMasterItems[propName];
-        var cardPool = CardRules.CardPools[_currentCharacterSelection];
+        var cardPool = CardRules.AvailableCardPools[_currentCharacterSelection];
         var rebuilt = new List<NConfigDropdownItem.ItemData>();
 
         foreach (var item in source)

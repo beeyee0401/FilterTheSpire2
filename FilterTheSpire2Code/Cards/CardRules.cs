@@ -1,5 +1,6 @@
 using System.Collections.Immutable;
 using FilterTheSpire2.FilterTheSpire2Code.Characters;
+using FilterTheSpire2.FilterTheSpire2Code.Helpers;
 using MegaCrit.Sts2.Core.Entities.Cards;
 
 namespace FilterTheSpire2.FilterTheSpire2Code.Cards;
@@ -27,12 +28,14 @@ public static class CardRules
         new(CardOptions.Armaments, CharacterOptions.Ironclad, CardRarity.Common),
         new(CardOptions.AshenStrike, CharacterOptions.Ironclad, CardRarity.Uncommon),
         new(CardOptions.Barricade, CharacterOptions.Ironclad, CardRarity.Rare),
+        new(CardOptions.Bash, CharacterOptions.Ironclad, CardRarity.Basic),
         new(CardOptions.BattleTrance, CharacterOptions.Ironclad, CardRarity.Uncommon),
         new(CardOptions.BloodWall, CharacterOptions.Ironclad, CardRarity.Common),
         new(CardOptions.Bloodletting, CharacterOptions.Ironclad, CardRarity.Common),
         new(CardOptions.Bludgeon, CharacterOptions.Ironclad, CardRarity.Uncommon),
         new(CardOptions.BodySlam, CharacterOptions.Ironclad, CardRarity.Common),
         new(CardOptions.Brand, CharacterOptions.Ironclad, CardRarity.Rare),
+        new(CardOptions.Break, CharacterOptions.Ironclad, CardRarity.Ancient),
         new(CardOptions.Breakthrough, CharacterOptions.Ironclad, CardRarity.Common),
         new(CardOptions.Bully, CharacterOptions.Ironclad, CardRarity.Uncommon),
         new(CardOptions.BurningPact, CharacterOptions.Ironclad, CardRarity.Uncommon),
@@ -40,9 +43,11 @@ public static class CardRules
         new(CardOptions.Cinder, CharacterOptions.Ironclad, CardRarity.Common),
         new(CardOptions.Colossus, CharacterOptions.Ironclad, CardRarity.Uncommon),
         new(CardOptions.Conflagration, CharacterOptions.Ironclad, CardRarity.Rare),
+        new(CardOptions.Corruption, CharacterOptions.Ironclad, CardRarity.Ancient),
         new(CardOptions.CrimsonMantle, CharacterOptions.Ironclad, CardRarity.Rare),
         new(CardOptions.Cruelty, CharacterOptions.Ironclad, CardRarity.Rare),
         new(CardOptions.DarkEmbrace, CharacterOptions.Ironclad, CardRarity.Rare),
+        new(CardOptions.DefendIronclad, CharacterOptions.Ironclad, CardRarity.Basic),
         new(CardOptions.DemonForm, CharacterOptions.Ironclad, CardRarity.Rare),
         new(CardOptions.Dismantle, CharacterOptions.Ironclad, CardRarity.Uncommon),
         new(CardOptions.Dominate, CharacterOptions.Ironclad, CardRarity.Uncommon),
@@ -89,6 +94,7 @@ public static class CardRules
         new(CardOptions.Stoke, CharacterOptions.Ironclad, CardRarity.Common),
         new(CardOptions.Stomp, CharacterOptions.Ironclad, CardRarity.Uncommon),
         new(CardOptions.StoneArmor, CharacterOptions.Ironclad, CardRarity.Uncommon),
+        new(CardOptions.StrikeIronclad, CharacterOptions.Ironclad, CardRarity.Basic),
         new(CardOptions.SwordBoomerang, CharacterOptions.Ironclad, CardRarity.Common),
         new(CardOptions.Taunt, CharacterOptions.Ironclad, CardRarity.Uncommon),
         new(CardOptions.TearAsunder, CharacterOptions.Ironclad, CardRarity.Rare),
@@ -131,6 +137,7 @@ public static class CardRules
         new(CardOptions.DaggerThrow, CharacterOptions.Silent, CardRarity.Common),
         new(CardOptions.Dash, CharacterOptions.Silent, CardRarity.Uncommon),
         new(CardOptions.DeadlyPoison, CharacterOptions.Silent, CardRarity.Common),
+        new(CardOptions.DefendSilent, CharacterOptions.Silent, CardRarity.Basic),
         new(CardOptions.Deflect, CharacterOptions.Silent, CardRarity.Common),
         new(CardOptions.DodgeAndRoll, CharacterOptions.Silent, CardRarity.Common),
         new(CardOptions.EchoingSlash, CharacterOptions.Silent, CardRarity.Rare),
@@ -157,6 +164,7 @@ public static class CardRules
         new(CardOptions.MementoMori, CharacterOptions.Silent, CardRarity.Uncommon),
         new(CardOptions.Mirage, CharacterOptions.Silent, CardRarity.Uncommon),
         new(CardOptions.Murder, CharacterOptions.Silent, CardRarity.Rare),
+        new(CardOptions.Neutralize, CharacterOptions.Silent, CardRarity.Basic),
         new(CardOptions.Nightmare, CharacterOptions.Silent, CardRarity.Rare),
         new(CardOptions.NoxiousFumes, CharacterOptions.Silent, CardRarity.Uncommon),
         new(CardOptions.Outbreak, CharacterOptions.Silent, CardRarity.Uncommon),
@@ -179,7 +187,10 @@ public static class CardRules
         new(CardOptions.Speedster, CharacterOptions.Silent, CardRarity.Uncommon),
         new(CardOptions.StormOfSteel, CharacterOptions.Silent, CardRarity.Rare),
         new(CardOptions.Strangle, CharacterOptions.Silent, CardRarity.Uncommon),
+        new(CardOptions.StrikeSilent, CharacterOptions.Silent, CardRarity.Basic),
         new(CardOptions.SuckerPunch, CharacterOptions.Silent, CardRarity.Common),
+        new(CardOptions.Suppress, CharacterOptions.Silent, CardRarity.Ancient),
+        new(CardOptions.Survivor, CharacterOptions.Silent, CardRarity.Basic),
         new(CardOptions.Tactician, CharacterOptions.Silent, CardRarity.Uncommon),
         new(CardOptions.TheHunt, CharacterOptions.Silent, CardRarity.Rare),
         new(CardOptions.ToolsOfTheTrade, CharacterOptions.Silent, CardRarity.Rare),
@@ -187,6 +198,7 @@ public static class CardRules
         new(CardOptions.Untouchable, CharacterOptions.Silent, CardRarity.Common),
         new(CardOptions.UpMySleeve, CharacterOptions.Silent, CardRarity.Uncommon),
         new(CardOptions.WellLaidPlans, CharacterOptions.Silent, CardRarity.Uncommon),
+        new(CardOptions.WraithForm, CharacterOptions.Silent, CardRarity.Ancient),
 
         #endregion
 
@@ -215,8 +227,10 @@ public static class CardRules
         new(CardOptions.CrescentSpear, CharacterOptions.Regent, CardRarity.Common),
         new(CardOptions.CrushUnder, CharacterOptions.Regent, CardRarity.Common),
         new(CardOptions.DecisionsDecisions, CharacterOptions.Regent, CardRarity.Rare),
+        new(CardOptions.DefendRegent, CharacterOptions.Regent, CardRarity.Basic),
         new(CardOptions.Devastate, CharacterOptions.Regent, CardRarity.Uncommon),
         new(CardOptions.DyingStar, CharacterOptions.Regent, CardRarity.Rare),
+        new(CardOptions.FallingStar, CharacterOptions.Regent, CardRarity.Basic),
         new(CardOptions.ForegoneConclusion, CharacterOptions.Regent, CardRarity.Rare),
         new(CardOptions.Furnace, CharacterOptions.Regent, CardRarity.Uncommon),
         new(CardOptions.GammaBlast, CharacterOptions.Regent, CardRarity.Uncommon),
@@ -239,6 +253,7 @@ public static class CardRules
         new(CardOptions.LunarBlast, CharacterOptions.Regent, CardRarity.Uncommon),
         new(CardOptions.MakeItSo, CharacterOptions.Regent, CardRarity.Rare),
         new(CardOptions.ManifestAuthority, CharacterOptions.Regent, CardRarity.Uncommon),
+        new(CardOptions.MeteorShower, CharacterOptions.Regent, CardRarity.Ancient),
         new(CardOptions.MonarchsGaze, CharacterOptions.Regent, CardRarity.Rare),
         new(CardOptions.Monologue, CharacterOptions.Regent, CardRarity.Uncommon),
         new(CardOptions.NeutronAegis, CharacterOptions.Regent, CardRarity.Rare),
@@ -264,12 +279,15 @@ public static class CardRules
         new(CardOptions.SpectrumShift, CharacterOptions.Regent, CardRarity.Uncommon),
         new(CardOptions.SpoilsOfBattle, CharacterOptions.Regent, CardRarity.Common),
         new(CardOptions.Stardust, CharacterOptions.Regent, CardRarity.Uncommon),
+        new(CardOptions.StrikeRegent, CharacterOptions.Regent, CardRarity.Basic),
         new(CardOptions.SummonForth, CharacterOptions.Regent, CardRarity.Uncommon),
         new(CardOptions.Supermassive, CharacterOptions.Regent, CardRarity.Uncommon),
         new(CardOptions.SwordSage, CharacterOptions.Regent, CardRarity.Rare),
         new(CardOptions.Terraforming, CharacterOptions.Regent, CardRarity.Uncommon),
+        new(CardOptions.TheSealedThrone, CharacterOptions.Regent, CardRarity.Ancient),
         new(CardOptions.TheSmith, CharacterOptions.Regent, CardRarity.Rare),
         new(CardOptions.Tyranny, CharacterOptions.Regent, CardRarity.Rare),
+        new(CardOptions.Venerate, CharacterOptions.Regent, CardRarity.Basic),
         new(CardOptions.VoidForm, CharacterOptions.Regent, CardRarity.Rare),
         new(CardOptions.WroughtInWar, CharacterOptions.Regent, CardRarity.Common),
 
@@ -280,6 +298,7 @@ public static class CardRules
         new(CardOptions.Afterlife, CharacterOptions.Necrobinder, CardRarity.Common),
         new(CardOptions.BansheesCry, CharacterOptions.Necrobinder, CardRarity.Rare),
         new(CardOptions.BlightStrike, CharacterOptions.Necrobinder, CardRarity.Common),
+        new(CardOptions.Bodyguard, CharacterOptions.Necrobinder, CardRarity.Basic),
         new(CardOptions.BoneShards, CharacterOptions.Necrobinder, CardRarity.Uncommon),
         new(CardOptions.BorrowedTime, CharacterOptions.Necrobinder, CardRarity.Uncommon),
         new(CardOptions.Bury, CharacterOptions.Necrobinder, CardRarity.Uncommon),
@@ -293,6 +312,7 @@ public static class CardRules
         new(CardOptions.Deathbringer, CharacterOptions.Necrobinder, CardRarity.Uncommon),
         new(CardOptions.DeathsDoor, CharacterOptions.Necrobinder, CardRarity.Uncommon),
         new(CardOptions.Debilitate, CharacterOptions.Necrobinder, CardRarity.Uncommon),
+        new(CardOptions.DefendNecrobinder, CharacterOptions.Necrobinder, CardRarity.Basic),
         new(CardOptions.Defile, CharacterOptions.Necrobinder, CardRarity.Common),
         new(CardOptions.Defy, CharacterOptions.Necrobinder, CardRarity.Common),
         new(CardOptions.Delay, CharacterOptions.Necrobinder, CardRarity.Uncommon),
@@ -308,6 +328,7 @@ public static class CardRules
         new(CardOptions.Fear, CharacterOptions.Necrobinder, CardRarity.Common),
         new(CardOptions.Fetch, CharacterOptions.Necrobinder, CardRarity.Uncommon),
         new(CardOptions.Flatten, CharacterOptions.Necrobinder, CardRarity.Common),
+        new(CardOptions.ForbiddenGrimoire, CharacterOptions.Necrobinder, CardRarity.Ancient),
         new(CardOptions.Friendship, CharacterOptions.Necrobinder, CardRarity.Uncommon),
         new(CardOptions.GraveWarden, CharacterOptions.Necrobinder, CardRarity.Common),
         new(CardOptions.Graveblast, CharacterOptions.Necrobinder, CardRarity.Common),
@@ -326,6 +347,7 @@ public static class CardRules
         new(CardOptions.Pagestorm, CharacterOptions.Necrobinder, CardRarity.Uncommon),
         new(CardOptions.Parse, CharacterOptions.Necrobinder, CardRarity.Uncommon),
         new(CardOptions.Poke, CharacterOptions.Necrobinder, CardRarity.Common),
+        new(CardOptions.Protector, CharacterOptions.Necrobinder, CardRarity.Ancient),
         new(CardOptions.PullAggro, CharacterOptions.Necrobinder, CardRarity.Common),
         new(CardOptions.PullFromBelow, CharacterOptions.Necrobinder, CardRarity.Uncommon),
         new(CardOptions.Putrefy, CharacterOptions.Necrobinder, CardRarity.Uncommon),
@@ -351,10 +373,12 @@ public static class CardRules
         new(CardOptions.SpiritOfAsh, CharacterOptions.Necrobinder, CardRarity.Rare),
         new(CardOptions.Spur, CharacterOptions.Necrobinder, CardRarity.Uncommon),
         new(CardOptions.Squeeze, CharacterOptions.Necrobinder, CardRarity.Rare),
+        new(CardOptions.StrikeNecrobinder, CharacterOptions.Necrobinder, CardRarity.Basic),
         new(CardOptions.TheScythe, CharacterOptions.Necrobinder, CardRarity.Rare),
         new(CardOptions.TimesUp, CharacterOptions.Necrobinder, CardRarity.Rare),
         new(CardOptions.Transfigure, CharacterOptions.Necrobinder, CardRarity.Rare),
         new(CardOptions.Undeath, CharacterOptions.Necrobinder, CardRarity.Rare),
+        new(CardOptions.Unleash, CharacterOptions.Necrobinder, CardRarity.Basic),
         new(CardOptions.Veilpiercer, CharacterOptions.Necrobinder, CardRarity.Uncommon),
         new(CardOptions.Wisp, CharacterOptions.Necrobinder, CardRarity.Common),
 
@@ -367,6 +391,7 @@ public static class CardRules
         new(CardOptions.BallLightning, CharacterOptions.Defect, CardRarity.Common),
         new(CardOptions.Barrage, CharacterOptions.Defect, CardRarity.Common),
         new(CardOptions.BeamCell, CharacterOptions.Defect, CardRarity.Common),
+        new(CardOptions.BiasedCognition, CharacterOptions.Defect, CardRarity.Ancient),
         new(CardOptions.BoostAway, CharacterOptions.Defect, CardRarity.Common),
         new(CardOptions.BootSequence, CharacterOptions.Defect, CardRarity.Uncommon),
         new(CardOptions.Buffer, CharacterOptions.Defect, CardRarity.Rare),
@@ -384,8 +409,10 @@ public static class CardRules
         new(CardOptions.Coolheaded, CharacterOptions.Defect, CardRarity.Common),
         new(CardOptions.CreativeAi, CharacterOptions.Defect, CardRarity.Rare),
         new(CardOptions.Darkness, CharacterOptions.Defect, CardRarity.Uncommon),
+        new(CardOptions.DefendDefect, CharacterOptions.Defect, CardRarity.Basic),
         new(CardOptions.Defragment, CharacterOptions.Defect, CardRarity.Rare),
         new(CardOptions.DoubleEnergy, CharacterOptions.Defect, CardRarity.Uncommon),
+        new(CardOptions.Dualcast, CharacterOptions.Defect, CardRarity.Basic),
         new(CardOptions.EchoForm, CharacterOptions.Defect, CardRarity.Rare),
         new(CardOptions.Feral, CharacterOptions.Defect, CardRarity.Uncommon),
         new(CardOptions.FightThrough, CharacterOptions.Defect, CardRarity.Uncommon),
@@ -415,6 +442,7 @@ public static class CardRules
         new(CardOptions.MultiCast, CharacterOptions.Defect, CardRarity.Rare),
         new(CardOptions.Null, CharacterOptions.Defect, CardRarity.Uncommon),
         new(CardOptions.Overclock, CharacterOptions.Defect, CardRarity.Uncommon),
+        new(CardOptions.Quadcast, CharacterOptions.Defect, CardRarity.Ancient),
         new(CardOptions.Rainbow, CharacterOptions.Defect, CardRarity.Rare),
         new(CardOptions.Reboot, CharacterOptions.Defect, CardRarity.Rare),
         new(CardOptions.Refract, CharacterOptions.Defect, CardRarity.Uncommon),
@@ -428,6 +456,7 @@ public static class CardRules
         new(CardOptions.Smokestack, CharacterOptions.Defect, CardRarity.Uncommon),
         new(CardOptions.Spinner, CharacterOptions.Defect, CardRarity.Rare),
         new(CardOptions.Storm, CharacterOptions.Defect, CardRarity.Uncommon),
+        new(CardOptions.StrikeDefect, CharacterOptions.Defect, CardRarity.Basic),
         new(CardOptions.Subroutine, CharacterOptions.Defect, CardRarity.Uncommon),
         new(CardOptions.Sunder, CharacterOptions.Defect, CardRarity.Uncommon),
         new(CardOptions.Supercritical, CharacterOptions.Defect, CardRarity.Rare),
@@ -442,6 +471,7 @@ public static class CardRules
         new(CardOptions.Uproar, CharacterOptions.Defect, CardRarity.Common),
         new(CardOptions.Voltaic, CharacterOptions.Defect, CardRarity.Rare),
         new(CardOptions.WhiteNoise, CharacterOptions.Defect, CardRarity.Uncommon),
+        new(CardOptions.Zap, CharacterOptions.Defect, CardRarity.Basic),
 
         #endregion
 
@@ -504,16 +534,31 @@ public static class CardRules
         #endregion
     ];
     
+    // Includes basics and Ancient cards
     public static readonly ImmutableDictionary<CharacterOptions, ImmutableArray<CardDefinition>>
-        CardDefinitionPools =
-            AllCardDefinitions.GroupBy(c => c.Character)
+        EntireCardPools =
+            AllCardDefinitions
+                .GroupBy(c => c.Character)
                 .ToImmutableDictionary(
                     g => g.Key,
                     g => g.Select(x => x).ToImmutableArray());
-
+    
+    // Cards that can actually be obtained via transforms or card rewards
+    public static readonly ImmutableDictionary<CharacterOptions, ImmutableArray<CardDefinition>>
+        AvailableCardDefinitionPools =
+            AllCardDefinitions
+                .Where(c => c.Rarity.In([CardRarity.Common, CardRarity.Uncommon, CardRarity.Rare]))
+                .GroupBy(c => c.Character)
+                .ToImmutableDictionary(
+                    g => g.Key,
+                    g => g.Select(x => x).ToImmutableArray());
+    
+    // Cards that can actually be obtained via transforms or card rewards
     public static readonly ImmutableDictionary<CharacterOptions, ImmutableArray<CardOptions>>
-        CardPools =
-            AllCardDefinitions.GroupBy(c => c.Character)
+        AvailableCardPools =
+            AllCardDefinitions
+                .Where(c => c.Rarity.In([CardRarity.Common, CardRarity.Uncommon, CardRarity.Rare]))
+                .GroupBy(c => c.Character)
                 .ToImmutableDictionary(
                     g => g.Key,
                     g => g.Select(x => x.Card).ToImmutableArray());

@@ -1,4 +1,6 @@
 using FilterTheSpire2.FilterTheSpire2Code.Cards;
+using FilterTheSpire2.FilterTheSpire2Code.Characters;
+using FilterTheSpire2.FilterTheSpire2Code.Config;
 using FilterTheSpire2.FilterTheSpire2Code.SeedSearcher;
 using MegaCrit.Sts2.Core.Entities.Ascension;
 using MegaCrit.Sts2.Core.Entities.Cards;
@@ -15,20 +17,36 @@ public abstract class BaseCardRewardFilter(
     int cardRewardCount, 
     int cardsPerReward = 3) : IFilter
 {
+    protected abstract bool IsCharacterRequired { get; }
+    
     protected abstract Rng GetRewardRng(uint seed);
     
     protected abstract List<CardDefinition> GetCardPool();
     
     public bool IsSeedValid(SeedSearchRequest request, string seed)
     {
+        var requestedCardList = requestedCards
+            .Where(c => c != CardOptions.Any)
+            .ToList();
+        if (requestedCardList.Count == 0 || requestedCardList.Count > cardRewardCount)
+        {
+            return true;
+        }
+        
+        if (IsCharacterRequired && FilterTheSpire2Config.Character == CharacterOptions.Any)
+        {
+            return true;
+        }
+        
         var baseRng = new Rng((uint) StringHelper.GetDeterministicHashCode(seed));
         var rng = GetRewardRng(baseRng.Seed);
         var cardPool = GetCardPool();
-        var remaining = requestedCards
+        var remaining = requestedCardList
             .GroupBy(c => c)
             .ToDictionary(g => g.Key, g => g.Count());
         var cardPoolRarities = cardPool.Select(c => c.Rarity).ToHashSet();
         var cardRarityOdds = new CardRarityOdds(rng);
+        var blacklist = new List<CardDefinition>();
         for (var i = 0; i < cardRewardCount; i++)
         {
             for (var j = 0; j < cardsPerReward; j++)
@@ -39,8 +57,11 @@ public abstract class BaseCardRewardFilter(
                     cardPoolRarities, 
                     false, 
                     request.AscensionLevel);
-                var cardsWithRarity = cardPool.Where(c => c.Rarity == cardRarity).ToList();
+                var cardsWithRarity = cardPool
+                    .Except(blacklist)
+                    .Where(c => c.Rarity == cardRarity).ToList();
                 var card = rng.NextItem(cardsWithRarity);
+                
                 if (remaining.ContainsKey(card!.Card))
                 {
                     remaining[card.Card]--;
@@ -51,6 +72,7 @@ public abstract class BaseCardRewardFilter(
                     return true;
                 }
 
+                blacklist.Add(card);
                 rng.NextFloat();
             }
         }
