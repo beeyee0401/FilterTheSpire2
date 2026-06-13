@@ -217,7 +217,7 @@ public static class CharacterConfigController
         bool shouldCheckToReset)
     {
         var source = CardMasterItems[propName];
-        var cardPool = CardRules.GetCardPool(_currentCharacterSelection);
+        var cardPool = CardRules.CardPools[_currentCharacterSelection];
         var rebuilt = new List<NConfigDropdownItem.ItemData>();
 
         foreach (var item in source)

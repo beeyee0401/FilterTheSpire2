@@ -33,6 +33,10 @@ public class FilterTheSpire2Config : SimpleModConfig
     [ConfigOverrideLocalization("CARD_OPTIONS")]
     public static CardOptions LeafyPoulticeOption2 { get; set; } = CardOptions.Any;
     
+    [ConfigVisibleIf(nameof(NeowOptions), NeowOptions.LeadPaperweight)]
+    [ConfigOverrideLocalization("CARD_OPTIONS")]
+    public static CardOptions LeadPaperweightOption { get; set; } = CardOptions.Any;
+    
     [ConfigVisibleIf(nameof(Act2Ancient), Ancient.Orobas)]
     public static OrobasOptions OrobasOptions { get; set; } = OrobasOptions.Any;
     
@@ -108,6 +112,34 @@ public class FilterTheSpire2Config : SimpleModConfig
             MultiActAncientController.UpdateMultiActAncientActSpecificRelics(optionContainer);
         }
         CharacterConfigController.SetupCharacterDropdownConfig(optionContainer);
+        SetupColorlessCardDropdown(optionContainer, nameof(LeadPaperweightOption));
+    }
+
+    private static void SetupColorlessCardDropdown(Control optionContainer, string propName)
+    {
+        var (dropdown, items) = ConfigDropdownUtilities.GetDropdownListItems(optionContainer, propName);
+        var cardPool = CardRules.CardPools[CharacterOptions.Any];
+        var rebuilt = new List<NConfigDropdownItem.ItemData>();
+
+        foreach (var item in items)
+        {
+            var value = (CardOptions)item.Value!;
+
+            if (value == CardOptions.Any)
+            {
+                rebuilt.Add(item);
+                continue;
+            }
+
+            if (!cardPool.Contains(value))
+            {
+                continue;
+            }
+
+            rebuilt.Add(item);
+        }
+
+        ConfigDropdownUtilities.RefreshDropdownItems(dropdown, rebuilt);
     }
 
     private static bool ShouldShowMultiActOptions()

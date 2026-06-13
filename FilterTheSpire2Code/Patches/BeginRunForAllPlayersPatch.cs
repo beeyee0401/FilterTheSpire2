@@ -61,7 +61,7 @@ internal class BeginRunForAllPlayersPatch
         }
 
         var searchTask = Task.Run(() =>
-            searcher.SearchForSeed(instance.Players[0].character)?.StringSeed, cts.Token);
+            searcher.SearchForSeed(instance.Players[0].character, instance.Ascension)?.StringSeed, cts.Token);
 
         string? foundSeed;
         try

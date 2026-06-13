@@ -175,6 +175,14 @@ public static class FilterManager
 
                 break;
             }
+            case NeowOptions.LeadPaperweight:
+            {
+                if (FilterTheSpire2Config.LeadPaperweightOption != CardOptions.Any)
+                {
+                    filters.Add(new LeadPaperweightFilter([FilterTheSpire2Config.LeadPaperweightOption]));
+                }
+                break;
+            }
         }
     }
 }

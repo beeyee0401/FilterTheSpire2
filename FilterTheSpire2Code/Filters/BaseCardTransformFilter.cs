@@ -7,7 +7,7 @@ using MegaCrit.Sts2.Core.Random;
 
 namespace FilterTheSpire2.FilterTheSpire2Code.Filters;
 
-public abstract class CardTransformFilter(List<CardOptions> cardOptions, int transformCount) : IFilter
+public abstract class BaseCardTransformFilter(List<CardOptions> cardOptions, int transformCount) : IFilter
 {
     protected abstract Rng GetTransformRng(uint seed);
     
@@ -28,7 +28,7 @@ public abstract class CardTransformFilter(List<CardOptions> cardOptions, int tra
         
         var baseRng = new Rng((uint) StringHelper.GetDeterministicHashCode(seed));
         var rng = GetTransformRng(baseRng.Seed);
-        var cardPool = CardRules.GetCardPool(FilterTheSpire2Config.Character);
+        var cardPool = CardRules.CardPools[FilterTheSpire2Config.Character];
         var remaining = requestedCards
             .GroupBy(c => c)
             .ToDictionary(g => g.Key, g => g.Count());

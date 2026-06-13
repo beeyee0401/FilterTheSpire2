@@ -5,7 +5,7 @@ using MegaCrit.Sts2.Core.Random;
 
 namespace FilterTheSpire2.FilterTheSpire2Code.Filters;
 
-public class LeafyPoulticeFilter(List<CardOptions> cardOptions) : CardTransformFilter(cardOptions, 2)
+public class LeafyPoulticeFilter(List<CardOptions> cardOptions) : BaseCardTransformFilter(cardOptions, 2)
 {
     protected override Rng GetTransformRng(uint seed)
     {

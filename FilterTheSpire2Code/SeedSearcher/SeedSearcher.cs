@@ -1,5 +1,6 @@
 
 using FilterTheSpire2.FilterTheSpire2Code.Filters;
+using MegaCrit.Sts2.Core.Entities.Ascension;
 using MegaCrit.Sts2.Core.Models;
 
 namespace FilterTheSpire2.FilterTheSpire2Code.SeedSearcher;
@@ -8,7 +9,7 @@ public class SeedSearcher
 {
     public SeedSearchRunner? Runner { get; private set; }
     
-    public SeedSearchResult? SearchForSeed(CharacterModel character)
+    public SeedSearchResult? SearchForSeed(CharacterModel character, int ascension)
     {
         var filters = FilterManager.CreateFiltersFromSettings();
         if (filters.Count == 0)
@@ -19,6 +20,7 @@ public class SeedSearcher
         var request = new SeedSearchRequest
         {
             Character = character,
+            AscensionLevel = (AscensionLevel) ascension,
             Filters = filters,
             ThreadCount = 6
         };
