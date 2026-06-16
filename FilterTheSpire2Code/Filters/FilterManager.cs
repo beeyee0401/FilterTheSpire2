@@ -1,6 +1,7 @@
 using FilterTheSpire2.FilterTheSpire2Code.Ancients.Config;
 using FilterTheSpire2.FilterTheSpire2Code.Cards;
 using FilterTheSpire2.FilterTheSpire2Code.Config;
+using FilterTheSpire2.FilterTheSpire2Code.Filters.RelicOutcomeFilters;
 using FilterTheSpire2.FilterTheSpire2Code.Helpers;
 using FilterTheSpire2.FilterTheSpire2Code.Relics;
 using FilterTheSpire2.FilterTheSpire2Code.SeedSearcher;
@@ -189,6 +190,26 @@ public static class FilterManager
                 {
                     filters.Add(new LostCofferFilter([FilterTheSpire2Config.LostCofferOption]));
                 }
+                break;
+            }
+            case NeowOptions.Kaleidoscope:
+            {
+                var cardOptions = new List<CardOptions>();
+                if (FilterTheSpire2Config.KaleidoscopeOption1 != CardOptions.Any)
+                {
+                    cardOptions.Add(FilterTheSpire2Config.KaleidoscopeOption1);
+                }
+
+                if (FilterTheSpire2Config.KaleidoscopeOption2 != CardOptions.Any)
+                {
+                    cardOptions.Add(FilterTheSpire2Config.KaleidoscopeOption2);
+                }
+
+                if (cardOptions.Count != 0)
+                {
+                    filters.Add(new KaleidoscopeFilter(cardOptions));
+                }
+
                 break;
             }
         }

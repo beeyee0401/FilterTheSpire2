@@ -44,6 +44,8 @@ public static class CharacterConfigController
         SetCardDropdownsFromCharacter(optionContainer, nameof(FilterTheSpire2Config.LeafyPoulticeOption2));
         SetCardDropdownsFromCharacter(optionContainer, nameof(FilterTheSpire2Config.NewLeafOption));
         SetCardDropdownsFromCharacter(optionContainer, nameof(FilterTheSpire2Config.LostCofferOption));
+        SetCardDropdownsFromCharacter(optionContainer, nameof(FilterTheSpire2Config.KaleidoscopeOption1));
+        SetCardDropdownsFromCharacter(optionContainer, nameof(FilterTheSpire2Config.KaleidoscopeOption2));
     }
     
     private static void SyncAllDropdowns(bool shouldCheckToReset)
@@ -218,7 +220,7 @@ public static class CharacterConfigController
         bool shouldCheckToReset)
     {
         var source = CardMasterItems[propName];
-        var cardPool = CardRules.AvailableCardPools[_currentCharacterSelection];
+        var cardPool = GetCardPoolForProperty(propName);
         var rebuilt = new List<NConfigDropdownItem.ItemData>();
 
         foreach (var item in source)
@@ -264,6 +266,20 @@ public static class CharacterConfigController
 
         property.SetValue(null, CardOptions.Any);
         ModConfig.SaveDebounced<FilterTheSpire2Config>();
+    }
+    
+    private static List<CardOptions> GetCardPoolForProperty(string propName)
+    {
+        if (propName is nameof(FilterTheSpire2Config.KaleidoscopeOption1) or 
+            nameof(FilterTheSpire2Config.KaleidoscopeOption2))
+        {
+            return CardRules.AvailableCardPools
+                .Where(kvp => kvp.Key != _currentCharacterSelection && kvp.Key != CharacterOptions.Any)
+                .SelectMany(kvp => kvp.Value)
+                .ToList();
+        }
+
+        return CardRules.AvailableCardPools[_currentCharacterSelection].ToList();
     }
     #endregion
 }

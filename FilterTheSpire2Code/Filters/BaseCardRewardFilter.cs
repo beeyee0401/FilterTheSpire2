@@ -17,11 +17,13 @@ public abstract class BaseCardRewardFilter(
     int cardRewardCount, 
     int cardsPerReward = 3) : IFilter
 {
+    protected int CardsPerReward => cardsPerReward;
+    
     protected abstract bool IsCharacterRequired { get; }
     
     protected abstract Rng GetRewardRng(uint seed);
-    
-    protected abstract List<CardDefinition> GetCardPool();
+    protected abstract Rng? GetCardPoolRng(uint seed);
+    protected abstract List<List<CardDefinition>> GetRewardPools(Rng rng);
     
     public bool IsSeedValid(SeedSearchRequest request, string seed)
     {
@@ -40,17 +42,24 @@ public abstract class BaseCardRewardFilter(
         
         var baseRng = new Rng((uint) StringHelper.GetDeterministicHashCode(seed));
         var rng = GetRewardRng(baseRng.Seed);
-        var cardPool = GetCardPool();
+        var poolRng = GetCardPoolRng(baseRng.Seed);
         var remaining = requestedCardList
             .GroupBy(c => c)
             .ToDictionary(g => g.Key, g => g.Count());
-        var cardPoolRarities = cardPool.Select(c => c.Rarity).ToHashSet();
         var cardRarityOdds = new CardRarityOdds(rng);
-        var blacklist = new List<CardDefinition>();
+        
+        // Tracks rewards that satisfied requested cards.
+        // If duplicates of the same card are requested, each hit gets its own entry.
+        var matchedRewardIndices = new List<int>();
         for (var i = 0; i < cardRewardCount; i++)
         {
+            var blacklist = new List<CardDefinition>();
+            var rewardPools = GetRewardPools(poolRng ?? rng);
             for (var j = 0; j < cardsPerReward; j++)
             {
+                var cardPool = rewardPools[j];
+                var cardPoolRarities = cardPool.Select(c => c.Rarity).ToHashSet();
+                
                 var cardRarity = RollForRarity(cardRarityOdds, 
                     cardRarityOddsType, 
                     CardCreationSource.Other, 
@@ -60,24 +69,31 @@ public abstract class BaseCardRewardFilter(
                 var cardsWithRarity = cardPool
                     .Except(blacklist)
                     .Where(c => c.Rarity == cardRarity).ToList();
-                var card = rng.NextItem(cardsWithRarity);
+                var card = rng.NextItem(cardsWithRarity)!;
                 
-                if (remaining.ContainsKey(card!.Card))
+                if (remaining.TryGetValue(card.Card, out var count) &&
+                    count > 0)
                 {
                     remaining[card.Card]--;
-                }
 
-                if (remaining.Values.All(count => count == 0))
-                {
-                    return true;
+                    // Record the reward containing this match.
+                    matchedRewardIndices.Add(i);
                 }
-
+                
                 blacklist.Add(card);
                 rng.NextFloat();
             }
         }
         
-        return false;
+        // All requested cards found?
+        var allFound = remaining.Values.All(v => v == 0);
+
+        // Each matched requested card must come from a different reward.
+        var allInSeparateRewards =
+            matchedRewardIndices.Count == requestedCardList.Count &&
+            matchedRewardIndices.Distinct().Count() == matchedRewardIndices.Count;
+
+        return allFound && allInSeparateRewards;
     }
     
     private CardRarity RollForRarity(
@@ -119,24 +135,4 @@ public abstract class BaseCardRewardFilter(
 
         return rarity;
     }
-    
-    // Lead Paperweight
-    // private CardRarity RollWithBaseOdds(CardRarityOdds cardRarityOdds, CardRarityOddsType type, int ascension)
-    // {
-    //     cardRarityOdds.rol
-    //     var num = rng.NextFloat();
-    //     if ((double) num < (double) CardRarityOdds.GetBaseOdds(type, CardRarity.Rare))
-    //         return CardRarity.Rare;
-    //     return (double) num < (double) CardRarityOdds.GetBaseOdds(type, CardRarity.Uncommon) ? CardRarity.Uncommon : CardRarity.Common;
-    // }
-    
-    // public CardRarity Roll(CardRarityOddsType type)
-    // {
-    //     CardRarity cardRarity = this.RollWithoutChangingFutureOdds(type, type == CardRarityOddsType.BossEncounter ? 0.0f : this.CurrentValue);
-    //     if (cardRarity == CardRarity.Rare)
-    //         this.CurrentValue = -0.05f;
-    //     else
-    //         this.CurrentValue = Math.Min(this.CurrentValue + this.RarityGrowth, 0.4f);
-    //     return cardRarity;
-    // }
 }

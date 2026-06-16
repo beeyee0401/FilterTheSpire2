@@ -3,7 +3,7 @@ using FilterTheSpire2.FilterTheSpire2Code.Helpers;
 using MegaCrit.Sts2.Core.Entities.Rngs;
 using MegaCrit.Sts2.Core.Random;
 
-namespace FilterTheSpire2.FilterTheSpire2Code.Filters;
+namespace FilterTheSpire2.FilterTheSpire2Code.Filters.RelicOutcomeFilters;
 
 public class NewLeafFilter(CardOptions cardOptions) : BaseCardTransformFilter([cardOptions], 1)
 {

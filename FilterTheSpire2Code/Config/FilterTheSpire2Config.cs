@@ -41,6 +41,14 @@ public class FilterTheSpire2Config : SimpleModConfig
     [ConfigOverrideLocalization("CARD_OPTIONS")]
     public static CardOptions LostCofferOption { get; set; } = CardOptions.Any;
     
+    [ConfigVisibleIf(nameof(ShouldShowKaleidoscopeOptions))]
+    [ConfigOverrideLocalization("CARD_OPTIONS")]
+    public static CardOptions KaleidoscopeOption1 { get; set; } = CardOptions.Any;
+    
+    [ConfigVisibleIf(nameof(ShouldShowKaleidoscopeOptions))]
+    [ConfigOverrideLocalization("CARD_OPTIONS")]
+    public static CardOptions KaleidoscopeOption2 { get; set; } = CardOptions.Any;
+    
     [ConfigVisibleIf(nameof(Act2Ancient), Ancient.Orobas)]
     public static OrobasOptions OrobasOptions { get; set; } = OrobasOptions.Any;
     
@@ -168,6 +176,12 @@ public class FilterTheSpire2Config : SimpleModConfig
     {
         return Character != CharacterOptions.Any && 
                NeowOptions == NeowOptions.LostCoffer;
+    }
+    
+    public static bool ShouldShowKaleidoscopeOptions()
+    {
+        return Character != CharacterOptions.Any && 
+               NeowOptions == NeowOptions.Kaleidoscope;
     }
     
     private static bool ShouldShowSeaGlassCharacters()
