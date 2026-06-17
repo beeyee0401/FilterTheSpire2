@@ -15,9 +15,16 @@ public static class CharacterConfigController
     private static CharacterOptions _currentCharacterSelection;
     private static readonly Dictionary<RelicRarity, NConfigDropdown> RelicDropdowns = new();
     private static readonly Dictionary<RelicRarity, List<NConfigDropdownItem.ItemData>> RelicMasterItems = new();
-    private static readonly Dictionary<string, NConfigDropdown> CardDropdowns = new();
-    private static readonly Dictionary<string, List<NConfigDropdownItem.ItemData>> CardMasterItems = new();
 
+    private static Control? _optionContainer;
+    private static Control? _cardSectionContainer;
+    private static readonly Dictionary<string, NConfigDropdown> CardDropdowns = new();
+    private static readonly Dictionary<string, NConfigOptionRow> CardRows = new();
+    private static readonly Dictionary<string, List<NConfigDropdownItem.ItemData>> CardMasterItems = new();
+    private static readonly Dictionary<string, bool> CardRowVisibility = new();
+    private static Control? _cardSection;
+    private static bool _configChangedSubscribed;
+    
     private readonly struct CharacterOnSetHandler(
         CharacterOptions character,
         Action originalOnSet)
@@ -25,43 +32,43 @@ public static class CharacterConfigController
         public void Invoke()
         {
             originalOnSet.Invoke();
-            var shouldCheckToResetRelicDropdowns = character != _currentCharacterSelection;
+            var characterChanged = character != _currentCharacterSelection;
             _currentCharacterSelection = character;
-            SyncAllDropdowns(shouldCheckToResetRelicDropdowns);
+            SyncAllDropdowns(characterChanged);
         }
     }
     
     public static void SetupCharacterDropdownConfig(Control optionContainer)
     {
+        _optionContainer = optionContainer;
+        _cardSectionContainer = null;
+        _cardSection = null;
+        CardDropdowns.Clear();
+        CardRows.Clear();
+        CardRowVisibility.Clear();
+
         _currentCharacterSelection = FilterTheSpire2Config.Character;
         RebuildCharacterDropdown(optionContainer);
+        WrapNeowOptionsDropdown(optionContainer);
+
         SetRelicDropdownsFromCharacter(optionContainer, RelicRarity.Common, nameof(FilterTheSpire2Config.CommonRelic));
         SetRelicDropdownsFromCharacter(optionContainer, RelicRarity.Uncommon, nameof(FilterTheSpire2Config.UncommonRelic));
         SetRelicDropdownsFromCharacter(optionContainer, RelicRarity.Rare, nameof(FilterTheSpire2Config.RareRelic));
         SetRelicDropdownsFromCharacter(optionContainer, RelicRarity.Shop, nameof(FilterTheSpire2Config.ShopRelic));
 
-        SetCardDropdownsFromCharacter(optionContainer, nameof(FilterTheSpire2Config.LeafyPoulticeOption1));
-        SetCardDropdownsFromCharacter(optionContainer, nameof(FilterTheSpire2Config.LeafyPoulticeOption2));
-        SetCardDropdownsFromCharacter(optionContainer, nameof(FilterTheSpire2Config.NewLeafOption));
-        SetCardDropdownsFromCharacter(optionContainer, nameof(FilterTheSpire2Config.LostCofferOption));
-        SetCardDropdownsFromCharacter(optionContainer, nameof(FilterTheSpire2Config.KaleidoscopeOption1));
-        SetCardDropdownsFromCharacter(optionContainer, nameof(FilterTheSpire2Config.KaleidoscopeOption2));
-    }
-    
-    private static void SyncAllDropdowns(bool shouldCheckToReset)
-    {
-        foreach (var kvp in RelicDropdowns)
+        EnsureCardRows(optionContainer, characterChanged: false);
+        if (!_configChangedSubscribed)
         {
-            RebuildDropdownForCharacter(kvp.Key, kvp.Value, GetRelicOption(kvp.Key), shouldCheckToReset);
-        }
-        
-        foreach (var kvp in CardDropdowns)
-        {
-            RebuildCardDropdownForCharacter(kvp.Key, kvp.Value, shouldCheckToReset);
+            var configInstance = ModConfigRegistry.Get<FilterTheSpire2Config>();
+            if (configInstance != null)
+            {
+                configInstance.ConfigChanged += (_, _) => EnsureSectionVisible();
+                _configChangedSubscribed = true;
+            }
         }
     }
     
-    #region "Dropdowns dependent on character"
+    #region Relic dropdowns
     private static void RegisterDropdown(RelicRarity relicRarity, NConfigDropdown dropdown)
     {
         RelicDropdowns[relicRarity] = dropdown;
@@ -167,11 +174,21 @@ public static class CharacterConfigController
     
     #endregion
     
-    #region "Character dropdown"
-    private static Action WrapOnSet(CharacterOptions character, Action originalOnSet)
+    #region Dependency dropdowns
+    private static void WrapNeowOptionsDropdown(Control optionContainer)
     {
-        var handler = new CharacterOnSetHandler(character, originalOnSet);
-        return handler.Invoke;
+        var (dropdown, items) = ConfigDropdownUtilities.GetDropdownListItems(optionContainer, nameof(FilterTheSpire2Config.NeowOptions));
+        var rebuilt = new List<NConfigDropdownItem.ItemData>();
+        foreach (var item in items)
+        {
+            var originalOnSet = item.OnSet;
+            rebuilt.Add(new NConfigDropdownItem.ItemData(item.Text, item.Value, () =>
+            {
+                originalOnSet.Invoke();
+                EnsureCardRows(optionContainer, characterChanged: false);
+            }));
+        }
+        ConfigDropdownUtilities.RefreshDropdownItems(dropdown, rebuilt);
     }
     
     private static void RebuildCharacterDropdown(Control optionContainer)
@@ -192,66 +209,33 @@ public static class CharacterConfigController
         
         ConfigDropdownUtilities.RefreshDropdownItems(dropdown, rebuilt);
     }
+    
+    private static Action WrapOnSet(CharacterOptions character, Action originalOnSet)
+    {
+        var handler = new CharacterOnSetHandler(character, originalOnSet);
+        return handler.Invoke;
+    }
     #endregion
     
-    #region "Card dropdown"
-    private static void RegisterCardDropdown(string propName, NConfigDropdown dropdown)
-    {
-        CardDropdowns[propName] = dropdown;
-    }
-    
-    private static void SetCardDropdownsFromCharacter(Control optionContainer, string propName)
-    {
-        var (dropdown, items) = ConfigDropdownUtilities.GetDropdownListItems(optionContainer, propName);
+    #region Card dropdowns
+    private static readonly (string PropName, Func<bool> ShouldShow)[] CardSlots =
+    [
+        (nameof(FilterTheSpire2Config.LeafyPoulticeOption1), FilterTheSpire2Config.ShouldShowLeafyPoulticeOptions),
+        (nameof(FilterTheSpire2Config.LeafyPoulticeOption2), FilterTheSpire2Config.ShouldShowLeafyPoulticeOptions),
+        (nameof(FilterTheSpire2Config.NewLeafOption), FilterTheSpire2Config.ShouldShowNewLeafOptions),
+        (nameof(FilterTheSpire2Config.LostCofferOption), FilterTheSpire2Config.ShouldShowLostCofferOptions),
+        (nameof(FilterTheSpire2Config.KaleidoscopeOption1), FilterTheSpire2Config.ShouldShowKaleidoscopeOptions),
+        (nameof(FilterTheSpire2Config.KaleidoscopeOption2), FilterTheSpire2Config.ShouldShowKaleidoscopeOptions)
+    ];
 
-        RegisterCardDropdown(propName, dropdown);
-
-        if (!CardMasterItems.ContainsKey(propName))
+    private static void SyncAllDropdowns(bool shouldCheckToReset)
+    {
+        foreach (var kvp in RelicDropdowns)
         {
-            CardMasterItems[propName] = items.ToList();
+            RebuildDropdownForCharacter(kvp.Key, kvp.Value, GetRelicOption(kvp.Key), shouldCheckToReset);
         }
 
-        RebuildCardDropdownForCharacter(propName, dropdown, false);
-    }
-    
-    private static void RebuildCardDropdownForCharacter(
-        string propName,
-        NConfigDropdown dropdown,
-        bool shouldCheckToReset)
-    {
-        var source = CardMasterItems[propName];
-        var cardPool = GetCardPoolForProperty(propName);
-        var rebuilt = new List<NConfigDropdownItem.ItemData>();
-
-        foreach (var item in source)
-        {
-            var value = (CardOptions)item.Value!;
-
-            if (value == CardOptions.Any)
-            {
-                rebuilt.Add(item);
-                continue;
-            }
-
-            if (!cardPool.Contains(value))
-            {
-                continue;
-            }
-
-            rebuilt.Add(item);
-        }
-        
-        if (shouldCheckToReset)
-        {
-            var currentOptionLabelField = dropdown.GetType()
-                .GetCachedField("_currentOptionLabel", BindingFlags.NonPublic | BindingFlags.Instance);
-            var currentOptionLabel =
-                (MegaLabel)currentOptionLabelField?.GetValue(dropdown)!;
-            currentOptionLabel.SetTextAutoSize(nameof(CardOptions.Any));
-            ResetCardOptions(propName);
-        }
-
-        ConfigDropdownUtilities.RefreshDropdownItems(dropdown, rebuilt);
+        EnsureCardRows(_optionContainer!, shouldCheckToReset);
     }
     
     private static void ResetCardOptions(string propName)
@@ -281,5 +265,140 @@ public static class CharacterConfigController
 
         return CardRules.AvailableCardPools[_currentCharacterSelection].ToList();
     }
+    
+    private static void EnsureCardRows(Control optionContainer, bool characterChanged)
+    {
+        var container = GetCardSectionContainer(optionContainer);
+        if (container == null)
+        {
+            return;
+        }
+
+        foreach (var (propName, shouldShow) in CardSlots)
+        {
+            var isRelevant = shouldShow();
+            var wasRelevant = CardRowVisibility.GetValueOrDefault(propName);
+            CardRowVisibility[propName] = isRelevant;
+
+            if (!CardDropdowns.TryGetValue(propName, out var dropdown))
+            {
+                if (isRelevant)
+                {
+                    BuildCardRow(container, propName);
+                }
+                continue;
+            }
+
+            CardRows[propName].Visible = isRelevant;
+
+            if (isRelevant && (characterChanged || !wasRelevant))
+            {
+                RebuildCardDropdownForCharacter(propName, dropdown, shouldCheckToReset: true);
+            }
+        }
+        
+        EnsureSectionVisible();
+    }
+
+    private static Control? GetCardSectionContainer(Control optionContainer)
+    {
+        if (_cardSectionContainer != null)
+        {
+            return _cardSectionContainer;
+        }
+        var siblingRow = optionContainer.GetNodeOrNull<NConfigOptionRow>("%" + nameof(FilterTheSpire2Config.LeadPaperweightOption));
+        _cardSectionContainer = siblingRow?.GetParent() as Control;
+        _cardSection = FindCollapsibleSectionAncestor(_cardSectionContainer);
+        return _cardSectionContainer;
+    }
+
+    private static void BuildCardRow(Control container, string propName)
+    {
+        var configInstance = ModConfigRegistry.Get<FilterTheSpire2Config>();
+        if (configInstance == null)
+        {
+            return;
+        }
+
+        var row = configInstance.CreateHiddenCardOptionRow(propName, out var masterItems);
+        CardMasterItems.TryAdd(propName, masterItems);
+
+        var dropdown = ConfigDropdownUtilities.GetDropdownFromRow(row);
+        if (dropdown == null)
+        {
+            return;
+        }
+
+        var filtered = FilterCardItems(propName, CardMasterItems[propName]);
+
+        if (!filtered.Any(i => Equals((CardOptions)i.Value!, GetCardOptionValue(propName))))
+        {
+            ResetCardOptions(propName); // clears a stale value from an earlier session/character before it's ever displayed
+        }
+
+        ConfigDropdownUtilities.SeedItemsBeforeReady(dropdown, filtered);
+        container.AddChild(row);
+
+        CardDropdowns[propName] = dropdown;
+        CardRows[propName] = row;
+    }
+
+    private static CardOptions GetCardOptionValue(string propName)
+    {
+        var property = typeof(FilterTheSpire2Config).GetCachedProperty(propName, BindingFlags.Public | BindingFlags.Static);
+        return (CardOptions)property!.GetValue(null)!;
+    }
+
+    private static List<NConfigDropdownItem.ItemData> FilterCardItems(string propName, List<NConfigDropdownItem.ItemData> source)
+    {
+        var cardPool = GetCardPoolForProperty(propName);
+        var rebuilt = new List<NConfigDropdownItem.ItemData>();
+        foreach (var item in source)
+        {
+            var value = (CardOptions)item.Value!;
+            if (value == CardOptions.Any || cardPool.Contains(value))
+            {
+                rebuilt.Add(item);
+            }
+        }
+        return rebuilt;
+    }
+
+    private static void RebuildCardDropdownForCharacter(string propName, NConfigDropdown dropdown, bool shouldCheckToReset)
+    {
+        var rebuilt = FilterCardItems(propName, CardMasterItems[propName]);
+
+        if (shouldCheckToReset)
+        {
+            var currentOptionLabelField = dropdown.GetType()
+                .GetCachedField("_currentOptionLabel", BindingFlags.NonPublic | BindingFlags.Instance);
+            var currentOptionLabel = (MegaLabel)currentOptionLabelField?.GetValue(dropdown)!;
+            currentOptionLabel.SetTextAutoSize(nameof(CardOptions.Any));
+            ResetCardOptions(propName);
+        }
+
+        ConfigDropdownUtilities.RefreshDropdownItems(dropdown, rebuilt);
+    }
     #endregion
+    
+    private static Control? FindCollapsibleSectionAncestor(Node? node)
+    {
+        while (node != null && node is not NConfigCollapsibleSection)
+        {
+            node = node.GetParent();
+        }
+        return node as Control;
+    }
+
+    private static void EnsureSectionVisible()
+    {
+        if (_cardSection == null)
+        {
+            return;
+        }
+        if (CardRows.Values.Any(r => r.Visible))
+        {
+            _cardSection.Visible = true;
+        }
+    }
 }

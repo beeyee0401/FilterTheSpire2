@@ -75,6 +75,32 @@ public static class ConfigDropdownUtilities
         return items == null ? (dropdown, []) : (dropdown, items);
     }
     
+    public static List<NConfigDropdownItem.ItemData> GetItems(NConfigDropdown dropdown)
+    {
+        var itemsField = dropdown.GetType()
+            .GetCachedField("_items", BindingFlags.NonPublic | BindingFlags.Instance);
+        return (List<NConfigDropdownItem.ItemData>?)itemsField?.GetValue(dropdown) ?? [];
+    }
+    
+    public static NConfigDropdown? GetDropdownFromRow(NConfigOptionRow row)
+    {
+        if (row.SettingControl is not NDropdownPositioner pos)
+        {
+            return null;
+        }
+        var dropdownField = pos.GetType()
+            .GetCachedField("_dropdownNode", BindingFlags.NonPublic | BindingFlags.Instance);
+        return dropdownField?.GetValue(pos) as NConfigDropdown;
+    }
+    
+    public static void SeedItemsBeforeReady(NConfigDropdown dropdown, List<NConfigDropdownItem.ItemData> items)
+    {
+        var itemsField = dropdown.GetType()
+            .GetCachedField("_items", BindingFlags.NonPublic | BindingFlags.Instance);
+        itemsField?.SetValue(dropdown, items);
+        dropdown.SetFromProperty(); // recompute _currentDisplayIndex against the new (short) list — safe pre-_Ready, IsNodeReady() is still false so no label mutation happens yet
+    }
+    
     public static void RefreshDropdownItems(
         NConfigDropdown dropdown,
         List<NConfigDropdownItem.ItemData> newItems)

@@ -1,3 +1,4 @@
+using System.Reflection;
 using BaseLib.Config;
 using BaseLib.Config.UI;
 using FilterTheSpire2.FilterTheSpire2Code.ActLocations;
@@ -21,34 +22,6 @@ public class FilterTheSpire2Config : SimpleModConfig
     public static Ancient Act3Ancient { get; set; } = Ancient.Any;
 
     [ConfigSection("AncientRelicsSection")]
-    [ConfigVisibleIf(nameof(ShouldShowNewLeafOptions))]
-    [ConfigOverrideLocalization("CARD_OPTIONS")]
-    public static CardOptions NewLeafOption { get; set; } = CardOptions.Any;
-    
-    [ConfigVisibleIf(nameof(ShouldShowLeafyPoulticeOptions))]
-    [ConfigOverrideLocalization("CARD_OPTIONS")]
-    public static CardOptions LeafyPoulticeOption1 { get; set; } = CardOptions.Any;
-    
-    [ConfigVisibleIf(nameof(ShouldShowLeafyPoulticeOptions))]
-    [ConfigOverrideLocalization("CARD_OPTIONS")]
-    public static CardOptions LeafyPoulticeOption2 { get; set; } = CardOptions.Any;
-    
-    [ConfigVisibleIf(nameof(NeowOptions), NeowOptions.LeadPaperweight)]
-    [ConfigOverrideLocalization("CARD_OPTIONS")]
-    public static CardOptions LeadPaperweightOption { get; set; } = CardOptions.Any;
-    
-    [ConfigVisibleIf(nameof(ShouldShowLostCofferOptions))]
-    [ConfigOverrideLocalization("CARD_OPTIONS")]
-    public static CardOptions LostCofferOption { get; set; } = CardOptions.Any;
-    
-    [ConfigVisibleIf(nameof(ShouldShowKaleidoscopeOptions))]
-    [ConfigOverrideLocalization("CARD_OPTIONS")]
-    public static CardOptions KaleidoscopeOption1 { get; set; } = CardOptions.Any;
-    
-    [ConfigVisibleIf(nameof(ShouldShowKaleidoscopeOptions))]
-    [ConfigOverrideLocalization("CARD_OPTIONS")]
-    public static CardOptions KaleidoscopeOption2 { get; set; } = CardOptions.Any;
-    
     [ConfigVisibleIf(nameof(Act2Ancient), Ancient.Orobas)]
     public static OrobasOptions OrobasOptions { get; set; } = OrobasOptions.Any;
     
@@ -73,6 +46,34 @@ public class FilterTheSpire2Config : SimpleModConfig
     [ConfigVisibleIf(nameof(ShouldShowMultiActOptions))]
     public static DarvOptions DarvOptions { get; set; } = DarvOptions.Any;
     
+    [ConfigVisibleIf(nameof(NeowOptions), NeowOptions.LeadPaperweight)]
+    [ConfigOverrideLocalization("CARD_OPTIONS")]
+    public static CardOptions LeadPaperweightOption { get; set; } = CardOptions.Any;
+    
+    [ConfigHideInUI]
+    [ConfigOverrideLocalization("CARD_OPTIONS")]
+    public static CardOptions NewLeafOption { get; set; } = CardOptions.Any;
+    
+    [ConfigHideInUI]
+    [ConfigOverrideLocalization("CARD_OPTIONS")]
+    public static CardOptions LeafyPoulticeOption1 { get; set; } = CardOptions.Any;
+    
+    [ConfigHideInUI]
+    [ConfigOverrideLocalization("CARD_OPTIONS")]
+    public static CardOptions LeafyPoulticeOption2 { get; set; } = CardOptions.Any;
+    
+    [ConfigHideInUI]
+    [ConfigOverrideLocalization("CARD_OPTIONS")]
+    public static CardOptions LostCofferOption { get; set; } = CardOptions.Any;
+    
+    [ConfigHideInUI]
+    [ConfigOverrideLocalization("CARD_OPTIONS")]
+    public static CardOptions KaleidoscopeOption1 { get; set; } = CardOptions.Any;
+    
+    [ConfigHideInUI]
+    [ConfigOverrideLocalization("CARD_OPTIONS")]
+    public static CardOptions KaleidoscopeOption2 { get; set; } = CardOptions.Any;
+    
     [ConfigSection("RelicsSection")]
     public static RelicOptions CommonRelic { get; set; } = RelicOptions.Any;
     public static RelicOptions UncommonRelic { get; set; } = RelicOptions.Any;
@@ -89,6 +90,15 @@ public class FilterTheSpire2Config : SimpleModConfig
     // [ConfigHideInUI]
     public static ActLocations.ActLocations Act3Locations { get; set; } = ActLocations.ActLocations.Glory;
 
+    public NConfigOptionRow CreateHiddenCardOptionRow(string propertyName, out List<NConfigDropdownItem.ItemData> masterItems)
+    {
+        var property = typeof(FilterTheSpire2Config).GetCachedProperty(propertyName, BindingFlags.Public | BindingFlags.Static)!;
+        var row = GenerateOptionFromProperty(property);
+        var dropdown = ConfigDropdownUtilities.GetDropdownFromRow(row);
+        masterItems = dropdown != null ? ConfigDropdownUtilities.GetItems(dropdown) : [];
+        return row;
+    }
+    
     public override void SetupConfigUI(Control optionContainer)
     {
         base.SetupConfigUI(optionContainer);
