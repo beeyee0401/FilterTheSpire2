@@ -8,19 +8,19 @@ namespace FilterTheSpire2.FilterTheSpire2Code.SeedSearcher;
 public sealed class SeedSearchWorker(
     SeedSearchRunner runner,
     SeedSearchRequest request,
-    long offset,
+    long startSeed,
     CancellationToken token)
 {
+    private long _current;
+    
     public void Run()
     {
-        long seedsExamined = 0;
-
+        _current = startSeed;
         while (!token.IsCancellationRequested)
         {
-            seedsExamined++;
-            runner.AddSeedsExamined(seedsExamined);
+            runner.IncrementSeedsExamined();
 
-            var result = TryRandomSeed();
+            var result = TryRandomSeed(_current);
 
             if (result != null)
             {
@@ -32,19 +32,13 @@ public sealed class SeedSearchWorker(
                 }
             }
 
-            // Optional pacing for visual/debug purposes
-            if (request.DelayMs > 0)
-            {
-                Thread.Sleep(request.DelayMs);
-            }
+            _current += request.ThreadCount;
         }
     }
 
-    private SeedSearchResult? TryRandomSeed()
+    private SeedSearchResult? TryRandomSeed(long candidate)
     {
-        var timestamp = DateTime.UtcNow.Ticks * 100 + offset;
-
-        var stringSeed = RngHelper.GetRandomSeed(offset);
+        var stringSeed = RngHelper.GetRandomSeed(candidate);
         // var stringSeed = "7Y6Y0L923U";
 
         var seed =
@@ -63,7 +57,6 @@ public sealed class SeedSearchWorker(
         {
             StringSeed = stringSeed,
             Seed = seed,
-            SeedSourceTimestamp = timestamp
         };
     }
 }

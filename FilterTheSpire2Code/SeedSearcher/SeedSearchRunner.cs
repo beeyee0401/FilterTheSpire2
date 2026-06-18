@@ -9,18 +9,17 @@ public sealed class SeedSearchRunner(SeedSearchRequest request)
     private int _winnerFound;
 
     private long _totalSeedsExamined;
-
+    
     public SeedSearchResult? Result { get; private set; }
 
     public void Run()
     {
-        var rng = new Rng((uint)(DateTime.UtcNow.Ticks * 100));
-
+        var start = (uint)(DateTime.UtcNow.Ticks * 100);
         var workers = Enumerable.Range(0, request.ThreadCount)
-            .Select(_ => new SeedSearchWorker( 
+            .Select(i => new SeedSearchWorker( 
                 this,
                 request,
-                rng.NextUnsignedInt(),
+                start + i,
                 _cts.Token))
             .ToList();
 
@@ -44,7 +43,7 @@ public sealed class SeedSearchRunner(SeedSearchRequest request)
 
         Console.WriteLine("Winning seed found!");
         Console.WriteLine($"Seed: {result.StringSeed}");
-        Console.WriteLine($"Timestamp: {result.SeedSourceTimestamp}");
+        Console.WriteLine($"Total seeds examined: {_totalSeedsExamined}");
 
         // Stop all workers
         Cancel();
@@ -52,9 +51,9 @@ public sealed class SeedSearchRunner(SeedSearchRequest request)
         return true;
     }
 
-    internal void AddSeedsExamined(long count)
+    internal void IncrementSeedsExamined()
     {
-        Interlocked.Add(ref _totalSeedsExamined, count);
+        Interlocked.Increment(ref _totalSeedsExamined);
     }
 
     public void Cancel()

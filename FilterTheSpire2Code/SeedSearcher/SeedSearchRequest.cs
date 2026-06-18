@@ -11,7 +11,5 @@ public sealed class SeedSearchRequest
 
     public required IReadOnlyList<IFilter> Filters { get; init; }
 
-    public int DelayMs { get; init; } = 10;
-
     public int ThreadCount { get; init; } = 2;
 }

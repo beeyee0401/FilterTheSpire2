@@ -31,10 +31,9 @@ public static class RngHelper
         return new Rng(seed, StringHelper.SnakeCase(runRngType.ToString()));
     }
 
-    public static string GetRandomSeed(long offset, int length = 10)
+    public static string GetRandomSeed(long candidate, int length = 10)
     {
-        var timestamp = (uint) (DateTime.UtcNow.Ticks * 100 + offset);
-        var rng = new Rng(timestamp);
+        var rng = new Rng((uint)candidate);
         string text;
         do
         {
@@ -48,5 +47,4 @@ public static class RngHelper
         while (BadWordChecker.ContainsBadWord(text));
         return text;
     }
-
 }
