@@ -1,3 +1,7 @@
+using System.Collections.Immutable;
+using MegaCrit.Sts2.Core.Models;
+using MegaCrit.Sts2.Core.Models.Acts;
+
 namespace FilterTheSpire2.FilterTheSpire2Code.ActLocations;
 
 public static class ActLocationRules
@@ -17,7 +21,14 @@ public static class ActLocationRules
     [
         ActLocations.Glory
     ];
-
+    
+    public static ImmutableArray<ImmutableArray<ActLocations>> ActsByIndex =
+    [
+        [ActLocations.Overgrowth, ActLocations.Underdocks], 
+        [ActLocations.Hive],
+        [ActLocations.Glory]
+    ];
+    
     public static bool IsValidForAct(int act, ActLocations value)
     {
         return act switch

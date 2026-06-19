@@ -1,4 +1,5 @@
 using System.Text;
+using FilterTheSpire2.FilterTheSpire2Code.ActLocations;
 using MegaCrit.Sts2.Core.Entities.Rngs;
 using MegaCrit.Sts2.Core.Helpers;
 using MegaCrit.Sts2.Core.Random;
@@ -18,6 +19,24 @@ public static class RngHelper
 
     public static Rng GetActSelectionRng(string seed) =>
         new((uint)StringHelper.GetDeterministicHashCode(seed), "act_selection");
+    
+    /// <summary>
+    /// Logic starts in StartRunLobby.BeginRunLocally, ignores multiplayer and unlock logic
+    /// </summary>
+    /// <param name="seed"></param>
+    /// <returns></returns>
+    public static IReadOnlyList<ActLocations.ActLocations> GetRandomActs(string seed)
+    {
+        var rng = GetActSelectionRng(seed);
+        var result = new List<ActLocations.ActLocations>();
+
+        foreach (var acts in ActLocationRules.ActsByIndex)
+        {
+            result.Add(rng.NextItem(acts.ToList()));
+        }
+
+        return result;
+    }
     
     public static Rng GetEventRng(uint seed, string eventId)
     {

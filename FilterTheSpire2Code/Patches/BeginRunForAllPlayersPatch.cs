@@ -8,6 +8,7 @@ using MegaCrit.Sts2.Core.Nodes.CommonUi;
 using MegaCrit.Sts2.Core.Nodes.GodotExtensions;
 using MegaCrit.Sts2.Core.Nodes.Screens.CharacterSelect;
 using MegaCrit.Sts2.Core.Runs;
+using MegaCrit.Sts2.Core.Unlocks;
 
 [HarmonyPatch(typeof(StartRunLobby), "BeginRunForAllPlayers")]
 internal class BeginRunForAllPlayersPatch
@@ -17,7 +18,10 @@ internal class BeginRunForAllPlayersPatch
     [HarmonyPrefix]
     private static bool Prefix(StartRunLobby __instance, ref string seed, List<ModifierModel> modifiers)
     {
-        if (_searching || __instance.GameMode != GameMode.Standard || __instance.Players.Count > 1)
+        if (_searching || 
+            __instance.GameMode != GameMode.Standard || 
+            __instance.Players.Count > 1 || 
+            __instance.Players[0].unlockState.UnlockedEpochs.Count != UnlockState.all.EpochUnlockCount())
         {
             return true;
         }

@@ -23,6 +23,7 @@ public static class FilterManager
         HandleAncientFilters(filters);
         AddNeowRelicOutcomeFilters(filters);
         AddGenericRelicFilters(filters);
+        AddActLocationFilters(filters);
 
         return filters;
     }
@@ -212,6 +213,22 @@ public static class FilterManager
 
                 break;
             }
+        }
+    }
+
+    private static void AddActLocationFilters(List<IFilter> filters)
+    {
+        if (FilterTheSpire2Config.Act1Locations != ActLocations.ActLocations.Any)
+        {
+            filters.Add(new ActLocationFilter(FilterTheSpire2Config.Act1Locations, 1));
+        }
+        if (FilterTheSpire2Config.Act2Locations != ActLocations.ActLocations.Any)
+        {
+            filters.Add(new ActLocationFilter(FilterTheSpire2Config.Act2Locations, 2));
+        }
+        if (FilterTheSpire2Config.Act3Locations != ActLocations.ActLocations.Any)
+        {
+            filters.Add(new ActLocationFilter(FilterTheSpire2Config.Act3Locations, 3));
         }
     }
 }

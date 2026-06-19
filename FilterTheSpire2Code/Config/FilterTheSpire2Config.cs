@@ -122,6 +122,12 @@ public class FilterTheSpire2Config : SimpleModConfig
             foreach (var actLocationItem in allActLocations)
             {
                 var actLocation = (ActLocations.ActLocations)actLocationItem.Value!;
+                if (actLocation == ActLocations.ActLocations.Any)
+                {
+                    newItems.Add(actLocationItem);
+                    continue;
+                }
+                
                 if (ActLocationRules.IsValidForAct(i, actLocation))
                 {
                     newItems.Add(actLocationItem);
