@@ -47,31 +47,31 @@ public class FilterTheSpire2Config : SimpleModConfig
     public static DarvOptions DarvOptions { get; set; } = DarvOptions.Any;
     
     [ConfigVisibleIf(nameof(NeowOptions), NeowOptions.LeadPaperweight)]
-    [ConfigOverrideLocalization("CARD_OPTIONS")]
+    [ConfigDropdownOverrideLocalization("CARD_OPTIONS")]
     public static CardOptions LeadPaperweightOption { get; set; } = CardOptions.Any;
     
     [ConfigHideInUI]
-    [ConfigOverrideLocalization("CARD_OPTIONS")]
+    [ConfigDropdownOverrideLocalization("CARD_OPTIONS")]
     public static CardOptions NewLeafOption { get; set; } = CardOptions.Any;
     
     [ConfigHideInUI]
-    [ConfigOverrideLocalization("CARD_OPTIONS")]
+    [ConfigDropdownOverrideLocalization("CARD_OPTIONS")]
     public static CardOptions LeafyPoulticeOption1 { get; set; } = CardOptions.Any;
     
     [ConfigHideInUI]
-    [ConfigOverrideLocalization("CARD_OPTIONS")]
+    [ConfigDropdownOverrideLocalization("CARD_OPTIONS")]
     public static CardOptions LeafyPoulticeOption2 { get; set; } = CardOptions.Any;
     
     [ConfigHideInUI]
-    [ConfigOverrideLocalization("CARD_OPTIONS")]
+    [ConfigDropdownOverrideLocalization("CARD_OPTIONS")]
     public static CardOptions LostCofferOption { get; set; } = CardOptions.Any;
     
     [ConfigHideInUI]
-    [ConfigOverrideLocalization("CARD_OPTIONS")]
+    [ConfigDropdownOverrideLocalization("CARD_OPTIONS")]
     public static CardOptions KaleidoscopeOption1 { get; set; } = CardOptions.Any;
     
     [ConfigHideInUI]
-    [ConfigOverrideLocalization("CARD_OPTIONS")]
+    [ConfigDropdownOverrideLocalization("CARD_OPTIONS")]
     public static CardOptions KaleidoscopeOption2 { get; set; } = CardOptions.Any;
     
     [ConfigSection("RelicsSection")]

@@ -37,8 +37,14 @@
   "FILTERTHESPIRE2-NEOW_OPTIONS.WingedBoots": "Winged Boots",
 
   "FILTERTHESPIRE2-NEW_LEAF_OPTION.title": "New Leaf transform",
+  "FILTERTHESPIRE2-ARCANE_SCROLL_OPTION.title": "Arcane Scroll transform",
   "FILTERTHESPIRE2-LEAFY_POULTICE_OPTION1.title": "Leafy Poultice transform #1",
   "FILTERTHESPIRE2-LEAFY_POULTICE_OPTION2.title": "Leafy Poultice transform #2",
+
+  "FILTERTHESPIRE2-LEAD_PAPERWEIGHT_OPTION.title": "Lead Paperweight card",
+  "FILTERTHESPIRE2-LOST_COFFER_OPTION.title": "Lost Coffer card",
+  "FILTERTHESPIRE2-KALEIDOSCOPE_OPTION1.title": "Kaleidoscope card #1",
+  "FILTERTHESPIRE2-KALEIDOSCOPE_OPTION2.title": "Kaleidoscope card #2",
   
   "FILTERTHESPIRE2-CARD_OPTIONS.AshenStrike": "Ashen Strike",
   "FILTERTHESPIRE2-CARD_OPTIONS.BattleTrance": "Battle Trance",
