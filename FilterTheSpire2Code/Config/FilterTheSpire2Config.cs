@@ -16,35 +16,8 @@ public class FilterTheSpire2Config : SimpleModConfig
     [ConfigHoverTip]
     public static CharacterOptions Character { get; set; } = CharacterOptions.Any;
     
-    [ConfigSection("AncientsSection")] 
+    [ConfigSection("NeowSection")] 
     public static NeowOptions NeowOptions { get; set; } = NeowOptions.Any;
-    public static Ancient Act2Ancient { get; set; } = Ancient.Any;
-    public static Ancient Act3Ancient { get; set; } = Ancient.Any;
-
-    [ConfigSection("AncientRelicsSection")]
-    [ConfigVisibleIf(nameof(Act2Ancient), Ancient.Orobas)]
-    public static OrobasOptions OrobasOptions { get; set; } = OrobasOptions.Any;
-    
-    [ConfigVisibleIf(nameof(ShouldShowSeaGlassCharacters))]
-    public static CharacterOptions SeaGlassCharacter { get; set; } = CharacterOptions.Any;
-
-    [ConfigVisibleIf(nameof(Act2Ancient), Ancient.Pael)]
-    public static PaelOptions PaelOptions { get; set; } = PaelOptions.Any;
-
-    [ConfigVisibleIf(nameof(Act2Ancient), Ancient.Tezcatara)]
-    public static TezcataraOptions TezcataraOptions { get; set; } = TezcataraOptions.Any;
-
-    [ConfigVisibleIf(nameof(Act3Ancient), Ancient.Nonupeipe)]
-    public static NonupeipeOptions NonupeipeOptions { get; set; } = NonupeipeOptions.Any;
-
-    [ConfigVisibleIf(nameof(Act3Ancient), Ancient.Tanx)]
-    public static TanxOptions TanxOptions { get; set; } = TanxOptions.Any;
-
-    [ConfigVisibleIf(nameof(Act3Ancient), Ancient.Vakuu)]
-    public static VakuuOptions VakuuOptions { get; set; } = VakuuOptions.Any;
-
-    [ConfigVisibleIf(nameof(ShouldShowMultiActOptions))]
-    public static DarvOptions DarvOptions { get; set; } = DarvOptions.Any;
     
     [ConfigVisibleIf(nameof(NeowOptions), NeowOptions.LeadPaperweight)]
     [ConfigDropdownOverrideLocalization("CARD_OPTIONS")]
@@ -73,10 +46,45 @@ public class FilterTheSpire2Config : SimpleModConfig
     [ConfigHideInUI]
     [ConfigDropdownOverrideLocalization("CARD_OPTIONS")]
     public static CardOptions KaleidoscopeOption2 { get; set; } = CardOptions.Any;
+
+    [ConfigSection("Act2Section")]
+    public static Ancient Act2Ancient { get; set; } = Ancient.Any;
+    
+    [ConfigVisibleIf(nameof(Act2Ancient), Ancient.Orobas)]
+    public static OrobasOptions OrobasOptions { get; set; } = OrobasOptions.Any;
+    
+    [ConfigVisibleIf(nameof(ShouldShowSeaGlassCharacters))]
+    public static CharacterOptions SeaGlassCharacter { get; set; } = CharacterOptions.Any;
+
+    [ConfigVisibleIf(nameof(Act2Ancient), Ancient.Pael)]
+    public static PaelOptions PaelOptions { get; set; } = PaelOptions.Any;
+
+    [ConfigVisibleIf(nameof(Act2Ancient), Ancient.Tezcatara)]
+    public static TezcataraOptions TezcataraOptions { get; set; } = TezcataraOptions.Any;
+    
+    [ConfigSection("Act3Section")]
+    public static Ancient Act3Ancient { get; set; } = Ancient.Any;
+    
+    [ConfigVisibleIf(nameof(Act3Ancient), Ancient.Nonupeipe)]
+    public static NonupeipeOptions NonupeipeOptions { get; set; } = NonupeipeOptions.Any;
+
+    [ConfigVisibleIf(nameof(Act3Ancient), Ancient.Tanx)]
+    public static TanxOptions TanxOptions { get; set; } = TanxOptions.Any;
+
+    [ConfigVisibleIf(nameof(Act3Ancient), Ancient.Vakuu)]
+    public static VakuuOptions VakuuOptions { get; set; } = VakuuOptions.Any;
+
+    [ConfigVisibleIf(nameof(ShouldShowMultiActOptions))]
+    public static DarvOptions DarvOptions { get; set; } = DarvOptions.Any;
     
     [ConfigSection("RelicsSection")]
+    [ConfigHoverTip]
     public static RelicOptions CommonRelic { get; set; } = RelicOptions.Any;
+    
+    [ConfigHoverTip]
     public static RelicOptions UncommonRelic { get; set; } = RelicOptions.Any;
+    
+    [ConfigHoverTip]
     public static RelicOptions RareRelic { get; set; } = RelicOptions.Any;
     public static RelicOptions ShopRelic { get; set; } = RelicOptions.Any;
 

@@ -20,6 +20,7 @@ public class Orobas : AbstractAncient
         CharacterOptions? seaGlassChar = null;
         if (FilterTheSpire2Config.Character != CharacterOptions.Any && 
             FilterTheSpire2Config.SeaGlassCharacter != CharacterOptions.Any && 
+            FilterTheSpire2Config.Character !=  FilterTheSpire2Config.SeaGlassCharacter &&
             FilterTheSpire2Config.OrobasOptions == OrobasOptions.SeaGlass)
         {
             seaGlassChar = rng.NextItem(CharacterMapping.AllCharacters

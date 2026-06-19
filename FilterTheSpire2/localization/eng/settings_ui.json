@@ -2,9 +2,9 @@
   "FILTERTHESPIRE2.mod_title": "Filter the Spire 2",
   "FILTERTHESPIRE2-CHARACTER.hover.desc": "Only needed if you want to set filters for character specific relics",
   
-  "FILTERTHESPIRE2-ANCIENTS_SECTION.title": "Ancient filters",
-  "FILTERTHESPIRE2-ANCIENT_RELICS_SECTION.title": "Ancient relic filters",
-  "FILTERTHESPIRE2-ANCIENT_RELICS_SECTION.hover.desc": "Ancient relic filters",
+  "FILTERTHESPIRE2-NEOW_SECTION.title": "Neow filters",
+  "FILTERTHESPIRE2-ACT2_SECTION.title": "Act 2 filters",
+  "FILTERTHESPIRE2-ACT3_SECTION.title": "Act 3 filters",
   "FILTERTHESPIRE2-RELICS_SECTION.title": "General relic filters",
   "FILTERTHESPIRE2-ACT_LOCATIONS_SECTION.title": "Act locations filters (Not working)",
 
@@ -347,6 +347,7 @@
 
 
   "FILTERTHESPIRE2-COMMON_RELIC.title": "First common relic",
+  "FILTERTHESPIRE2-COMMON_RELIC.hover.desc": "Treasure chests affect the RNG and may make this incorrect",
   "FILTERTHESPIRE2-COMMON_RELIC.AmethystAubergine": "Amethyst Aubergine",
   "FILTERTHESPIRE2-COMMON_RELIC.BagOfMarbles": "Bag of Marbles",
   "FILTERTHESPIRE2-COMMON_RELIC.BagOfPreparation": "Bag of Preparation",
@@ -373,6 +374,7 @@
   "FILTERTHESPIRE2-COMMON_RELIC.WhetStone": "Whet Stone",
 
   "FILTERTHESPIRE2-UNCOMMON_RELIC.title": "First uncommon relic",
+  "FILTERTHESPIRE2-UNCOMMON_RELIC.hover.desc": "Treasure chests affect the RNG and may make this incorrect",
   "FILTERTHESPIRE2-UNCOMMON_RELIC.BookRepairKnife": "Book Repair Knife",
   "FILTERTHESPIRE2-UNCOMMON_RELIC.BowlerHat": "Bowler Hat",
   "FILTERTHESPIRE2-UNCOMMON_RELIC.EternalFeather": "Eternal Feather",
@@ -403,6 +405,7 @@
   "FILTERTHESPIRE2-UNCOMMON_RELIC.TwistedFunnel": "Twisted Funnel",
 
   "FILTERTHESPIRE2-RARE_RELIC.title": "First rare relic",
+  "FILTERTHESPIRE2-RARE_RELIC.hover.desc": "Treasure chests affect the RNG and may make this incorrect",
   "FILTERTHESPIRE2-RARE_RELIC.ArtOfWar": "Art of War",
   "FILTERTHESPIRE2-RARE_RELIC.BeatingRemnant": "Beating Remnant",
   "FILTERTHESPIRE2-RARE_RELIC.BigHat": "Big Hat",

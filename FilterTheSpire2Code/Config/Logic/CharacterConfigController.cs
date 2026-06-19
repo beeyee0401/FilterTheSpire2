@@ -23,8 +23,6 @@ public static class CharacterConfigController
     private static readonly Dictionary<string, NConfigOptionRow> CardRows = new();
     private static readonly Dictionary<string, List<NConfigDropdownItem.ItemData>> CardMasterItems = new();
     private static readonly Dictionary<string, bool> CardRowVisibility = new();
-    private static Control? _cardSection;
-    private static bool _configChangedSubscribed;
     
     private readonly struct CharacterOnSetHandler(
         CharacterOptions character,
@@ -43,7 +41,6 @@ public static class CharacterConfigController
     {
         _optionContainer = optionContainer;
         _cardSectionContainer = null;
-        _cardSection = null;
         CardDropdowns.Clear();
         CardRows.Clear();
         CardRowVisibility.Clear();
@@ -59,15 +56,6 @@ public static class CharacterConfigController
         SetRelicDropdownsFromCharacter(optionContainer, RelicRarity.Shop, nameof(FilterTheSpire2Config.ShopRelic));
 
         EnsureCardRows(optionContainer, characterChanged: false);
-        if (!_configChangedSubscribed)
-        {
-            var configInstance = ModConfigRegistry.Get<FilterTheSpire2Config>();
-            if (configInstance != null)
-            {
-                configInstance.ConfigChanged += (_, _) => EnsureSectionVisible();
-                _configChangedSubscribed = true;
-            }
-        }
     }
     
     #region Relic dropdowns
@@ -302,8 +290,6 @@ public static class CharacterConfigController
                 RebuildCardDropdownForCharacter(propName, dropdown, shouldCheckToReset: true);
             }
         }
-        
-        EnsureSectionVisible();
     }
 
     private static Control? GetCardSectionContainer(Control optionContainer)
@@ -314,7 +300,6 @@ public static class CharacterConfigController
         }
         var siblingRow = optionContainer.GetNodeOrNull<NConfigOptionRow>("%" + nameof(FilterTheSpire2Config.LeadPaperweightOption));
         _cardSectionContainer = siblingRow?.GetParent() as Control;
-        _cardSection = FindCollapsibleSectionAncestor(_cardSectionContainer);
         return _cardSectionContainer;
     }
 
@@ -389,25 +374,4 @@ public static class CharacterConfigController
         ConfigDropdownUtilities.RefreshDropdownItems(dropdown, rebuilt);
     }
     #endregion
-    
-    private static Control? FindCollapsibleSectionAncestor(Node? node)
-    {
-        while (node != null && node is not NConfigCollapsibleSection)
-        {
-            node = node.GetParent();
-        }
-        return node as Control;
-    }
-
-    private static void EnsureSectionVisible()
-    {
-        if (_cardSection == null)
-        {
-            return;
-        }
-        if (CardRows.Values.Any(r => r.Visible))
-        {
-            _cardSection.Visible = true;
-        }
-    }
 }
