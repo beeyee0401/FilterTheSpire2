@@ -30,8 +30,6 @@ public sealed class SeedSearchRunner(SeedSearchRequest request)
         Task.WaitAll(tasks);
 
         Console.WriteLine("All seed search workers completed.");
-
-        Console.WriteLine($"Total seeds examined: {_totalSeedsExamined}");
     }
 
     internal bool TrySetWinner(SeedSearchResult result)

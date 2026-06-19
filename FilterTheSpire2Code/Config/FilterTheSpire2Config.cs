@@ -74,7 +74,7 @@ public class FilterTheSpire2Config : SimpleModConfig
     [ConfigVisibleIf(nameof(Act3Ancient), Ancient.Vakuu)]
     public static VakuuOptions VakuuOptions { get; set; } = VakuuOptions.Any;
 
-    [ConfigVisibleIf(nameof(ShouldShowMultiActOptions))]
+    [ConfigHideInUI]
     public static DarvOptions DarvOptions { get; set; } = DarvOptions.Any;
     
     [ConfigSection("RelicsSection")]
@@ -100,7 +100,7 @@ public class FilterTheSpire2Config : SimpleModConfig
     
     public static ColorRect CreateCardDivider() => CreateDividerControl();
     
-    public NConfigOptionRow CreateHiddenCardOptionRow(string propertyName, out List<NConfigDropdownItem.ItemData> masterItems)
+    public NConfigOptionRow CreateHiddenOptionRow(string propertyName, out List<NConfigDropdownItem.ItemData> masterItems)
     {
         var property = typeof(FilterTheSpire2Config).GetCachedProperty(propertyName, BindingFlags.Public | BindingFlags.Static)!;
         var row = GenerateOptionFromProperty(property);
@@ -139,10 +139,7 @@ public class FilterTheSpire2Config : SimpleModConfig
         SetupFocusNeighbors(optionContainer); // Fix controller focus order
 
         AncientConfigController.SetupAncientDropdownConfig(optionContainer);
-        if (ShouldShowMultiActOptions())
-        {
-            MultiActAncientController.UpdateMultiActAncientActSpecificRelics(optionContainer);
-        }
+        MultiActAncientController.SetupMultiActAncientConfig(optionContainer);
         CharacterConfigController.SetupCharacterDropdownConfig(optionContainer);
         SetupColorlessCardDropdown(optionContainer, nameof(LeadPaperweightOption));
     }

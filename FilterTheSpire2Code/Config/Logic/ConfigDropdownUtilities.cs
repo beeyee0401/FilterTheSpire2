@@ -105,6 +105,11 @@ public static class ConfigDropdownUtilities
         NConfigDropdown dropdown,
         List<NConfigDropdownItem.ItemData> newItems)
     {
+        var itemsField = dropdown.GetType()
+            .GetCachedField("_items", BindingFlags.NonPublic | BindingFlags.Instance);
+
+        itemsField?.SetValue(dropdown, newItems);
+        
         var dropdownItemsField = typeof(NSettingsDropdown).GetCachedField("_dropdownItems",
             BindingFlags.NonPublic | BindingFlags.Instance);
         var dropdownItems =

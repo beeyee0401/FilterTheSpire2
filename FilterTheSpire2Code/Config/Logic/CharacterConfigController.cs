@@ -311,7 +311,7 @@ public static class CharacterConfigController
             return;
         }
 
-        var row = configInstance.CreateHiddenCardOptionRow(propName, out var masterItems);
+        var row = configInstance.CreateHiddenOptionRow(propName, out var masterItems);
         CardMasterItems.TryAdd(propName, masterItems);
 
         var dropdown = ConfigDropdownUtilities.GetDropdownFromRow(row);

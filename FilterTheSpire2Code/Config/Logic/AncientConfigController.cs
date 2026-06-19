@@ -68,7 +68,7 @@ public static class AncientConfigController
 
         if (shouldUpdateMultiActOptionsDropdown)
         {
-            MultiActAncientController.UpdateMultiActAncientActSpecificRelics(optionContainer);
+            MultiActAncientController.SetupMultiActAncientConfig(optionContainer);
         }
     }
     
