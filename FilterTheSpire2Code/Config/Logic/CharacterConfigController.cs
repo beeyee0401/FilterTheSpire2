@@ -15,7 +15,8 @@ public static class CharacterConfigController
     private static CharacterOptions _currentCharacterSelection;
     private static readonly Dictionary<RelicRarity, NConfigDropdown> RelicDropdowns = new();
     private static readonly Dictionary<RelicRarity, List<NConfigDropdownItem.ItemData>> RelicMasterItems = new();
-
+    private static readonly Dictionary<string, ColorRect> CardDividers = new();
+    
     private static Control? _optionContainer;
     private static Control? _cardSectionContainer;
     private static readonly Dictionary<string, NConfigDropdown> CardDropdowns = new();
@@ -46,7 +47,8 @@ public static class CharacterConfigController
         CardDropdowns.Clear();
         CardRows.Clear();
         CardRowVisibility.Clear();
-
+        CardDividers.Clear();
+        
         _currentCharacterSelection = FilterTheSpire2Config.Character;
         RebuildCharacterDropdown(optionContainer);
         WrapNeowOptionsDropdown(optionContainer);
@@ -290,6 +292,10 @@ public static class CharacterConfigController
             }
 
             CardRows[propName].Visible = isRelevant;
+            if (CardDividers.TryGetValue(propName, out var divider))
+            {
+                divider.Visible = isRelevant;
+            }
 
             if (isRelevant && (characterChanged || !wasRelevant))
             {
@@ -337,8 +343,11 @@ public static class CharacterConfigController
         }
 
         ConfigDropdownUtilities.SeedItemsBeforeReady(dropdown, filtered);
+        var divider = FilterTheSpire2Config.CreateCardDivider();
+        container.AddChild(divider);
         container.AddChild(row);
 
+        CardDividers[propName] = divider;
         CardDropdowns[propName] = dropdown;
         CardRows[propName] = row;
     }

@@ -89,7 +89,9 @@ public class FilterTheSpire2Config : SimpleModConfig
 
     // [ConfigHideInUI]
     public static ActLocations.ActLocations Act3Locations { get; set; } = ActLocations.ActLocations.Glory;
-
+    
+    public static ColorRect CreateCardDivider() => CreateDividerControl();
+    
     public NConfigOptionRow CreateHiddenCardOptionRow(string propertyName, out List<NConfigDropdownItem.ItemData> masterItems)
     {
         var property = typeof(FilterTheSpire2Config).GetCachedProperty(propertyName, BindingFlags.Public | BindingFlags.Static)!;
