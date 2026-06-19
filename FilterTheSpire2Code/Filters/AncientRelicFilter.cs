@@ -20,10 +20,11 @@ public class AncientRelicFilter(Ancient selectedAncient, RelicModel? relicModel,
     public bool IsSeedValid(SeedSearchRequest request, string seed)
     {
         var rng = new Rng((uint) StringHelper.GetDeterministicHashCode(seed));
+        var actSelectionRng = RngHelper.GetActSelectionRng(seed);
         var unlockState = UnlockState.all;
         // var player = Player.CreateForNewRun(request.Character, unlockState, 1UL);
         
-        var actList = ActModel.GetRandomList(rng, unlockState, false)
+        var actList = ActModel.GetRandomList(actSelectionRng, unlockState, false)
             .Select(a => a.ToMutable()).ToList();
         
         if (actNum == 1)

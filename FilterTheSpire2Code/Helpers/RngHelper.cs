@@ -15,10 +15,13 @@ public static class RngHelper
         public const int ShopRelicPoolCounter = 205;
         public const int AncientCounter = 230;
     }
+
+    public static Rng GetActSelectionRng(string seed) =>
+        new((uint)StringHelper.GetDeterministicHashCode(seed), "act_selection");
     
     public static Rng GetEventRng(uint seed, string eventId)
     {
-        return new Rng((uint) (seed + 1UL + (ulong) StringHelper.GetDeterministicHashCode(eventId)));
+        return new Rng((uint) (seed + 0UL + (ulong) StringHelper.GetDeterministicHashCode(eventId)));
     }
 
     public static Rng GetPlayerRngType(uint seed, PlayerRngType playerRngType)
