@@ -26,7 +26,7 @@ public static class RngHelper
 
     public static Rng GetPlayerRngType(uint seed, PlayerRngType playerRngType)
     {
-        return new Rng(seed + 1, StringHelper.SnakeCase(playerRngType.ToString()));
+        return new Rng(seed, StringHelper.SnakeCase(playerRngType.ToString()));
     }
     
     public static Rng GetRunRngType(uint seed, RunRngType runRngType)

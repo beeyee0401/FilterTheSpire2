@@ -23,7 +23,7 @@ public static class CardRules
     [
         #region Ironclad pool
 
-        new(CardOptions.Aggression, CharacterOptions.Ironclad, CardRarity.Common),
+        new(CardOptions.Aggression, CharacterOptions.Ironclad, CardRarity.Rare),
         new(CardOptions.Anger, CharacterOptions.Ironclad, CardRarity.Common),
         new(CardOptions.Armaments, CharacterOptions.Ironclad, CardRarity.Common),
         new(CardOptions.AshenStrike, CharacterOptions.Ironclad, CardRarity.Uncommon),

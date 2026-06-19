@@ -20,12 +20,6 @@ public class AncientRelicFilter(Ancient selectedAncient, RelicModel? relicModel,
     public bool IsSeedValid(SeedSearchRequest request, string seed)
     {
         var rng = new Rng((uint) StringHelper.GetDeterministicHashCode(seed));
-        var actSelectionRng = RngHelper.GetActSelectionRng(seed);
-        var unlockState = UnlockState.all;
-        // var player = Player.CreateForNewRun(request.Character, unlockState, 1UL);
-        
-        var actList = ActModel.GetRandomList(actSelectionRng, unlockState, false)
-            .Select(a => a.ToMutable()).ToList();
         
         if (actNum == 1)
         {
@@ -34,6 +28,11 @@ public class AncientRelicFilter(Ancient selectedAncient, RelicModel? relicModel,
         } 
         else if (actNum > 1)
         {
+            var actSelectionRng = RngHelper.GetActSelectionRng(seed);
+            var unlockState = UnlockState.all;
+        
+            var actList = ActModel.GetRandomList(actSelectionRng, unlockState, false)
+                .Select(a => a.ToMutable()).ToList();
             var runRng = new RunRngSet(seed);
             var upfrontRng = new Rng(runRng.UpFront.Seed, RngHelper.RngCounters.AncientCounter);
 
