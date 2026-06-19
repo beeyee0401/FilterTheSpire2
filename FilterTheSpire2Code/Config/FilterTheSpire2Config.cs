@@ -93,10 +93,10 @@ public class FilterTheSpire2Config : SimpleModConfig
     public static ActLocations.ActLocations Act1Locations { get; set; } = ActLocations.ActLocations.Any;
 
     // [ConfigHideInUI]
-    public static ActLocations.ActLocations Act2Locations { get; set; } = ActLocations.ActLocations.Hive;
+    public static ActLocations.ActLocations Act2Locations { get; set; } = ActLocations.ActLocations.Any;
 
     // [ConfigHideInUI]
-    public static ActLocations.ActLocations Act3Locations { get; set; } = ActLocations.ActLocations.Glory;
+    public static ActLocations.ActLocations Act3Locations { get; set; } = ActLocations.ActLocations.Any;
     
     public static ColorRect CreateCardDivider() => CreateDividerControl();
     

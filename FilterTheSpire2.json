@@ -3,7 +3,7 @@
   "name": "FilterTheSpire2",
   "author": "BeeYee",
   "description": "Filter to find vanilla seeds based on criteria set in config",
-  "version": "v0.0.2",
+  "version": "v0.0.3",
   "has_pck": true,
   "has_dll": true,
   "dependencies": [{"id": "BaseLib", "min_version":  "v3.3.0"}],
