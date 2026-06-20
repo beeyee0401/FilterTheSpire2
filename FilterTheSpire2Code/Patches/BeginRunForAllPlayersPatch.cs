@@ -1,3 +1,4 @@
+using FilterTheSpire2.FilterTheSpire2Code.Patches;
 using FilterTheSpire2.FilterTheSpire2Code.SeedSearcher;
 using Godot;
 using HarmonyLib;
@@ -95,6 +96,22 @@ internal class BeginRunForAllPlayersPatch
                 await Task.Delay(1500, cts.Token);
             }
         }
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            if (statusLabel != null)
+            {
+                Callable.From(() =>
+                    statusLabel.Text = "An error occurred while searching.\nPlease try again."
+                ).CallDeferred();
+        
+                await Task.Delay(2500, cts.Token);
+            }
+    
+            overlay?.QueueFree();
+            instance.SetReady(false);
+            RestoreScreenUi(screen, leftArrowWasVisible, rightArrowWasVisible);
+            return;
+        }
         finally
         {
             overlay?.QueueFree();
@@ -110,9 +127,8 @@ internal class BeginRunForAllPlayersPatch
         _searching = true;
         try
         {
-            // Attempt to label it a Custom run since it's essentially seeded. This doesn't work
-            // AccessTools.Property(typeof(StartRunLobby), "GameMode").SetValue(instance, GameMode.Custom);
-            // AccessTools.Property(typeof(StartRunLobby), "Seed").SetValue(instance, foundSeed ?? seed);
+            // Attempt to label it a Custom run since it's essentially seeded.
+            StartNewSingleplayerRunPatch.IsFilteredSeedRun = true;
             AccessTools.Method(typeof(StartRunLobby), "BeginRunForAllPlayers")
                 .Invoke(instance, [foundSeed ?? seed, modifiers]);
         }

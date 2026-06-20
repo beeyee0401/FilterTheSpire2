@@ -30,7 +30,7 @@ public class AncientRelicFilter(Ancient selectedAncient, RelicModel? relicModel,
         {
             var actSelectionRng = RngHelper.GetActSelectionRng(seed);
             var unlockState = UnlockState.all;
-        
+
             var actList = ActModel.GetRandomList(actSelectionRng, unlockState, false)
                 .Select(a => a.ToMutable()).ToList();
             var runRng = new RunRngSet(seed);
