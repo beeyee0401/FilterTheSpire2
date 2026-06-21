@@ -184,36 +184,6 @@ public class FilterTheSpire2Config : SimpleModConfig
                NeowOptions == option;
     }
     
-    public static bool ShouldShowLeafyPoulticeOptions()
-    {
-        return Character != CharacterOptions.Any && 
-               NeowOptions == NeowOptions.LeafyPoultice;
-    }
-    
-    public static bool ShouldShowNewLeafOptions()
-    {
-        return Character != CharacterOptions.Any && 
-               NeowOptions == NeowOptions.NewLeaf;
-    }
-    
-    public static bool ShouldShowLostCofferOptions()
-    {
-        return Character != CharacterOptions.Any && 
-               NeowOptions == NeowOptions.LostCoffer;
-    }
-    
-    public static bool ShouldShowKaleidoscopeOptions()
-    {
-        return Character != CharacterOptions.Any && 
-               NeowOptions == NeowOptions.Kaleidoscope;
-    }
-    
-    public static bool ShouldShowArcaneScrollOptions()
-    {
-        return Character != CharacterOptions.Any && 
-               NeowOptions == NeowOptions.NewLeaf;
-    }
-    
     private static bool ShouldShowSeaGlassCharacters()
     {
         return Character != CharacterOptions.Any && 
