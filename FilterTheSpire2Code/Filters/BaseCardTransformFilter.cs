@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using FilterTheSpire2.FilterTheSpire2Code.Cards;
 using FilterTheSpire2.FilterTheSpire2Code.Characters;
 using FilterTheSpire2.FilterTheSpire2Code.Config;
@@ -10,6 +11,7 @@ namespace FilterTheSpire2.FilterTheSpire2Code.Filters;
 public abstract class BaseCardTransformFilter(List<CardOptions> cardOptions, int transformCount) : IFilter
 {
     protected abstract Rng GetTransformRng(uint seed);
+    protected abstract ImmutableArray<CardOptions> GetCardPool();
     
     public bool IsSeedValid(SeedSearchRequest request, string seed)
     {
@@ -28,7 +30,7 @@ public abstract class BaseCardTransformFilter(List<CardOptions> cardOptions, int
         
         var baseRng = new Rng((uint) StringHelper.GetDeterministicHashCode(seed));
         var rng = GetTransformRng(baseRng.Seed);
-        var cardPool = CardRules.AvailableCardPools[FilterTheSpire2Config.Character];
+        var cardPool = GetCardPool();
         var remaining = requestedCards
             .GroupBy(c => c)
             .ToDictionary(g => g.Key, g => g.Count());

@@ -544,16 +544,6 @@ public static class CardRules
                     g => g.Select(x => x).ToImmutableArray());
     
     // Cards that can actually be obtained via transforms or card rewards
-    public static readonly ImmutableDictionary<CharacterOptions, ImmutableArray<CardDefinition>>
-        AvailableCardDefinitionPools =
-            AllCardDefinitions
-                .Where(c => c.Rarity.In([CardRarity.Common, CardRarity.Uncommon, CardRarity.Rare]))
-                .GroupBy(c => c.Character)
-                .ToImmutableDictionary(
-                    g => g.Key,
-                    g => g.Select(x => x).ToImmutableArray());
-    
-    // Cards that can actually be obtained via transforms or card rewards
     public static readonly ImmutableDictionary<CharacterOptions, ImmutableArray<CardOptions>>
         AvailableCardPools =
             AllCardDefinitions

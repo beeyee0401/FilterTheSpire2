@@ -1,6 +1,7 @@
 using System.Reflection;
 using BaseLib.Config;
 using BaseLib.Config.UI;
+using FilterTheSpire2.FilterTheSpire2Code.Ancients.Config;
 using FilterTheSpire2.FilterTheSpire2Code.Cards;
 using FilterTheSpire2.FilterTheSpire2Code.Characters;
 using FilterTheSpire2.FilterTheSpire2Code.Relics;
@@ -208,14 +209,15 @@ public static class CharacterConfigController
     #endregion
     
     #region Card dropdowns
-    private static readonly (string PropName, Func<bool> ShouldShow)[] CardSlots =
+    private static readonly (string PropName, NeowOptions option)[] CardSlots =
     [
-        (nameof(FilterTheSpire2Config.LeafyPoulticeOption1), FilterTheSpire2Config.ShouldShowLeafyPoulticeOptions),
-        (nameof(FilterTheSpire2Config.LeafyPoulticeOption2), FilterTheSpire2Config.ShouldShowLeafyPoulticeOptions),
-        (nameof(FilterTheSpire2Config.NewLeafOption), FilterTheSpire2Config.ShouldShowNewLeafOptions),
-        (nameof(FilterTheSpire2Config.LostCofferOption), FilterTheSpire2Config.ShouldShowLostCofferOptions),
-        (nameof(FilterTheSpire2Config.KaleidoscopeOption1), FilterTheSpire2Config.ShouldShowKaleidoscopeOptions),
-        (nameof(FilterTheSpire2Config.KaleidoscopeOption2), FilterTheSpire2Config.ShouldShowKaleidoscopeOptions)
+        (nameof(FilterTheSpire2Config.LeafyPoulticeOption1), NeowOptions.LeafyPoultice),
+        (nameof(FilterTheSpire2Config.LeafyPoulticeOption2), NeowOptions.LeafyPoultice),
+        (nameof(FilterTheSpire2Config.NewLeafOption), NeowOptions.NewLeaf),
+        (nameof(FilterTheSpire2Config.LostCofferOption), NeowOptions.LostCoffer),
+        (nameof(FilterTheSpire2Config.KaleidoscopeOption1), NeowOptions.Kaleidoscope),
+        (nameof(FilterTheSpire2Config.KaleidoscopeOption2), NeowOptions.Kaleidoscope),
+        (nameof(FilterTheSpire2Config.ArcaneScrollOption), NeowOptions.ArcaneScroll)
     ];
 
     private static void SyncAllDropdowns(bool shouldCheckToReset)
@@ -253,6 +255,11 @@ public static class CharacterConfigController
                 .ToList();
         }
 
+        if (propName is nameof(FilterTheSpire2Config.ArcaneScrollOption))
+        {
+            return CardRules.RareCardPools[_currentCharacterSelection].ToList();
+        }
+
         return CardRules.AvailableCardPools[_currentCharacterSelection].ToList();
     }
     
@@ -264,9 +271,9 @@ public static class CharacterConfigController
             return;
         }
 
-        foreach (var (propName, shouldShow) in CardSlots)
+        foreach (var (propName, option) in CardSlots)
         {
-            var isRelevant = shouldShow();
+            var isRelevant = FilterTheSpire2Config.ShouldShowNeowOutcomeOption(option);
             var wasRelevant = CardRowVisibility.GetValueOrDefault(propName);
             CardRowVisibility[propName] = isRelevant;
 
@@ -290,6 +297,7 @@ public static class CharacterConfigController
                 RebuildCardDropdownForCharacter(propName, dropdown, shouldCheckToReset: true);
             }
         }
+        SimpleModConfig.SetupFocusNeighbors(optionContainer);
     }
 
     private static Control? GetCardSectionContainer(Control optionContainer)

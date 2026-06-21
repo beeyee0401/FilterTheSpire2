@@ -46,7 +46,11 @@ public class FilterTheSpire2Config : SimpleModConfig
     [ConfigHideInUI]
     [ConfigDropdownOverrideLocalization("CARD_OPTIONS")]
     public static CardOptions KaleidoscopeOption2 { get; set; } = CardOptions.Any;
-
+    
+    [ConfigHideInUI]
+    [ConfigDropdownOverrideLocalization("CARD_OPTIONS")]
+    public static CardOptions ArcaneScrollOption { get; set; } = CardOptions.Any;
+    
     [ConfigSection("Act2Section")]
     public static Ancient Act2Ancient { get; set; } = Ancient.Any;
     
@@ -89,17 +93,14 @@ public class FilterTheSpire2Config : SimpleModConfig
     public static RelicOptions ShopRelic { get; set; } = RelicOptions.Any;
 
     [ConfigSection("ActLocationsSection")]
-    // [ConfigHideInUI]
     public static ActLocations.ActLocations Act1Locations { get; set; } = ActLocations.ActLocations.Any;
 
-    // [ConfigHideInUI]
     public static ActLocations.ActLocations Act2Locations { get; set; } = ActLocations.ActLocations.Any;
 
-    // [ConfigHideInUI]
     public static ActLocations.ActLocations Act3Locations { get; set; } = ActLocations.ActLocations.Any;
     
     public static ColorRect CreateCardDivider() => CreateDividerControl();
-    
+
     public NConfigOptionRow CreateHiddenOptionRow(string propertyName, out List<NConfigDropdownItem.ItemData> masterItems)
     {
         var property = typeof(FilterTheSpire2Config).GetCachedProperty(propertyName, BindingFlags.Public | BindingFlags.Static)!;
@@ -177,12 +178,12 @@ public class FilterTheSpire2Config : SimpleModConfig
         ConfigDropdownUtilities.RefreshDropdownItems(dropdown, rebuilt);
     }
 
-    private static bool ShouldShowMultiActOptions()
+    public static bool ShouldShowNeowOutcomeOption(NeowOptions option)
     {
-        return Act2Ancient == Ancient.Darv ||
-               Act3Ancient == Ancient.Darv;
+        return Character != CharacterOptions.Any && 
+               NeowOptions == option;
     }
-
+    
     public static bool ShouldShowLeafyPoulticeOptions()
     {
         return Character != CharacterOptions.Any && 
@@ -205,6 +206,12 @@ public class FilterTheSpire2Config : SimpleModConfig
     {
         return Character != CharacterOptions.Any && 
                NeowOptions == NeowOptions.Kaleidoscope;
+    }
+    
+    public static bool ShouldShowArcaneScrollOptions()
+    {
+        return Character != CharacterOptions.Any && 
+               NeowOptions == NeowOptions.NewLeaf;
     }
     
     private static bool ShouldShowSeaGlassCharacters()

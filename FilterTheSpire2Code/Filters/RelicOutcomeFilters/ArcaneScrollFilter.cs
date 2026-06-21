@@ -7,15 +7,16 @@ using MegaCrit.Sts2.Core.Random;
 
 namespace FilterTheSpire2.FilterTheSpire2Code.Filters.RelicOutcomeFilters;
 
-public class LeafyPoulticeFilter(List<CardOptions> cardOptions) : BaseCardTransformFilter(cardOptions, 2)
+public class ArcaneScrollFilter(List<CardOptions> cardOptions) : 
+    BaseCardTransformFilter(cardOptions, 1)
 {
     protected override Rng GetTransformRng(uint seed)
     {
-        return RngHelper.GetPlayerRngType(seed, PlayerRngType.Transformations);
+        return RngHelper.GetPlayerRngType(seed, PlayerRngType.Rewards);
     }
-    
+
     protected override ImmutableArray<CardOptions> GetCardPool()
     {
-        return CardRules.AvailableCardPools[FilterTheSpire2Config.Character];
+        return CardRules.RareCardPools[FilterTheSpire2Config.Character];
     }
 }

@@ -213,6 +213,14 @@ public static class FilterManager
 
                 break;
             }
+            case NeowOptions.ArcaneScroll:
+            {
+                if (FilterTheSpire2Config.ArcaneScrollOption != CardOptions.Any)
+                {
+                    filters.Add(new ArcaneScrollFilter([FilterTheSpire2Config.ArcaneScrollOption]));
+                }
+                break;
+            }
         }
     }
 
