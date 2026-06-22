@@ -11,37 +11,7 @@ public class NeowsBonesFilter(HashSet<NeowOptions> neowOptions, CardOptions? cur
 {
     public bool IsSeedValid(SeedSearchRequest request, string seed)
     {
-        var allPossibleOptions = new List<NeowOptions>()
-        {
-            NeowOptions.CursedPearl,
-            NeowOptions.HeftyTablet,
-            NeowOptions.LargeCapsule,
-            NeowOptions.LeafyPoultice,
-            NeowOptions.PrecariousShears,
-            NeowOptions.SilkenTress,
-            NeowOptions.SilverCrucible,
-            
-            NeowOptions.ArcaneScroll,
-            NeowOptions.BoomingConch,
-            NeowOptions.FishingRod,
-            NeowOptions.GoldenPearl,
-            NeowOptions.Kaleidoscope,
-            NeowOptions.LeadPaperweight,
-            NeowOptions.LostCoffer,
-            NeowOptions.NeowsTorment,
-            NeowOptions.NewLeaf,
-            NeowOptions.PhialHolster,
-            NeowOptions.PreciseScissors,
-            NeowOptions.ScrollBoxes,
-            NeowOptions.WingedBoots,
-            
-            NeowOptions.LavaRock,
-            NeowOptions.NeowsTalisman,
-            NeowOptions.NutritiousOyster,
-            NeowOptions.Pomander,
-            NeowOptions.SmallCapsule,
-            NeowOptions.StoneHumidifier
-        };
+        var allPossibleOptions = AncientRules.NeowsBonesOptions.ToList();
 
         var numSeed = (uint)StringHelper.GetDeterministicHashCode(seed);
         var rng = RngHelper.GetPlayerRngType(numSeed, PlayerRngType.Rewards);

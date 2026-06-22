@@ -1,3 +1,5 @@
+using System.Collections.Immutable;
+
 namespace FilterTheSpire2.FilterTheSpire2Code.Ancients.Config;
 
 public static class AncientRules
@@ -42,4 +44,36 @@ public static class AncientRules
                 DarvOptions.SneckoEye, DarvOptions.PhilosophersStoneAct3, DarvOptions.VelvetChokerAct3 ]}
         }  },
     };
+
+    public static ImmutableArray<NeowOptions> NeowsBonesOptions =
+    [
+        NeowOptions.CursedPearl,
+        NeowOptions.HeftyTablet,
+        NeowOptions.LargeCapsule,
+        NeowOptions.LeafyPoultice,
+        NeowOptions.PrecariousShears,
+        NeowOptions.SilkenTress,
+        NeowOptions.SilverCrucible,
+
+        NeowOptions.ArcaneScroll,
+        NeowOptions.BoomingConch,
+        NeowOptions.FishingRod,
+        NeowOptions.GoldenPearl,
+        NeowOptions.Kaleidoscope,
+        NeowOptions.LeadPaperweight,
+        NeowOptions.LostCoffer,
+        NeowOptions.NeowsTorment,
+        NeowOptions.NewLeaf,
+        NeowOptions.PhialHolster,
+        NeowOptions.PreciseScissors,
+        NeowOptions.ScrollBoxes,
+        NeowOptions.WingedBoots,
+
+        NeowOptions.LavaRock,
+        NeowOptions.NeowsTalisman,
+        NeowOptions.NutritiousOyster,
+        NeowOptions.Pomander,
+        NeowOptions.SmallCapsule,
+        NeowOptions.StoneHumidifier
+    ];
 }

@@ -25,6 +25,17 @@ public static class CharacterConfigController
     private static readonly Dictionary<string, List<NConfigDropdownItem.ItemData>> CardMasterItems = new();
     private static readonly Dictionary<string, bool> CardRowVisibility = new();
     
+    private static readonly (string PropName, NeowOptions option)[] CardSlots =
+    [
+        (nameof(FilterTheSpire2Config.LeafyPoulticeOption1), NeowOptions.LeafyPoultice),
+        (nameof(FilterTheSpire2Config.LeafyPoulticeOption2), NeowOptions.LeafyPoultice),
+        (nameof(FilterTheSpire2Config.NewLeafOption), NeowOptions.NewLeaf),
+        (nameof(FilterTheSpire2Config.LostCofferOption), NeowOptions.LostCoffer),
+        (nameof(FilterTheSpire2Config.KaleidoscopeOption1), NeowOptions.Kaleidoscope),
+        (nameof(FilterTheSpire2Config.KaleidoscopeOption2), NeowOptions.Kaleidoscope),
+        (nameof(FilterTheSpire2Config.ArcaneScrollOption), NeowOptions.ArcaneScroll)
+    ];
+    
     private readonly struct CharacterOnSetHandler(
         CharacterOptions character,
         Action originalOnSet)
@@ -209,17 +220,6 @@ public static class CharacterConfigController
     #endregion
     
     #region Card dropdowns
-    private static readonly (string PropName, NeowOptions option)[] CardSlots =
-    [
-        (nameof(FilterTheSpire2Config.LeafyPoulticeOption1), NeowOptions.LeafyPoultice),
-        (nameof(FilterTheSpire2Config.LeafyPoulticeOption2), NeowOptions.LeafyPoultice),
-        (nameof(FilterTheSpire2Config.NewLeafOption), NeowOptions.NewLeaf),
-        (nameof(FilterTheSpire2Config.LostCofferOption), NeowOptions.LostCoffer),
-        (nameof(FilterTheSpire2Config.KaleidoscopeOption1), NeowOptions.Kaleidoscope),
-        (nameof(FilterTheSpire2Config.KaleidoscopeOption2), NeowOptions.Kaleidoscope),
-        (nameof(FilterTheSpire2Config.ArcaneScrollOption), NeowOptions.ArcaneScroll)
-    ];
-
     private static void SyncAllDropdowns(bool shouldCheckToReset)
     {
         foreach (var kvp in RelicDropdowns)
@@ -306,7 +306,7 @@ public static class CharacterConfigController
         {
             return _cardSectionContainer;
         }
-        var siblingRow = optionContainer.GetNodeOrNull<NConfigOptionRow>("%" + nameof(FilterTheSpire2Config.LeadPaperweightOption));
+        var siblingRow = optionContainer.GetNodeOrNull<NConfigOptionRow>("%" + nameof(FilterTheSpire2Config.NeowOptions));
         _cardSectionContainer = siblingRow?.GetParent() as Control;
         return _cardSectionContainer;
     }
