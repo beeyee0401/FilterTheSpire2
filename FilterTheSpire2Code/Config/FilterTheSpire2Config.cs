@@ -23,6 +23,17 @@ public class FilterTheSpire2Config : SimpleModConfig
     [ConfigDropdownOverrideLocalization("CARD_OPTIONS")]
     public static CardOptions LeadPaperweightOption { get; set; } = CardOptions.Any;
     
+    [ConfigVisibleIf(nameof(NeowOptions), NeowOptions.NeowsBones)]
+    [ConfigDropdownOverrideLocalization("NEOW_OPTIONS")]
+    public static NeowOptions NeowsBonesRelicOption1 { get; set; } = NeowOptions.Any;
+    
+    [ConfigVisibleIf(nameof(NeowOptions), NeowOptions.NeowsBones)]
+    [ConfigDropdownOverrideLocalization("NEOW_OPTIONS")]
+    public static NeowOptions NeowsBonesRelicOption2 { get; set; } = NeowOptions.Any;
+    
+    [ConfigVisibleIf(nameof(NeowOptions), NeowOptions.NeowsBones)]
+    public static CardOptions NeowsBonesCurseOption { get; set; } = CardOptions.Any;
+    
     [ConfigHideInUI]
     [ConfigDropdownOverrideLocalization("CARD_OPTIONS")]
     public static CardOptions NewLeafOption { get; set; } = CardOptions.Any;
@@ -149,6 +160,7 @@ public class FilterTheSpire2Config : SimpleModConfig
         MultiActAncientController.SetupMultiActAncientConfig(optionContainer);
         CharacterConfigController.SetupCharacterDropdownConfig(optionContainer);
         SetupColorlessCardDropdown(optionContainer, nameof(LeadPaperweightOption));
+        SetupCurseCardDropdown(optionContainer, nameof(NeowsBonesCurseOption));
     }
 
     private static void SetupColorlessCardDropdown(Control optionContainer, string propName)
@@ -178,6 +190,33 @@ public class FilterTheSpire2Config : SimpleModConfig
         ConfigDropdownUtilities.RefreshDropdownItems(dropdown, rebuilt);
     }
 
+    private static void SetupCurseCardDropdown(Control optionContainer, string propName)
+    {
+        var (dropdown, items) = ConfigDropdownUtilities.GetDropdownListItems(optionContainer, propName);
+        var cardPool = CardRules.CursePool;
+        var rebuilt = new List<NConfigDropdownItem.ItemData>();
+
+        foreach (var item in items)
+        {
+            var value = (CardOptions)item.Value!;
+
+            if (value == CardOptions.Any)
+            {
+                rebuilt.Add(item);
+                continue;
+            }
+
+            if (!cardPool.Contains(value))
+            {
+                continue;
+            }
+
+            rebuilt.Add(item);
+        }
+
+        ConfigDropdownUtilities.RefreshDropdownItems(dropdown, rebuilt);
+    }
+    
     public static bool ShouldShowNeowOutcomeOption(NeowOptions option)
     {
         return Character != CharacterOptions.Any && 

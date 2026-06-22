@@ -529,8 +529,18 @@ public static class CardRules
         new(CardOptions.ThrummingHatchet, CharacterOptions.Any, CardRarity.Uncommon),
         new(CardOptions.UltimateDefend, CharacterOptions.Any, CardRarity.Uncommon),
         new(CardOptions.UltimateStrike, CharacterOptions.Any, CardRarity.Uncommon),
-        new(CardOptions.Volley, CharacterOptions.Any, CardRarity.Uncommon)
+        new(CardOptions.Volley, CharacterOptions.Any, CardRarity.Uncommon),
 
+        new(CardOptions.Clumsy, CharacterOptions.Any, CardRarity.Curse),
+        new(CardOptions.Debt, CharacterOptions.Any, CardRarity.Curse), 
+        new(CardOptions.Decay, CharacterOptions.Any, CardRarity.Curse), 
+        new(CardOptions.Doubt, CharacterOptions.Any, CardRarity.Curse), 
+        new(CardOptions.Guilty, CharacterOptions.Any, CardRarity.Curse), 
+        new(CardOptions.Injury, CharacterOptions.Any, CardRarity.Curse), 
+        new(CardOptions.Normality, CharacterOptions.Any, CardRarity.Curse), 
+        new(CardOptions.Regret, CharacterOptions.Any, CardRarity.Curse), 
+        new(CardOptions.Shame, CharacterOptions.Any, CardRarity.Curse), 
+        new(CardOptions.Writhe, CharacterOptions.Any, CardRarity.Curse)
         #endregion
     ];
     
@@ -547,7 +557,7 @@ public static class CardRules
     public static readonly ImmutableDictionary<CharacterOptions, ImmutableArray<CardOptions>>
         AvailableCardPools =
             AllCardDefinitions
-                .Where(c => c.Rarity.In([CardRarity.Common, CardRarity.Uncommon, CardRarity.Rare]))
+                .Where(c => c.Rarity.In(CardRarity.Common, CardRarity.Uncommon, CardRarity.Rare))
                 .GroupBy(c => c.Character)
                 .ToImmutableDictionary(
                     g => g.Key,
@@ -560,4 +570,10 @@ public static class CardRules
                 .ToImmutableDictionary(
                     g => g.Key,
                     g => g.Select(x => x.Card).ToImmutableArray());
+
+    public static readonly ImmutableArray<CardOptions> CursePool =
+        [
+            ..AllCardDefinitions.Where(c => c.Rarity == CardRarity.Curse)
+                .Select(c => c.Card)
+        ];
 }

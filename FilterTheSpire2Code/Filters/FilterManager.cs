@@ -221,6 +221,30 @@ public static class FilterManager
                 }
                 break;
             }
+            case NeowOptions.NeowsBones:
+            {
+                var neowOptions = new HashSet<NeowOptions>();
+                if (FilterTheSpire2Config.NeowsBonesRelicOption1 != NeowOptions.Any)
+                {
+                    neowOptions.Add(FilterTheSpire2Config.NeowsBonesRelicOption1);
+                }
+                if (FilterTheSpire2Config.NeowsBonesRelicOption2 != NeowOptions.Any)
+                {
+                    neowOptions.Add(FilterTheSpire2Config.NeowsBonesRelicOption2);
+                }
+                
+                CardOptions? curseOption = null;
+                if (FilterTheSpire2Config.NeowsBonesCurseOption != CardOptions.Any)
+                {
+                    curseOption = FilterTheSpire2Config.NeowsBonesCurseOption;
+                }
+
+                if (neowOptions.Count != 0 || curseOption != null)
+                {
+                    filters.Add(new NeowsBonesFilter(neowOptions, curseOption));
+                }
+                break;
+            }
         }
     }
 

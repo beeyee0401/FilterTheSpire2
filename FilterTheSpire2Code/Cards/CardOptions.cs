@@ -523,7 +523,20 @@ public enum CardOptions
       ThrummingHatchet,
       UltimateDefend,
       UltimateStrike,
-      Volley
+      Volley,
 
+      #endregion
+      
+      #region Curse pool
+      Clumsy,
+      Debt,
+      Decay,
+      Doubt,
+      Guilty,
+      Injury,
+      Normality,
+      Regret,
+      Shame,
+      Writhe
       #endregion
 }
