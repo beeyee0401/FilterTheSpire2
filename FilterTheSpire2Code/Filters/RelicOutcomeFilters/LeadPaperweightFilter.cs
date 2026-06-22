@@ -1,6 +1,7 @@
 using FilterTheSpire2.FilterTheSpire2Code.Cards;
 using FilterTheSpire2.FilterTheSpire2Code.Characters;
 using FilterTheSpire2.FilterTheSpire2Code.Helpers;
+using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.Entities.Rngs;
 using MegaCrit.Sts2.Core.Random;
 using MegaCrit.Sts2.Core.Runs;
@@ -18,6 +19,7 @@ public class LeadPaperweightFilter(List<CardOptions> cardOptions) :
     {
         var pool = CardRules
             .EntireCardPools[CharacterOptions.Any]
+            .Where(c => c.Rarity.In(CardRarity.Uncommon, CardRarity.Rare))
             .ToList();
 
         return Enumerable
