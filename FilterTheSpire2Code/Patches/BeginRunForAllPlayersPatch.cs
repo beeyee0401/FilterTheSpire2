@@ -1,7 +1,9 @@
+using FilterTheSpire2.FilterTheSpire2Code.Filters;
 using FilterTheSpire2.FilterTheSpire2Code.Patches;
 using FilterTheSpire2.FilterTheSpire2Code.SeedSearcher;
 using Godot;
 using HarmonyLib;
+using MegaCrit.Sts2.Core.Entities.Ascension;
 using MegaCrit.Sts2.Core.Helpers;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Multiplayer.Game.Lobby;
@@ -19,9 +21,9 @@ internal class BeginRunForAllPlayersPatch
     [HarmonyPrefix]
     private static bool Prefix(StartRunLobby __instance, ref string seed, List<ModifierModel> modifiers)
     {
-        if (_searching || 
-            __instance.GameMode != GameMode.Standard || 
-            __instance.Players.Count > 1 || 
+        if (_searching ||
+            __instance.GameMode != GameMode.Standard ||
+            __instance.Players.Count > 1 ||
             __instance.Players[0].unlockState.UnlockedEpochs.Count != UnlockState.all.EpochUnlockCount())
         {
             return true;
@@ -40,8 +42,6 @@ internal class BeginRunForAllPlayersPatch
         List<ModifierModel> modifiers)
     {
         using var cts = new CancellationTokenSource();
-        var searcher = new SeedSearcher();
-
         var screen = instance.LobbyListener as NCharacterSelectScreen;
         CanvasLayer? overlay = null;
         RichTextLabel? statusLabel = null;
@@ -49,6 +49,29 @@ internal class BeginRunForAllPlayersPatch
         var leftArrowWasVisible = false;
         var rightArrowWasVisible = false;
 
+        var filters = FilterManager.CreateFiltersFromSettings();
+        if (filters.Count == 0)
+        {
+            BeginRunWithSeed(instance, seed, modifiers, filteredSeedRun: false);
+            return;
+        }
+
+        var request = new SeedSearchRequest
+        {
+            Character = instance.Players[0].character,
+            AscensionLevel = (AscensionLevel)instance.Ascension,
+            Filters = filters,
+            ThreadCount = 6
+        };
+
+        var runner = new SeedSearchRunner(request);
+        var searchTask = Task.Run(() =>
+        {
+            runner.Run();
+            return runner.Result?.StringSeed;
+        }, cts.Token);
+
+        string? foundSeed;
         if (screen != null)
         {
             var ap = Traverse.Create(Traverse.Create(screen).Field("_ascensionPanel").GetValue<NAscensionPanel>());
@@ -60,20 +83,16 @@ internal class BeginRunForAllPlayersPatch
 
             leftArrow.Visible = false;
             rightArrow.Visible = false;
-            
-            (overlay, statusLabel) = BuildOverlay(searcher, screen, cts, leftArrowWasVisible, rightArrowWasVisible);
+
+            (overlay, statusLabel) = BuildOverlay(runner, screen, cts, leftArrowWasVisible, rightArrowWasVisible);
             screen.AddChild(overlay);
         }
 
-        var searchTask = Task.Run(() =>
-            searcher.SearchForSeed(instance.Players[0].character, instance.Ascension)?.StringSeed, cts.Token);
-
-        string? foundSeed;
         try
         {
             while (!searchTask.IsCompleted && !cts.IsCancellationRequested)
             {
-                var count = searcher.Runner?.TotalSeedsExamined;
+                var count = runner.TotalSeedsExamined;
                 if (statusLabel != null)
                 {
                     Callable.From(() =>
@@ -85,10 +104,10 @@ internal class BeginRunForAllPlayersPatch
             }
 
             foundSeed = await searchTask;
-            
+
             if (!cts.IsCancellationRequested && foundSeed != null && statusLabel != null)
             {
-                var finalCount = searcher.Runner?.TotalSeedsExamined;
+                var finalCount = runner.TotalSeedsExamined;
                 Callable.From(() =>
                     statusLabel.Text = $"Seed found!\nExamined [color=yellow]{finalCount:N0}[/color] seeds"
                 ).CallDeferred();
@@ -103,34 +122,49 @@ internal class BeginRunForAllPlayersPatch
                 Callable.From(() =>
                     statusLabel.Text = "An error occurred while searching.\nPlease try again."
                 ).CallDeferred();
-        
+
                 await Task.Delay(2500, cts.Token);
             }
-    
-            overlay?.QueueFree();
+
             instance.SetReady(false);
-            RestoreScreenUi(screen, leftArrowWasVisible, rightArrowWasVisible);
             return;
         }
         finally
         {
             overlay?.QueueFree();
+            RestoreScreenUi(screen, leftArrowWasVisible, rightArrowWasVisible);
         }
 
         if (cts.IsCancellationRequested)
         {
             instance.SetReady(false);
-            RestoreScreenUi(screen, leftArrowWasVisible, rightArrowWasVisible);
             return;
         }
 
+        BeginRunWithSeed(
+            instance,
+            foundSeed ?? seed,
+            modifiers,
+            filteredSeedRun: foundSeed != null);
+    }
+
+    private static void BeginRunWithSeed(
+        StartRunLobby instance,
+        string seed,
+        List<ModifierModel> modifiers,
+        bool filteredSeedRun)
+    {
         _searching = true;
         try
         {
             // Attempt to label it a Custom run since it's essentially seeded.
-            StartNewSingleplayerRunPatch.IsFilteredSeedRun = true;
+            if (filteredSeedRun)
+            {
+                StartNewSingleplayerRunPatch.IsFilteredSeedRun = true;
+            }
+
             AccessTools.Method(typeof(StartRunLobby), "BeginRunForAllPlayers")
-                .Invoke(instance, [foundSeed ?? seed, modifiers]);
+                .Invoke(instance, [seed, modifiers]);
         }
         finally
         {
@@ -138,8 +172,8 @@ internal class BeginRunForAllPlayersPatch
         }
     }
 
-    private static (CanvasLayer overlay, RichTextLabel  statusLabel) BuildOverlay(
-        SeedSearcher searcher,
+    private static (CanvasLayer overlay, RichTextLabel statusLabel) BuildOverlay(
+        SeedSearchRunner searcher,
         NCharacterSelectScreen? screen,
         CancellationTokenSource cts,
         bool leftArrowWasVisible,
@@ -181,7 +215,8 @@ internal class BeginRunForAllPlayersPatch
         return (overlay, label);
     }
 
-    private static void RestoreScreenUi(NCharacterSelectScreen? screen, bool leftArrowWasVisible, bool rightArrowWasVisible)
+    private static void RestoreScreenUi(NCharacterSelectScreen? screen, bool leftArrowWasVisible,
+        bool rightArrowWasVisible)
     {
         if (screen == null)
         {
