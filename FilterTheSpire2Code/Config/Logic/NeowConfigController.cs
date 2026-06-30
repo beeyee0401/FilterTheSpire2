@@ -12,6 +12,7 @@ public static class NeowConfigController
 {
     private static readonly Dictionary<string, NConfigOptionRow> OptionRows = new();
     private static readonly Dictionary<string, ColorRect> Dividers = new();
+    private static Control? _optionContainer;
  
     private static readonly (string PropName, NeowOptions RequiredOption)[] NeowSubOptions =
     [
@@ -20,9 +21,17 @@ public static class NeowConfigController
         (nameof(FilterTheSpire2Config.NeowsBonesRelicOption2), NeowOptions.NeowsBones),
         (nameof(FilterTheSpire2Config.NeowsBonesCurseOption), NeowOptions.NeowsBones),
     ];
+    
+    // Propnames for the bones relic selectors that affect card outcome row visibility
+    private static readonly HashSet<string> BonesRelicOptionPropNames =
+    [
+        nameof(FilterTheSpire2Config.NeowsBonesRelicOption1),
+        nameof(FilterTheSpire2Config.NeowsBonesRelicOption2),
+    ];
  
     public static void SetupNeowDropdownConfig(Control optionContainer)
     {
+        _optionContainer = optionContainer;
         OptionRows.Clear();
         Dividers.Clear();
  
@@ -82,31 +91,98 @@ public static class NeowConfigController
     private static void BuildSubOptionRow(Control optionContainer, string propName)
     {
         var container = GetNeowSectionContainer(optionContainer);
-        if (container == null) return;
- 
+        if (container == null)
+        {
+            return;
+        }
+
         var configInstance = ModConfigRegistry.Get<FilterTheSpire2Config>();
-        if (configInstance == null) return;
- 
+        if (configInstance == null)
+        {
+            return;
+        }
+
         var row = configInstance.CreateHiddenOptionRow(propName, out var masterItems);
- 
+
         var dropdown = ConfigDropdownUtilities.GetDropdownFromRow(row);
-        if (dropdown == null) return;
- 
+        if (dropdown == null)
+        {
+            return;
+        }
+
         var filtered = FilterItems(propName, masterItems);
- 
+
         if (!filtered.Any(i => Equals(i.Value, GetCurrentValue(propName))))
         {
             ResetOption(propName);
         }
- 
+
+        // If this is a bones relic option, wrap it to refresh card outcome rows when changed
+        if (BonesRelicOptionPropNames.Contains(propName))
+        {
+            filtered = WrapBonesRelicItems(filtered, optionContainer);
+        }
+        
         ConfigDropdownUtilities.SeedItemsBeforeReady(dropdown, filtered);
- 
+        
         var divider = FilterTheSpire2Config.CreateCardDivider();
         container.AddChild(divider);
         container.AddChild(row);
- 
+
+        // Move the divider+row to just after the last known Neow bones row,
+        // or just after the NeowOptions row if none exist yet — so bones rows
+        // always sit above card outcome rows.
+        InsertAfterBonesAnchor(container, divider, row);
+        
         Dividers[propName] = divider;
         OptionRows[propName] = row;
+    }
+    
+    private static List<NConfigDropdownItem.ItemData> WrapBonesRelicItems(
+        List<NConfigDropdownItem.ItemData> items,
+        Control optionContainer)
+    {
+        return items.Select(item =>
+        {
+            var originalOnSet = item.OnSet;
+            return new NConfigDropdownItem.ItemData(item.Text, item.Value, () =>
+            {
+                originalOnSet.Invoke();
+                CharacterConfigController.RefreshCardRows(optionContainer);
+            });
+        }).ToList();
+    }
+    
+    /// <summary>
+    /// Moves the divider and row to appear after the last already-placed Neow bones row
+    /// (or after the NeowOptions row itself if no bones rows exist yet), ensuring bones
+    /// rows always sit above any card outcome rows appended later.
+    /// </summary>
+    private static void InsertAfterBonesAnchor(Control container, ColorRect divider, NConfigOptionRow row)
+    {
+        // Find the last bones row already in the container, falling back to the NeowOptions row
+        Node? anchor = null;
+        foreach (var (_, existingRow) in OptionRows)
+        {
+            if (existingRow.GetParent() == container)
+            {
+                anchor = existingRow;
+            }
+        }
+
+        if (anchor == null)
+        {
+            // No bones rows yet — find the NeowOptions row as the anchor
+            anchor = container.GetChildren()
+                .OfType<NConfigOptionRow>()
+                .FirstOrDefault(r => r.Name == nameof(FilterTheSpire2Config.NeowOptions));
+        }
+
+        if (anchor == null) { return; }
+
+        var anchorIndex = anchor.GetIndex();
+        container.MoveChild(divider, anchorIndex + 1);
+        container.MoveChild(row, anchorIndex + 2);
     }
  
     private static List<NConfigDropdownItem.ItemData> FilterItems(string propName, List<NConfigDropdownItem.ItemData> source)

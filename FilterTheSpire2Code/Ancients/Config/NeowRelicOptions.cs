@@ -16,6 +16,7 @@ public enum NeowOptions
     LeafyPoultice,
     LostCoffer,
     // MassiveScroll, multiplayer only
+    NeowsBones,
     NeowsTalisman,
     NeowsTorment,
     NewLeaf,
@@ -29,6 +30,5 @@ public enum NeowOptions
     SilverCrucible,
     SmallCapsule,
     StoneHumidifier,
-    NeowsBones,
     WingedBoots
 }

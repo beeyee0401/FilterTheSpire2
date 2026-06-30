@@ -1,6 +1,4 @@
 using System.Collections.Immutable;
-using MegaCrit.Sts2.Core.Models;
-using MegaCrit.Sts2.Core.Models.Acts;
 
 namespace FilterTheSpire2.FilterTheSpire2Code.ActLocations;
 

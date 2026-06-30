@@ -20,19 +20,21 @@ public class FilterTheSpire2Config : SimpleModConfig
     public static NeowOptions NeowOptions { get; set; } = NeowOptions.Any;
     
     [ConfigHideInUI]
-    [ConfigDropdownOverrideLocalization("CARD_OPTIONS")]
-    public static CardOptions LeadPaperweightOption { get; set; } = CardOptions.Any;
-    
-    [ConfigHideInUI]
     [ConfigDropdownOverrideLocalization("NEOW_OPTIONS")]
+    [ConfigHoverTip]
     public static NeowOptions NeowsBonesRelicOption1 { get; set; } = NeowOptions.Any;
     
     [ConfigHideInUI]
     [ConfigDropdownOverrideLocalization("NEOW_OPTIONS")]
+    [ConfigHoverTip]
     public static NeowOptions NeowsBonesRelicOption2 { get; set; } = NeowOptions.Any;
     
     [ConfigHideInUI]
     public static CardOptions NeowsBonesCurseOption { get; set; } = CardOptions.Any;
+    
+    [ConfigHideInUI]
+    [ConfigDropdownOverrideLocalization("CARD_OPTIONS")]
+    public static CardOptions LeadPaperweightOption { get; set; } = CardOptions.Any;
     
     [ConfigHideInUI]
     [ConfigDropdownOverrideLocalization("CARD_OPTIONS")]
@@ -154,72 +156,20 @@ public class FilterTheSpire2Config : SimpleModConfig
             optionContainer.MoveChild(resetContainer, -1);
         }
 
-        SetupFocusNeighbors(optionContainer); // Fix controller focus order
+        SetupFocusNeighbors(optionContainer);
 
         AncientConfigController.SetupAncientDropdownConfig(optionContainer);
         MultiActAncientController.SetupMultiActAncientConfig(optionContainer);
         CharacterConfigController.SetupCharacterDropdownConfig(optionContainer);
         NeowConfigController.SetupNeowDropdownConfig(optionContainer);
     }
-
-    // private static void SetupColorlessCardDropdown(Control optionContainer, string propName)
-    // {
-    //     var (dropdown, items) = ConfigDropdownUtilities.GetDropdownListItems(optionContainer, propName);
-    //     var cardPool = CardRules.AvailableCardPools[CharacterOptions.Any];
-    //     var rebuilt = new List<NConfigDropdownItem.ItemData>();
-    //
-    //     foreach (var item in items)
-    //     {
-    //         var value = (CardOptions)item.Value!;
-    //
-    //         if (value == CardOptions.Any)
-    //         {
-    //             rebuilt.Add(item);
-    //             continue;
-    //         }
-    //
-    //         if (!cardPool.Contains(value))
-    //         {
-    //             continue;
-    //         }
-    //
-    //         rebuilt.Add(item);
-    //     }
-    //
-    //     ConfigDropdownUtilities.RefreshDropdownItems(dropdown, rebuilt);
-    // }
-    //
-    // private static void SetupCurseCardDropdown(Control optionContainer, string propName)
-    // {
-    //     var (dropdown, items) = ConfigDropdownUtilities.GetDropdownListItems(optionContainer, propName);
-    //     var cardPool = CardRules.CursePool;
-    //     var rebuilt = new List<NConfigDropdownItem.ItemData>();
-    //
-    //     foreach (var item in items)
-    //     {
-    //         var value = (CardOptions)item.Value!;
-    //
-    //         if (value == CardOptions.Any)
-    //         {
-    //             rebuilt.Add(item);
-    //             continue;
-    //         }
-    //
-    //         if (!cardPool.Contains(value))
-    //         {
-    //             continue;
-    //         }
-    //
-    //         rebuilt.Add(item);
-    //     }
-    //
-    //     ConfigDropdownUtilities.RefreshDropdownItems(dropdown, rebuilt);
-    // }
     
     public static bool ShouldShowNeowOutcomeOption(NeowOptions option)
     {
         return Character != CharacterOptions.Any && 
-               NeowOptions == option;
+               (NeowOptions == option ||
+                (NeowOptions == NeowOptions.NeowsBones && 
+                 (NeowsBonesRelicOption1 == option || NeowsBonesRelicOption2 == option)));
     }
     
     private static bool ShouldShowSeaGlassCharacters()

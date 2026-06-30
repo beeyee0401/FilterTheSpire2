@@ -14,7 +14,8 @@ public sealed class SeedSearchRunner(SeedSearchRequest request)
 
     public void Run()
     {
-        var start = (uint)(DateTime.UtcNow.Ticks * 100);
+        var rng = new MegaRandom();
+        var start = (uint)(DateTime.UtcNow.Ticks * 100 * rng.Next(1, 100));
         var workers = Enumerable.Range(0, request.ThreadCount)
             .Select(i => new SeedSearchWorker( 
                 this,

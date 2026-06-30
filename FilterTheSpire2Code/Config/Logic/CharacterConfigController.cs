@@ -299,6 +299,11 @@ public static class CharacterConfigController
         }
         SimpleModConfig.SetupFocusNeighbors(optionContainer);
     }
+    
+    public static void RefreshCardRows(Control optionContainer)
+    {
+        EnsureCardRows(optionContainer, characterChanged: false);
+    }
 
     private static Control? GetCardSectionContainer(Control optionContainer)
     {

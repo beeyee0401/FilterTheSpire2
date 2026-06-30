@@ -39,7 +39,7 @@ public sealed class SeedSearchWorker(
     private SeedSearchResult? TryRandomSeed(long candidate)
     {
         var stringSeed = RngHelper.GetRandomSeed(candidate);
-        // var stringSeed = "8VE2964W5X";
+        // var stringSeed = "H2YLCNDUHQ";
 
         var seed =
             (uint)StringHelper.GetDeterministicHashCode(stringSeed) +

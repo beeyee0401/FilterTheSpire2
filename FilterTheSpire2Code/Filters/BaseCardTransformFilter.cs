@@ -2,34 +2,40 @@ using System.Collections.Immutable;
 using FilterTheSpire2.FilterTheSpire2Code.Cards;
 using FilterTheSpire2.FilterTheSpire2Code.Characters;
 using FilterTheSpire2.FilterTheSpire2Code.Config;
+using FilterTheSpire2.FilterTheSpire2Code.Filters.RelicOutcomeFilters;
 using FilterTheSpire2.FilterTheSpire2Code.SeedSearcher;
 using MegaCrit.Sts2.Core.Helpers;
 using MegaCrit.Sts2.Core.Random;
 
 namespace FilterTheSpire2.FilterTheSpire2Code.Filters;
 
-public abstract class BaseCardTransformFilter(List<CardOptions> cardOptions, int transformCount) : IFilter
+public abstract class BaseCardTransformFilter(
+    List<CardOptions> cardOptions,
+    int transformCount,
+    NeowRngConsumption? slot1Consumption = null) : INeowOutcomeFilter
 {
     protected abstract Rng GetTransformRng(uint seed);
     protected abstract ImmutableArray<CardOptions> GetCardPool();
-    
+    public abstract NeowRngConsumption RngConsumption { get; }
+
     public bool IsSeedValid(SeedSearchRequest request, string seed)
     {
         var requestedCards = cardOptions
             .Where(c => c != CardOptions.Any)
             .ToList();
         if (requestedCards.Count == 0 || requestedCards.Count > transformCount)
-        {
             return true;
-        }
 
         if (FilterTheSpire2Config.Character == CharacterOptions.Any)
-        {
             return true;
-        }
-        
-        var baseRng = new Rng((uint) StringHelper.GetDeterministicHashCode(seed));
+
+        var baseRng = new Rng((uint)StringHelper.GetDeterministicHashCode(seed));
         var rng = GetTransformRng(baseRng.Seed);
+
+        // Fast-forward past slot 1's consumption if we are slot 2
+        if (slot1Consumption != null)
+            FastForward(rng, slot1Consumption);
+
         var cardPool = GetCardPool();
         var remaining = requestedCards
             .GroupBy(c => c)
@@ -38,28 +44,17 @@ public abstract class BaseCardTransformFilter(List<CardOptions> cardOptions, int
         for (var i = 0; i < transformCount; i++)
         {
             var rolled = rng.NextItem(cardPool);
-
-            if (!remaining.TryGetValue(rolled, out var count))
-            {
-                continue;
-            }
-
-            if (count == 1)
-            {
-                remaining.Remove(rolled);
-
-                // Early success once all requested cards have been found.
-                if (remaining.Count == 0)
-                {
-                    return true;
-                }
-            }
-            else
-            {
-                remaining[rolled] = count - 1;
-            }
+            if (!remaining.TryGetValue(rolled, out var count)) continue;
+            if (count == 1) { remaining.Remove(rolled); if (remaining.Count == 0) return true; }
+            else remaining[rolled] = count - 1;
         }
 
         return remaining.Count == 0;
+    }
+
+    protected virtual void FastForward(Rng rng, NeowRngConsumption consumption)
+    {
+        // Subclasses override to fast-forward the specific stream this filter uses.
+        // Default: no-op (streams that this filter doesn't need fast forwarding).
     }
 }

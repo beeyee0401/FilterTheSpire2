@@ -36,8 +36,10 @@
   "FILTERTHESPIRE2-NEOW_OPTIONS.NeowsBones": "Neow's Bones",
   "FILTERTHESPIRE2-NEOW_OPTIONS.WingedBoots": "Winged Boots",
 
-  "FILTERTHESPIRE2-NEOWS_BONES_RELIC_OPTION1.title": "Neow's Bones relic option #1",
-  "FILTERTHESPIRE2-NEOWS_BONES_RELIC_OPTION2.title": "Neow's Bones relic option #2",
+  "FILTERTHESPIRE2-NEOWS_BONES_RELIC_OPTION1.title": "Neow's Bones relic pickup #1",
+  "FILTERTHESPIRE2-NEOWS_BONES_RELIC_OPTION1.hover.desc": "If filtering for card suboptions, this should be picked up before option #2",
+  "FILTERTHESPIRE2-NEOWS_BONES_RELIC_OPTION2.title": "Neow's Bones relic pickup #2",
+  "FILTERTHESPIRE2-NEOWS_BONES_RELIC_OPTION2.hover.desc": "If filtering for card suboptions, this should be picked up after option #1",
   "FILTERTHESPIRE2-NEOWS_BONES_CURSE_OPTION.title": "Neow's Bones curse option",
   
   "FILTERTHESPIRE2-NEW_LEAF_OPTION.title": "New Leaf transform",
