@@ -38,21 +38,19 @@
         <PackageReference Include="Alchyr.Sts2.ModAnalyzers" Version="*"/>
         <!-- Generates a .pck file when building if only using simple assets. May not work on all setups. Uncomment to test. -->
         <PackageReference Include="BSchneppe.StS2.PckPacker" Version="0.1.1" PrivateAssets="All" />
-        <AdditionalFiles Include="localization/**/*.json"/> <!-- Used by analyzer -->
-        <PackageReference Include="MSTest.TestFramework" Version="4.0.2" />
+        <AdditionalFiles Include="FilterTheSpire2/localization/**/*.json"/> <!-- Used by analyzer -->
     </ItemGroup>
 
     <ItemGroup>
-        <Compile Remove="materials/**"/>
-        <Compile Remove="shaders/**"/>
-        <Compile Remove="images/**"/>
-        <EmbeddedResource Remove="materials/**"/>
-        <EmbeddedResource Remove="shaders/**"/>
-        <EmbeddedResource Remove="images/**"/>
+        <Compile Remove="FilterTheSpire2/**"/>
+        <EmbeddedResource Remove="FilterTheSpire2/**"/>
     </ItemGroup>
-
+    
     <ItemGroup>
+        <None Condition="Exists('Directory.Build.props')" Include="Directory.Build.props"/>
         <None Include="FilterTheSpire2.json" />
+        <None Include="project.godot"/>
+        <None Include="FilterTheSpire2/**"/>
     </ItemGroup>
 
     <Target Name="CheckDependencyPaths">
@@ -80,7 +78,7 @@
     </Target>
 
     <ItemGroup>
-        <GodotResourceFiles Include="localization/**"/>
+        <GodotResourceFiles Include="FilterTheSpire2/**"/>
     </ItemGroup>
 
     <Target Name="GodotPublish" AfterTargets="Publish" Condition="'$(GodotPath)' != '' and Exists('$(GodotPath)') and '$(IsInnerGodotExport)' != 'true'" Inputs="@(GodotResourceFiles)" Outputs="$(ModsPath)$(MSBuildProjectName)/$(MSBuildProjectName).pck">

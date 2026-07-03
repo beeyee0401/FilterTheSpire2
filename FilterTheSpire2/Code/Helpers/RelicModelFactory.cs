@@ -1,5 +1,4 @@
 using FilterTheSpire2.Code.Ancients.Config;
-using FilterTheSpire2.Code.Relics;
 using MegaCrit.Sts2.Core.Models;
 
 namespace FilterTheSpire2.Code.Helpers;
