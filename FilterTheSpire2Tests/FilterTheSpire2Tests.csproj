@@ -11,9 +11,10 @@
         <Prefer32Bit>false</Prefer32Bit>
     </PropertyGroup>
 
-    <!--  Ignore the ModAnalyzer warning  -->
+    <!--  Ignore the ModAnalyzer warning and Godot warning -->
     <PropertyGroup>
         <NoWarn>$(NoWarn);STS002</NoWarn>
+        <NoWarn>$(NoWarn);CS8785</NoWarn>
     </PropertyGroup>
 
     <ItemGroup>
