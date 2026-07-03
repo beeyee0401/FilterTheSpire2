@@ -1,5 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
+    <Import Project="..\Sts2PathDiscovery.props"/>
     <PropertyGroup>
         <TargetFramework>net9.0</TargetFramework>
         <LangVersion>latest</LangVersion>
@@ -7,8 +7,20 @@
         <Nullable>enable</Nullable>
         <EnableMSTestRunner>true</EnableMSTestRunner>
         <OutputType>Exe</OutputType>
+        <PlatformTarget>x64</PlatformTarget>
+        <Prefer32Bit>false</Prefer32Bit>
     </PropertyGroup>
 
+    <!--  Ignore the ModAnalyzer warning  -->
+    <PropertyGroup>
+        <NoWarn>$(NoWarn);STS002</NoWarn>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\FilterTheSpire2\FilterTheSpire2.csproj"
+                          ExcludeAssets="analyzers;build;buildtransitive" />
+    </ItemGroup>
+    
     <ItemGroup>
         <PackageReference Include="MSTest" Version="4.0.2"/>
     </ItemGroup>
@@ -17,14 +29,11 @@
         <Using Include="Microsoft.VisualStudio.TestTools.UnitTesting"/>
     </ItemGroup>
 
-    <ItemGroup>
-      <ProjectReference Include="..\FilterTheSpire2\FilterTheSpire2.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Reference Include="sts2">
-        <HintPath>..\..\..\program files (x86)\steam\steamapps\common\Slay the Spire 2\data_sts2_windows_x86_64\sts2.dll</HintPath>
-      </Reference>
+    <ItemGroup Condition="Exists('$(Sts2DataDir)')">
+        <Reference Include="sts2">
+            <HintPath>$(Sts2DataDir)/sts2.dll</HintPath>
+            <Private>true</Private>
+        </Reference>
     </ItemGroup>
 
 </Project>
