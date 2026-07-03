@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using FilterTheSpire2.FilterTheSpire2Code.Ancients.Config;
 using FilterTheSpire2.FilterTheSpire2Code.Cards;
 using FilterTheSpire2.FilterTheSpire2Code.Config;
@@ -152,7 +153,7 @@ public static class FilterManager
             var bonesOption1 = FilterTheSpire2Config.NeowsBonesRelicOption1;
             var bonesOption2 = FilterTheSpire2Config.NeowsBonesRelicOption2;
 
-            var neowOptions = new List<NeowOptions>();
+            var neowOptions = new HashSet<NeowOptions>();
             if (bonesOption1 != NeowOptions.Any)
             {
                 neowOptions.Add(bonesOption1);
@@ -168,7 +169,9 @@ public static class FilterManager
                 : null;
 
             if (neowOptions.Count != 0 || curseOption != null)
-                filters.Add(new NeowsBonesFilter(neowOptions, curseOption));
+            {
+                filters.Add(new NeowsBonesFilter(neowOptions.ToImmutableHashSet(), curseOption));
+            }
 
             var bonesBaseConsumption = new NeowRngConsumption(
                 RewardsRngSteps: AncientRules.NeowsBonesOptions.Length-1, TransformationsRngSteps: 0, NicheRngSteps: 0);
