@@ -1,5 +1,5 @@
 using System.Text;
-using FilterTheSpire2.Code.ActLocations;
+using FilterTheSpire2.Code.Acts;
 using MegaCrit.Sts2.Core.Entities.Rngs;
 using MegaCrit.Sts2.Core.Helpers;
 using MegaCrit.Sts2.Core.Random;
@@ -27,10 +27,10 @@ public static class RngHelper
     /// </summary>
     /// <param name="seed"></param>
     /// <returns></returns>
-    public static IReadOnlyList<ActLocations.ActLocations> GetRandomActs(string seed)
+    public static IReadOnlyList<ActLocations> GetRandomActs(string seed)
     {
         var rng = GetActSelectionRng(seed);
-        var result = new List<ActLocations.ActLocations>();
+        var result = new List<ActLocations>();
 
         foreach (var acts in ActLocationRules.ActsByIndex)
         {

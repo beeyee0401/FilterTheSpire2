@@ -1,22 +1,31 @@
-using FilterTheSpire2.Code.ActLocations;
-using FilterTheSpire2.Code.Ancients;
+using FilterTheSpire2.Code.Acts;
 using FilterTheSpire2.Code.Ancients.Config;
 using FilterTheSpire2.Code.Ancients.Filtering;
 using FilterTheSpire2.Code.Helpers;
 using FilterTheSpire2.Code.SeedSearcher;
-using MegaCrit.Sts2.Core.Entities.Players;
 using MegaCrit.Sts2.Core.Extensions;
 using MegaCrit.Sts2.Core.Helpers;
 using MegaCrit.Sts2.Core.Models;
-using MegaCrit.Sts2.Core.Models.Events;
 using MegaCrit.Sts2.Core.Random;
 using MegaCrit.Sts2.Core.Runs;
-using MegaCrit.Sts2.Core.Unlocks;
 
 namespace FilterTheSpire2.Code.Filters;
 
 public class AncientRelicFilter(Ancient selectedAncient, RelicModel? relicModel, int actNum) : IFilter
 {
+    private static List<ActDefinition> GetRandomActDefinitions(Rng actSelectionRng)
+    {
+        return
+        [
+            actSelectionRng.NextItem([
+                ActDefinition.Overgrowth.Clone(),
+                ActDefinition.Underdocks.Clone()
+            ])!,
+            ActDefinition.Hive.Clone(),
+            ActDefinition.Glory.Clone()
+        ];
+    }
+    
     public bool IsSeedValid(SeedSearchRequest request, string seed)
     {
         var rng = new Rng((uint) StringHelper.GetDeterministicHashCode(seed));
@@ -29,36 +38,45 @@ public class AncientRelicFilter(Ancient selectedAncient, RelicModel? relicModel,
         else if (actNum > 1)
         {
             var actSelectionRng = RngHelper.GetActSelectionRng(seed);
-            var unlockState = UnlockState.all;
 
-            var actList = ActModel.GetRandomList(actSelectionRng, unlockState, false)
-                .Select(a => a.ToMutable()).ToList();
+            var actList = GetRandomActDefinitions(actSelectionRng);
+
             var runRng = new RunRngSet(seed);
             var upfrontRng = new Rng(runRng.UpFront.Seed, RngHelper.RngCounters.AncientCounter);
 
-            var multiActAncients = AncientRules.MultiActAncientsAndRelics.Keys
-                .Select(a => AncientMapping.AncientEvents[a]).ToList();
+            var multiActAncients = AncientRules.MultiActAncientsAndRelics.Keys.ToList();
+
             multiActAncients.UnstableShuffle(upfrontRng);
-            foreach (var actModel in actList.Skip(1))
+
+            foreach (var act in actList.Skip(1))
             {
                 var count = upfrontRng.NextInt(multiActAncients.Count + 1);
-                var list = multiActAncients.Take(count).ToList();
-                multiActAncients = multiActAncients.Except(list).ToList();
-                actModel.SetSharedAncientSubset(list);
-            }
-            
-            foreach (var act in actList)
-            {
-                act.GenerateRooms(upfrontRng, unlockState);
+
+                var sharedAncientsForAct = multiActAncients
+                    .Take(count)
+                    .ToList();
+
+                multiActAncients = multiActAncients
+                    .Except(sharedAncientsForAct)
+                    .ToList();
+
+                act.SharedAncients.AddRange(sharedAncientsForAct);
             }
 
-            if (actList[actNum - 1].Ancient.Id != AncientMapping.AncientEvents[selectedAncient].Id)
+            var rolledAncients = actList
+                .Select(act => AncientGenerator.Generate(act, upfrontRng))
+                .ToList();
+
+            if (rolledAncients[actNum - 1] != selectedAncient)
             {
                 return false;
             }
 
-            if (relicModel == null) return true;
-            
+            if (relicModel == null)
+            {
+                return true;
+            }
+
             var ancient = AncientFactory.GetAncient(selectedAncient, actNum);
             return ancient.CheckOptions(rng.Seed, relicModel);
         }

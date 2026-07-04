@@ -1,3 +1,4 @@
+using FilterTheSpire2.Code.Acts;
 using FilterTheSpire2.Code.Ancients.Config;
 using FilterTheSpire2.Code.Cards;
 using FilterTheSpire2.Code.Config;
@@ -268,13 +269,13 @@ public static class FilterManager
 
     private static void AddActLocationFilters(List<IFilter> filters)
     {
-        if (FilterTheSpire2Config.Act1Locations != ActLocations.ActLocations.Any)
+        if (FilterTheSpire2Config.Act1Locations != ActLocations.Any)
             filters.Add(new ActLocationFilter(FilterTheSpire2Config.Act1Locations, 1));
 
-        if (FilterTheSpire2Config.Act2Locations != ActLocations.ActLocations.Any)
+        if (FilterTheSpire2Config.Act2Locations != ActLocations.Any)
             filters.Add(new ActLocationFilter(FilterTheSpire2Config.Act2Locations, 2));
 
-        if (FilterTheSpire2Config.Act3Locations != ActLocations.ActLocations.Any)
+        if (FilterTheSpire2Config.Act3Locations != ActLocations.Any)
             filters.Add(new ActLocationFilter(FilterTheSpire2Config.Act3Locations, 3));
     }
 }

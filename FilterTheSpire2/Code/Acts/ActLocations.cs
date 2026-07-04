@@ -1,4 +1,4 @@
-namespace FilterTheSpire2.Code.ActLocations;
+namespace FilterTheSpire2.Code.Acts;
 
 public enum ActLocations
 {

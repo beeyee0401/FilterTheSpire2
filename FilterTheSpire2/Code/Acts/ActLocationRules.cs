@@ -1,6 +1,6 @@
 using System.Collections.Immutable;
 
-namespace FilterTheSpire2.Code.ActLocations;
+namespace FilterTheSpire2.Code.Acts;
 
 public static class ActLocationRules
 {

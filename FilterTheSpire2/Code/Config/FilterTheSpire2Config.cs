@@ -1,7 +1,7 @@
 using System.Reflection;
 using BaseLib.Config;
 using BaseLib.Config.UI;
-using FilterTheSpire2.Code.ActLocations;
+using FilterTheSpire2.Code.Acts;
 using FilterTheSpire2.Code.Ancients.Config;
 using FilterTheSpire2.Code.Cards;
 using FilterTheSpire2.Code.Characters;
@@ -106,11 +106,11 @@ public class FilterTheSpire2Config : SimpleModConfig
     public static RelicOptions ShopRelic { get; set; } = RelicOptions.Any;
 
     [ConfigSection("ActLocationsSection")]
-    public static ActLocations.ActLocations Act1Locations { get; set; } = ActLocations.ActLocations.Any;
+    public static ActLocations Act1Locations { get; set; } = ActLocations.Any;
 
-    public static ActLocations.ActLocations Act2Locations { get; set; } = ActLocations.ActLocations.Any;
+    public static ActLocations Act2Locations { get; set; } = ActLocations.Any;
 
-    public static ActLocations.ActLocations Act3Locations { get; set; } = ActLocations.ActLocations.Any;
+    public static ActLocations Act3Locations { get; set; } = ActLocations.Any;
     
     public static ColorRect CreateCardDivider() => CreateDividerControl();
 
@@ -135,8 +135,8 @@ public class FilterTheSpire2Config : SimpleModConfig
             var newItems = new List<NConfigDropdownItem.ItemData>();
             foreach (var actLocationItem in allActLocations)
             {
-                var actLocation = (ActLocations.ActLocations)actLocationItem.Value!;
-                if (actLocation == ActLocations.ActLocations.Any)
+                var actLocation = (ActLocations)actLocationItem.Value!;
+                if (actLocation == ActLocations.Any)
                 {
                     newItems.Add(actLocationItem);
                     continue;
