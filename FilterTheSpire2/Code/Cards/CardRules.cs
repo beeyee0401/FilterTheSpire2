@@ -72,7 +72,7 @@ public static class CardRules
         new(CardOptions.IronWave, CharacterOptions.Ironclad, CardRarity.Common),
         new(CardOptions.Juggernaut, CharacterOptions.Ironclad, CardRarity.Rare),
         new(CardOptions.Juggling, CharacterOptions.Ironclad, CardRarity.Uncommon),
-        new(CardOptions.Mangle, CharacterOptions.Ironclad, CardRarity.Common),
+        new(CardOptions.Mangle, CharacterOptions.Ironclad, CardRarity.Rare),
         new(CardOptions.MoltenFist, CharacterOptions.Ironclad, CardRarity.Common),
         new(CardOptions.NotYet, CharacterOptions.Ironclad, CardRarity.Rare),
         new(CardOptions.Offering, CharacterOptions.Ironclad, CardRarity.Rare),
