@@ -1,8 +1,8 @@
 using FilterTheSpire2.Code.Filters;
-using FilterTheSpire2.Code.Patches;
 using FilterTheSpire2.Code.SeedSearcher;
 using Godot;
 using HarmonyLib;
+using MegaCrit.Sts2.Core.ControllerInput;
 using MegaCrit.Sts2.Core.Entities.Ascension;
 using MegaCrit.Sts2.Core.Helpers;
 using MegaCrit.Sts2.Core.Models;
@@ -13,10 +13,22 @@ using MegaCrit.Sts2.Core.Nodes.Screens.CharacterSelect;
 using MegaCrit.Sts2.Core.Runs;
 using MegaCrit.Sts2.Core.Unlocks;
 
+namespace FilterTheSpire2.Code.Patches;
+
 [HarmonyPatch(typeof(StartRunLobby), "BeginRunForAllPlayers")]
 internal class BeginRunForAllPlayersPatch
 {
     private static bool _searching = false;
+
+    private sealed class SearchUiState
+    {
+        public bool LeftArrowWasVisible { get; init; }
+        public bool RightArrowWasVisible { get; init; }
+        public bool LeftTriggerWasVisible { get; init; }
+        public bool RightTriggerWasVisible { get; init; }
+
+        public Action? CancelAction { get; set; }
+    }
 
     [HarmonyPrefix]
     private static bool Prefix(StartRunLobby __instance, ref string seed, List<ModifierModel> modifiers)
@@ -42,12 +54,11 @@ internal class BeginRunForAllPlayersPatch
         List<ModifierModel> modifiers)
     {
         using var cts = new CancellationTokenSource();
+
         var screen = instance.LobbyListener as NCharacterSelectScreen;
         CanvasLayer? overlay = null;
         RichTextLabel? statusLabel = null;
-
-        var leftArrowWasVisible = false;
-        var rightArrowWasVisible = false;
+        SearchUiState? uiState = null;
 
         var filters = FilterManager.CreateFiltersFromSettings();
         if (filters.Count == 0)
@@ -64,6 +75,7 @@ internal class BeginRunForAllPlayersPatch
         };
 
         var runner = new SeedSearchRunner(request);
+
         var searchTask = Task.Run(() =>
         {
             runner.Run();
@@ -71,19 +83,11 @@ internal class BeginRunForAllPlayersPatch
         }, cts.Token);
 
         string? foundSeed = null;
+
         if (screen != null)
         {
-            var ap = Traverse.Create(Traverse.Create(screen).Field("_ascensionPanel").GetValue<NAscensionPanel>());
-            var leftArrow = ap.Field("_leftArrow").GetValue<NButton>();
-            var rightArrow = ap.Field("_rightArrow").GetValue<NButton>();
-
-            leftArrowWasVisible = leftArrow.Visible;
-            rightArrowWasVisible = rightArrow.Visible;
-
-            leftArrow.Visible = false;
-            rightArrow.Visible = false;
-
-            (overlay, statusLabel) = BuildOverlay(runner, screen, cts, leftArrowWasVisible, rightArrowWasVisible);
+            uiState = HideSearchUi(screen);
+            (overlay, statusLabel) = BuildOverlay(runner, cts, uiState);
             screen.AddChild(overlay);
         }
 
@@ -92,6 +96,7 @@ internal class BeginRunForAllPlayersPatch
             while (!searchTask.IsCompleted && !cts.IsCancellationRequested)
             {
                 var count = runner.TotalSeedsExamined;
+
                 if (statusLabel != null)
                 {
                     Callable.From(() =>
@@ -106,9 +111,10 @@ internal class BeginRunForAllPlayersPatch
 
             if (!cts.IsCancellationRequested && statusLabel != null)
             {
+                var finalCount = runner.TotalSeedsExamined;
+
                 if (foundSeed != null)
                 {
-                    var finalCount = runner.TotalSeedsExamined;
                     Callable.From(() =>
                         statusLabel.Text = $"Seed found!\nExamined [color=yellow]{finalCount:N0}[/color] seeds"
                     ).CallDeferred();
@@ -117,7 +123,6 @@ internal class BeginRunForAllPlayersPatch
                 }
                 else
                 {
-                    var finalCount = runner.TotalSeedsExamined;
                     Callable.From(() =>
                         statusLabel.Text = $"No matching seed found.\nSearched [color=yellow]{finalCount:N0}[/color] seeds"
                     ).CallDeferred();
@@ -126,7 +131,11 @@ internal class BeginRunForAllPlayersPatch
                 }
             }
         }
-        catch (Exception ex) when (ex is not OperationCanceledException)
+        catch (OperationCanceledException)
+        {
+            runner.Cancel();
+        }
+        catch (Exception)
         {
             if (statusLabel != null)
             {
@@ -143,52 +152,59 @@ internal class BeginRunForAllPlayersPatch
         finally
         {
             overlay?.QueueFree();
-            RestoreScreenUi(screen, leftArrowWasVisible, rightArrowWasVisible);
+            RestoreScreenUi(screen, uiState);
         }
-        
+
         if (cts.IsCancellationRequested || foundSeed == null)
         {
             instance.SetReady(false);
             return;
         }
 
-        BeginRunWithSeed(
-            instance,
-            foundSeed,
-            modifiers,
-            true);
+        BeginRunWithSeed(instance, foundSeed, modifiers, filteredSeedRun: true);
     }
 
-    private static void BeginRunWithSeed(
-        StartRunLobby instance,
-        string seed,
-        List<ModifierModel> modifiers,
-        bool filteredSeedRun)
+    private static SearchUiState HideSearchUi(NCharacterSelectScreen screen)
     {
-        _searching = true;
-        try
-        {
-            // Attempt to label it a Custom run since it's essentially seeded.
-            if (filteredSeedRun)
-            {
-                StartNewSingleplayerRunPatch.IsFilteredSeedRun = true;
-            }
+        var screenTraverse = Traverse.Create(screen);
 
-            AccessTools.Method(typeof(StartRunLobby), "BeginRunForAllPlayers")
-                .Invoke(instance, [seed, modifiers]);
-        }
-        finally
+        screenTraverse.Field("_embarkButton").GetValue<NConfirmButton>().Disable();
+        screenTraverse.Field("_backButton").GetValue<NBackButton>().Disable();
+
+        var characterButtonContainer = screenTraverse.Field("_charButtonContainer").GetValue<Control>();
+        foreach (var button in characterButtonContainer.GetChildren().OfType<NCharacterSelectButton>())
         {
-            _searching = false;
+            button.Disable();
         }
+
+        var ascensionPanel = screenTraverse.Field("_ascensionPanel").GetValue<NAscensionPanel>();
+        var ascensionTraverse = Traverse.Create(ascensionPanel);
+
+        var leftArrow = ascensionTraverse.Field("_leftArrow").GetValue<NButton>();
+        var rightArrow = ascensionTraverse.Field("_rightArrow").GetValue<NButton>();
+        var leftTriggerIcon = ascensionTraverse.Field("_leftTriggerIcon").GetValue<TextureRect>();
+        var rightTriggerIcon = ascensionTraverse.Field("_rightTriggerIcon").GetValue<TextureRect>();
+
+        var state = new SearchUiState
+        {
+            LeftArrowWasVisible = leftArrow.Visible,
+            RightArrowWasVisible = rightArrow.Visible,
+            LeftTriggerWasVisible = leftTriggerIcon.Visible,
+            RightTriggerWasVisible = rightTriggerIcon.Visible
+        };
+
+        leftArrow.Visible = false;
+        rightArrow.Visible = false;
+        leftTriggerIcon.Visible = false;
+        rightTriggerIcon.Visible = false;
+
+        return state;
     }
 
     private static (CanvasLayer overlay, RichTextLabel statusLabel) BuildOverlay(
         SeedSearchRunner searcher,
-        NCharacterSelectScreen? screen,
         CancellationTokenSource cts,
-        bool leftArrowWasVisible,
-        bool rightArrowWasVisible)
+        SearchUiState uiState)
     {
         var overlay = new CanvasLayer();
 
@@ -209,44 +225,94 @@ internal class BeginRunForAllPlayersPatch
         };
 
         var cancelButton = new Button { Text = "Cancel" };
-        cancelButton.Pressed += () =>
+
+        void CancelSearch()
         {
+            if (cts.IsCancellationRequested)
+            {
+                return;
+            }
+
             cts.Cancel();
+            searcher.Cancel();
+
             label.Text = "Cancelling...";
             cancelButton.Disabled = true;
-            searcher.Cancel();
-            RestoreScreenUi(screen, leftArrowWasVisible, rightArrowWasVisible);
-        };
+        }
+
+        uiState.CancelAction = CancelSearch;
+
+        cancelButton.Pressed += CancelSearch;
+
+        NHotkeyManager.Instance!.PushHotkeyPressedBinding(
+            MegaInput.cancel,
+            uiState.CancelAction);
 
         vbox.AddChild(label);
         vbox.AddChild(cancelButton);
         panel.AddChild(vbox);
         overlay.AddChild(panel);
 
+        cancelButton.CallDeferred(Control.MethodName.GrabFocus);
+
         return (overlay, label);
     }
 
-    private static void RestoreScreenUi(NCharacterSelectScreen? screen, bool leftArrowWasVisible,
-        bool rightArrowWasVisible)
+    private static void RestoreScreenUi(NCharacterSelectScreen? screen, SearchUiState? state)
     {
-        if (screen == null)
+        if (screen == null || state == null)
         {
             return;
         }
 
-        var t = Traverse.Create(screen);
-        t.Field("_embarkButton").GetValue<NConfirmButton>().Enable();
-        t.Field("_backButton").GetValue<NBackButton>().Enable();
-
-        var container = t.Field("_charButtonContainer").GetValue<Control>();
-        foreach (var btn in container.GetChildren().OfType<NCharacterSelectButton>())
+        if (state.CancelAction != null)
         {
-            btn.Enable();
+            NHotkeyManager.Instance!.RemoveHotkeyPressedBinding(
+                MegaInput.cancel,
+                state.CancelAction);
         }
 
-        var ascensionPanel = t.Field("_ascensionPanel").GetValue<NAscensionPanel>();
-        var ap = Traverse.Create(ascensionPanel);
-        ap.Field("_leftArrow").GetValue<NButton>().Visible = leftArrowWasVisible;
-        ap.Field("_rightArrow").GetValue<NButton>().Visible = rightArrowWasVisible;
+        var screenTraverse = Traverse.Create(screen);
+
+        screenTraverse.Field("_embarkButton").GetValue<NConfirmButton>().Enable();
+        screenTraverse.Field("_backButton").GetValue<NBackButton>().Enable();
+
+        var characterButtonContainer = screenTraverse.Field("_charButtonContainer").GetValue<Control>();
+        foreach (var button in characterButtonContainer.GetChildren().OfType<NCharacterSelectButton>())
+        {
+            button.Enable();
+        }
+
+        var ascensionPanel = screenTraverse.Field("_ascensionPanel").GetValue<NAscensionPanel>();
+        var ascensionTraverse = Traverse.Create(ascensionPanel);
+
+        ascensionTraverse.Field("_leftArrow").GetValue<NButton>().Visible = state.LeftArrowWasVisible;
+        ascensionTraverse.Field("_rightArrow").GetValue<NButton>().Visible = state.RightArrowWasVisible;
+        ascensionTraverse.Field("_leftTriggerIcon").GetValue<TextureRect>().Visible = state.LeftTriggerWasVisible;
+        ascensionTraverse.Field("_rightTriggerIcon").GetValue<TextureRect>().Visible = state.RightTriggerWasVisible;
+    }
+
+    private static void BeginRunWithSeed(
+        StartRunLobby instance,
+        string seed,
+        List<ModifierModel> modifiers,
+        bool filteredSeedRun)
+    {
+        _searching = true;
+
+        try
+        {
+            if (filteredSeedRun)
+            {
+                StartNewSingleplayerRunPatch.IsFilteredSeedRun = true;
+            }
+
+            AccessTools.Method(typeof(StartRunLobby), "BeginRunForAllPlayers")
+                .Invoke(instance, [seed, modifiers]);
+        }
+        finally
+        {
+            _searching = false;
+        }
     }
 }
