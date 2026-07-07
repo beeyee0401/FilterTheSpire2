@@ -70,7 +70,7 @@ internal class BeginRunForAllPlayersPatch
             return runner.Result?.StringSeed;
         }, cts.Token);
 
-        string? foundSeed;
+        string? foundSeed = null;
         if (screen != null)
         {
             var ap = Traverse.Create(Traverse.Create(screen).Field("_ascensionPanel").GetValue<NAscensionPanel>());
@@ -104,14 +104,26 @@ internal class BeginRunForAllPlayersPatch
 
             foundSeed = await searchTask;
 
-            if (!cts.IsCancellationRequested && foundSeed != null && statusLabel != null)
+            if (!cts.IsCancellationRequested && statusLabel != null)
             {
-                var finalCount = runner.TotalSeedsExamined;
-                Callable.From(() =>
-                    statusLabel.Text = $"Seed found!\nExamined [color=yellow]{finalCount:N0}[/color] seeds"
-                ).CallDeferred();
+                if (foundSeed != null)
+                {
+                    var finalCount = runner.TotalSeedsExamined;
+                    Callable.From(() =>
+                        statusLabel.Text = $"Seed found!\nExamined [color=yellow]{finalCount:N0}[/color] seeds"
+                    ).CallDeferred();
 
-                await Task.Delay(1500, cts.Token);
+                    await Task.Delay(1500, cts.Token);
+                }
+                else
+                {
+                    var finalCount = runner.TotalSeedsExamined;
+                    Callable.From(() =>
+                        statusLabel.Text = $"No matching seed found.\nSearched [color=yellow]{finalCount:N0}[/color] seeds"
+                    ).CallDeferred();
+
+                    await Task.Delay(2500, cts.Token);
+                }
             }
         }
         catch (Exception ex) when (ex is not OperationCanceledException)
@@ -133,8 +145,8 @@ internal class BeginRunForAllPlayersPatch
             overlay?.QueueFree();
             RestoreScreenUi(screen, leftArrowWasVisible, rightArrowWasVisible);
         }
-
-        if (cts.IsCancellationRequested)
+        
+        if (cts.IsCancellationRequested || foundSeed == null)
         {
             instance.SetReady(false);
             return;
@@ -142,9 +154,9 @@ internal class BeginRunForAllPlayersPatch
 
         BeginRunWithSeed(
             instance,
-            foundSeed ?? seed,
+            foundSeed,
             modifiers,
-            filteredSeedRun: foundSeed != null);
+            true);
     }
 
     private static void BeginRunWithSeed(

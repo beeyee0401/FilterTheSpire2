@@ -12,15 +12,22 @@ public sealed class SeedSearchRunner(SeedSearchRequest request)
     
     public SeedSearchResult? Result { get; private set; }
 
+    private const ulong UInt32SeedSpace = uint.MaxValue + 1UL;
+
     public void Run()
     {
-        var rng = new MegaRandom((ulong) DateTimeOffset.Now.ToUnixTimeSeconds());
+        var rng = new MegaRandom((ulong)DateTimeOffset.Now.ToUnixTimeSeconds());
         var start = (uint)(DateTime.UtcNow.Ticks * rng.Next(1, 100));
+
+        var baseStart = (ulong)start;
+        var endExclusive = baseStart + UInt32SeedSpace;
+
         var workers = Enumerable.Range(0, request.ThreadCount)
-            .Select(i => new SeedSearchWorker( 
+            .Select(i => new SeedSearchWorker(
                 this,
                 request,
-                start + i,
+                baseStart + (ulong)i,
+                endExclusive,
                 _cts.Token))
             .ToList();
 

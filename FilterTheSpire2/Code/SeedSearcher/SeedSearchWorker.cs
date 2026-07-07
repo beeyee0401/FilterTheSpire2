@@ -8,35 +8,33 @@ namespace FilterTheSpire2.Code.SeedSearcher;
 public sealed class SeedSearchWorker(
     SeedSearchRunner runner,
     SeedSearchRequest request,
-    long startSeed,
+    ulong startSeed,
+    ulong endExclusive,
     CancellationToken token)
 {
-    private long _current;
+    private ulong _current;
     
     public void Run()
     {
         _current = startSeed;
-        while (!token.IsCancellationRequested)
+
+        while (!token.IsCancellationRequested && _current < endExclusive)
         {
             runner.IncrementSeedsExamined();
 
-            var result = TryRandomSeed(_current);
+            var candidate = unchecked((uint)_current);
+            var result = TryRandomSeed(candidate);
 
-            if (result != null)
+            if (result != null && runner.TrySetWinner(result))
             {
-                var won = runner.TrySetWinner(result);
-
-                if (won)
-                {
-                    break;
-                }
+                break;
             }
 
-            _current += request.ThreadCount;
+            _current += (ulong)request.ThreadCount;
         }
     }
 
-    private SeedSearchResult? TryRandomSeed(long candidate)
+    private SeedSearchResult? TryRandomSeed(uint candidate)
     {
         var stringSeed = RngHelper.GetRandomSeed(candidate);
         // var stringSeed = "H8G58Z3P8H";

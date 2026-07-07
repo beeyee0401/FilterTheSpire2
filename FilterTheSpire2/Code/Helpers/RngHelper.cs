@@ -55,9 +55,9 @@ public static class RngHelper
         return new Rng(seed, StringHelper.SnakeCase(runRngType.ToString()));
     }
 
-    public static string GetRandomSeed(long candidate, int length = 10)
+    public static string GetRandomSeed(uint candidate, int length = 10)
     {
-        var rng = new Rng((uint)candidate);
+        var rng = new Rng(candidate);
         string text;
         do
         {
