@@ -126,24 +126,6 @@ public class NeowsBonesFilterTests
     }
     
     [TestMethod]
-    public void IsSeedValid_OrderDependentBehavior()
-    {
-        var filterA = new NeowsBonesFilter(
-            [NeowOptions.NewLeaf, NeowOptions.Kaleidoscope],
-            null);
-
-        var filterB = new NeowsBonesFilter(
-            [NeowOptions.Kaleidoscope, NeowOptions.NewLeaf],
-            null);
-
-        var request = CreateRequest();
-        Assert.AreNotEqual(
-            filterA.IsSeedValid(request, Seed_Bones_NewLeaf_Kaleidoscope_Regret),
-            filterB.IsSeedValid(request, Seed_Bones_NewLeaf_Kaleidoscope_Regret)
-        );
-    }
-    
-    [TestMethod]
     public void IsSeedValid_OptionsMatchButCurseMismatch_ReturnsFalse()
     {
         var filter = new NeowsBonesFilter(
@@ -163,6 +145,70 @@ public class NeowsBonesFilterTests
             CardOptions.Regret);
 
         var request = CreateRequest();
+
+        Assert.IsFalse(filter.IsSeedValid(request, Seed_Bones_NewLeaf_Kaleidoscope_Regret));
+    }
+    
+    [TestMethod]
+    public void IsSeedValid_UnorderedMode_AllowsSwappedTwoOptions()
+    {
+        var request = CreateRequest();
+
+        var normal = new NeowsBonesFilter(
+            [NeowOptions.NewLeaf, NeowOptions.Kaleidoscope],
+            null,
+            requireSequenceForTwoOptions: false);
+
+        var swapped = new NeowsBonesFilter(
+            [NeowOptions.Kaleidoscope, NeowOptions.NewLeaf],
+            null,
+            requireSequenceForTwoOptions: false);
+
+        Assert.IsTrue(normal.IsSeedValid(request, Seed_Bones_NewLeaf_Kaleidoscope_Regret));
+        Assert.IsTrue(swapped.IsSeedValid(request, Seed_Bones_NewLeaf_Kaleidoscope_Regret));
+    }
+
+    [TestMethod]
+    public void IsSeedValid_SequenceMode_RejectsSwappedTwoOptions()
+    {
+        var request = CreateRequest();
+
+        var normal = new NeowsBonesFilter(
+            [NeowOptions.NewLeaf, NeowOptions.Kaleidoscope],
+            null,
+            requireSequenceForTwoOptions: true);
+
+        var swapped = new NeowsBonesFilter(
+            [NeowOptions.Kaleidoscope, NeowOptions.NewLeaf],
+            null,
+            requireSequenceForTwoOptions: true);
+
+        Assert.IsTrue(normal.IsSeedValid(request, Seed_Bones_NewLeaf_Kaleidoscope_Regret));
+        Assert.IsFalse(swapped.IsSeedValid(request, Seed_Bones_NewLeaf_Kaleidoscope_Regret));
+    }
+
+    [TestMethod]
+    public void IsSeedValid_UnorderedMode_StillRejectsMissingOption()
+    {
+        var request = CreateRequest();
+
+        var filter = new NeowsBonesFilter(
+            [NeowOptions.NewLeaf, NeowOptions.LeadPaperweight],
+            null,
+            requireSequenceForTwoOptions: false);
+
+        Assert.IsFalse(filter.IsSeedValid(request, Seed_Bones_NewLeaf_Kaleidoscope_Regret));
+    }
+
+    [TestMethod]
+    public void IsSeedValid_UnorderedMode_StillRequiresCurse()
+    {
+        var request = CreateRequest();
+
+        var filter = new NeowsBonesFilter(
+            [NeowOptions.Kaleidoscope, NeowOptions.NewLeaf],
+            CardOptions.Shame,
+            requireSequenceForTwoOptions: false);
 
         Assert.IsFalse(filter.IsSeedValid(request, Seed_Bones_NewLeaf_Kaleidoscope_Regret));
     }

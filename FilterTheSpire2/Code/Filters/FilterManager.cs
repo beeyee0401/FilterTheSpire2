@@ -176,28 +176,50 @@ public static class FilterManager
             var bonesBaseConsumption = new NeowRngConsumption(
                 RewardsRngSteps: AncientRules.NeowsBonesOptions.Length-1, TransformationsRngSteps: 0, NicheRngSteps: 0);
 
-            // If only option 2 is set and option 1 is Any, treat option 2 as slot 1
-            // for outcome filtering — we just need it to appear somewhere in the chosen pair.
-            var effectiveOption1 = bonesOption1 != NeowOptions.Any
-                ? bonesOption1
-                : bonesOption2;
-            var effectiveOption2 = bonesOption1 != NeowOptions.Any
-                ? bonesOption2
-                : NeowOptions.Any; 
+            var option1Filter = BuildNeowOutcomeFilter(bonesOption1, bonesBaseConsumption);
+            var option2Filter = BuildNeowOutcomeFilter(bonesOption2, bonesBaseConsumption);
 
-            var slot1Filter = BuildNeowOutcomeFilter(effectiveOption1, bonesBaseConsumption);
-            if (slot1Filter != null)
+            var requireSequence =
+                bonesOption1 != NeowOptions.Any &&
+                bonesOption2 != NeowOptions.Any &&
+                option1Filter != null &&
+                option2Filter != null &&
+                DoConsumptionsOverlap(option1Filter.RngConsumption, option2Filter.RngConsumption);
+
+            if (neowOptions.Count != 0 || curseOption != null)
             {
-                filters.Add(slot1Filter);
+                filters.Add(new NeowsBonesFilter([..neowOptions], curseOption, requireSequence));
             }
 
-            if (effectiveOption2 != NeowOptions.Any)
+            if (!requireSequence)
+            {
+                if (option1Filter != null)
+                {
+                    filters.Add(option1Filter);
+                }
+
+                if (option2Filter != null)
+                {
+                    filters.Add(option2Filter);
+                }
+
+                return;
+            }
+
+            // Sequence matters, so slot 2 must fast-forward past slot 1's consumption.
+            if (option1Filter != null)
+            {
+                filters.Add(option1Filter);
+            }
+
+            if (bonesOption2 != NeowOptions.Any)
             {
                 var slot2Consumption = new NeowRngConsumption(
-                    RewardsRngSteps: bonesBaseConsumption.RewardsRngSteps + (slot1Filter?.RngConsumption.RewardsRngSteps ?? 0), 
-                    TransformationsRngSteps: bonesBaseConsumption.TransformationsRngSteps + (slot1Filter?.RngConsumption.TransformationsRngSteps ?? 0), 
-                    NicheRngSteps: bonesBaseConsumption.NicheRngSteps + (slot1Filter?.RngConsumption.NicheRngSteps ?? 0));
-                var slot2Filter = BuildNeowOutcomeFilter(effectiveOption2, slot2Consumption);
+                    RewardsRngSteps: bonesBaseConsumption.RewardsRngSteps + (option1Filter?.RngConsumption.RewardsRngSteps ?? 0),
+                    TransformationsRngSteps: bonesBaseConsumption.TransformationsRngSteps + (option1Filter?.RngConsumption.TransformationsRngSteps ?? 0),
+                    NicheRngSteps: bonesBaseConsumption.NicheRngSteps + (option1Filter?.RngConsumption.NicheRngSteps ?? 0));
+
+                var slot2Filter = BuildNeowOutcomeFilter(bonesOption2, slot2Consumption);
                 if (slot2Filter != null)
                 {
                     filters.Add(slot2Filter);
@@ -283,4 +305,15 @@ public static class FilterManager
         if (FilterTheSpire2Config.Act3Locations != ActLocations.Any)
             filters.Add(new ActLocationFilter(FilterTheSpire2Config.Act3Locations, 3));
     }
+
+    #region helpers
+
+    private static bool DoConsumptionsOverlap(NeowRngConsumption a, NeowRngConsumption b)
+    {
+        return (a.RewardsRngSteps > 0 && b.RewardsRngSteps > 0) ||
+               (a.TransformationsRngSteps > 0 && b.TransformationsRngSteps > 0) ||
+               (a.NicheRngSteps > 0 && b.NicheRngSteps > 0);
+    }
+
+    #endregion
 }

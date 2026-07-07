@@ -8,7 +8,10 @@ using MegaCrit.Sts2.Core.Helpers;
 
 namespace FilterTheSpire2.Code.Filters.RelicOutcomeFilters;
 
-public class NeowsBonesFilter(ImmutableArray<NeowOptions> neowOptions, CardOptions? curse) : IFilter
+public class NeowsBonesFilter(
+    ImmutableArray<NeowOptions> neowOptions, 
+    CardOptions? curse,
+    bool requireSequenceForTwoOptions = false) : IFilter
 {
     public bool IsSeedValid(SeedSearchRequest request, string seed)
     {
@@ -38,10 +41,12 @@ public class NeowsBonesFilter(ImmutableArray<NeowOptions> neowOptions, CardOptio
         var optionsMatch = requested.Length switch
         {
             0 => true,
-            1 => chosen.Contains(neowOptions.First()),
-            2 => requested.SequenceEqual(chosen),
+            1 => chosen.Contains(requested[0]),
+            2 when requireSequenceForTwoOptions => requested.SequenceEqual(chosen),
+            2 => requested.All(chosen.Contains),
             _ => true
         };
+
         return optionsMatch &&
                (curse == null || chosenCurse == curse);
     }
