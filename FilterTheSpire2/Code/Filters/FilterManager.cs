@@ -258,9 +258,14 @@ public static class FilterManager
     {
         var cardOptions = new List<CardOptions>();
         if (FilterTheSpire2Config.KaleidoscopeOption1 != CardOptions.Any)
+        {
             cardOptions.Add(FilterTheSpire2Config.KaleidoscopeOption1);
+        }
+
         if (FilterTheSpire2Config.KaleidoscopeOption2 != CardOptions.Any)
+        {
             cardOptions.Add(FilterTheSpire2Config.KaleidoscopeOption2);
+        }
 
         return cardOptions.Count > 0
             ? new KaleidoscopeFilter(cardOptions, slot1Consumption)

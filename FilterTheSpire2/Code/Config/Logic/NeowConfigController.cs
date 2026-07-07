@@ -57,12 +57,10 @@ public static class NeowConfigController
  
     private static void EnsureSubOptionRows(Control optionContainer)
     {
-        var currentNeow = FilterTheSpire2Config.NeowOptions;
- 
         foreach (var (propName, requiredOption) in NeowSubOptions)
         {
-            var isRelevant = currentNeow == requiredOption;
- 
+            var isRelevant = IsSubOptionRelevant(propName, requiredOption);
+
             if (!OptionRows.TryGetValue(propName, out var row))
             {
                 if (isRelevant)
@@ -71,15 +69,34 @@ public static class NeowConfigController
                 }
                 continue;
             }
- 
+
             row.Visible = isRelevant;
             if (Dividers.TryGetValue(propName, out var divider))
             {
                 divider.Visible = isRelevant;
             }
         }
- 
+
         SimpleModConfig.SetupFocusNeighbors(optionContainer);
+    }
+    
+    private static bool IsSubOptionRelevant(string propName, NeowOptions requiredOption)
+    {
+        var currentNeow = FilterTheSpire2Config.NeowOptions;
+
+        if (currentNeow == requiredOption)
+        {
+            return true;
+        }
+
+        if (propName == nameof(FilterTheSpire2Config.LeadPaperweightOption) &&
+            currentNeow == NeowOptions.NeowsBones)
+        {
+            return FilterTheSpire2Config.NeowsBonesRelicOption1 == NeowOptions.LeadPaperweight ||
+                   FilterTheSpire2Config.NeowsBonesRelicOption2 == NeowOptions.LeadPaperweight;
+        }
+
+        return false;
     }
 
     private static Control? GetNeowSectionContainer(Control optionContainer)
@@ -148,6 +165,8 @@ public static class NeowConfigController
             return new NConfigDropdownItem.ItemData(item.Text, item.Value, () =>
             {
                 originalOnSet.Invoke();
+
+                EnsureSubOptionRows(optionContainer);
                 CharacterConfigController.RefreshCardRows(optionContainer);
             });
         }).ToList();
