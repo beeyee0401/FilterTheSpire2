@@ -1,6 +1,5 @@
 using FilterTheSpire2.Code.Ancients.Config;
 using FilterTheSpire2.Code.Helpers;
-using MegaCrit.Sts2.Core.Models;
 
 namespace FilterTheSpire2.Code.Ancients.Filtering;
 
@@ -8,12 +7,16 @@ public class Pael : AbstractAncient
 {
     public Pael()
     {
-        Id = ModelDb.AncientEvent<MegaCrit.Sts2.Core.Models.Events.Pael>().Id.Entry;
-        Ancient = Ancient.Pael;
+        Id = "PAEL";
     }
 
-    public override bool CheckOptions(uint seed, RelicModel relic)
+    public override bool CheckOptions(uint seed, Enum? relicOption)
     {
+        if (relicOption is not PaelOptions relic)
+        {
+            return true;
+        }
+        
         var rng = RngHelper.GetEventRng(seed, Id!);
         var list1 = new List<PaelOptions>()
         {
@@ -49,8 +52,8 @@ public class Pael : AbstractAncient
 
         foreach (var optionList in optionLists)
         {
-            var optionId =  RelicModelMappings.GetRelicModel(rng.NextItem(optionList))!.Id;
-            if (optionId == relic.Id)
+            var option =  rng.NextItem(optionList);
+            if (option == relic)
             {
                 return true;
             }

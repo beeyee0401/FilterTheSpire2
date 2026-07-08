@@ -1,23 +1,24 @@
 using FilterTheSpire2.Code.Ancients.Config;
 using FilterTheSpire2.Code.Helpers;
-using MegaCrit.Sts2.Core.Events;
 using MegaCrit.Sts2.Core.Extensions;
-using MegaCrit.Sts2.Core.Models;
 
 namespace FilterTheSpire2.Code.Ancients.Filtering;
 
 public class Darv : AbstractAncient
 {
-    private int _actNum;
+    private readonly int _actNum;
     public Darv(int actNum)
     {
-        Id = ModelDb.AncientEvent<MegaCrit.Sts2.Core.Models.Events.Darv>().Id.Entry;
-        Ancient = Ancient.Darv;
+        Id = "DARV";
         _actNum = actNum;
     }
 
-    public override bool CheckOptions(uint seed, RelicModel relic)
+    public override bool CheckOptions(uint seed, Enum? relicOption)
     {
+        if (relicOption is not DarvOptions relic)
+        {
+            return true;
+        }
         var rng = RngHelper.GetEventRng(seed, Id!);
         var source = new List<List<DarvOptions>>()
         {
@@ -53,9 +54,6 @@ public class Darv : AbstractAncient
         {
             finalList = rngList.Take(3).ToList();
         }
-
-        return finalList
-            .Select(r => RelicModelFactory.GetRelicModel(r)!.Id)
-            .Contains(relic.Id);
+        return finalList.Contains(relic);
     }
 }

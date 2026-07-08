@@ -1,7 +1,6 @@
 using FilterTheSpire2.Code.Ancients.Config;
 using FilterTheSpire2.Code.Helpers;
 using MegaCrit.Sts2.Core.Extensions;
-using MegaCrit.Sts2.Core.Models;
 
 namespace FilterTheSpire2.Code.Ancients.Filtering;
 
@@ -9,12 +8,16 @@ public class Nonupeipe : AbstractAncient
 {
     public Nonupeipe()
     {
-        Id = ModelDb.AncientEvent<MegaCrit.Sts2.Core.Models.Events.Nonupeipe>().Id.Entry;
-        Ancient = Ancient.Nonupeipe;
+        Id = "NONUPEIPE";
     }
 
-    public override bool CheckOptions(uint seed, RelicModel relic)
+    public override bool CheckOptions(uint seed, Enum? relicOption)
     {
+        if (relicOption is not NonupeipeOptions relic)
+        {
+            return true;
+        }
+        
         var rng = RngHelper.GetEventRng(seed, Id!);
         var list = new List<NonupeipeOptions>()
         {
@@ -31,7 +34,7 @@ public class Nonupeipe : AbstractAncient
         };
 
         list.UnstableShuffle(rng);
-        var options = list.Take(3).Select(o => RelicModelMappings.GetRelicModel(o)!.Id);
-        return options.Contains(relic.Id);
+        var options = list.Take(3);
+        return options.Contains(relic);
     }
 }

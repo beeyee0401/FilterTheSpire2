@@ -1,7 +1,6 @@
 using FilterTheSpire2.Code.Ancients.Config;
 using FilterTheSpire2.Code.Helpers;
 using MegaCrit.Sts2.Core.Extensions;
-using MegaCrit.Sts2.Core.Models;
 
 namespace FilterTheSpire2.Code.Ancients.Filtering;
 
@@ -9,12 +8,16 @@ public class Vakuu : AbstractAncient
 {
     public Vakuu()
     {
-        Id = ModelDb.AncientEvent<MegaCrit.Sts2.Core.Models.Events.Vakuu>().Id.Entry;
-        Ancient = Ancient.Vakuu;
+        Id = "VAKUU";
     }
 
-    public override bool CheckOptions(uint seed, RelicModel relic)
+    public override bool CheckOptions(uint seed, Enum? relicOption)
     {
+        if (relicOption is not VakuuOptions relic)
+        {
+            return true;
+        }
+        
         var rng = RngHelper.GetEventRng(seed, Id!);
         var list1 = new List<VakuuOptions>()
         {
@@ -49,8 +52,7 @@ public class Vakuu : AbstractAncient
         foreach (var optionList in optionLists)
         {
             optionList.UnstableShuffle(rng);
-            var relicId = RelicModelFactory.GetRelicModel(optionList[0])!.Id;
-            if (relicId == relic.Id)
+            if (optionList[0] == relic)
             {
                 return true;
             }

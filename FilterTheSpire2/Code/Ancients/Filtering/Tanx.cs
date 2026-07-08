@@ -1,7 +1,6 @@
 using FilterTheSpire2.Code.Ancients.Config;
 using FilterTheSpire2.Code.Helpers;
 using MegaCrit.Sts2.Core.Extensions;
-using MegaCrit.Sts2.Core.Models;
 
 namespace FilterTheSpire2.Code.Ancients.Filtering;
 
@@ -9,12 +8,15 @@ public class Tanx : AbstractAncient
 {
     public Tanx()
     {
-        Id = ModelDb.AncientEvent<MegaCrit.Sts2.Core.Models.Events.Tanx>().Id.Entry;
-        Ancient = Ancient.Tanx;
+        Id = "TANX";
     }
 
-    public override bool CheckOptions(uint seed, RelicModel relic)
+    public override bool CheckOptions(uint seed, Enum? relicOption)
     {
+        if (relicOption is not TanxOptions relic)
+        {
+            return true;
+        }
         var rng = RngHelper.GetEventRng(seed, Id!);
         var list = new List<TanxOptions>()
         {
@@ -31,7 +33,7 @@ public class Tanx : AbstractAncient
         };
         
         list.UnstableShuffle(rng);
-        var options = list.Take(3).Select(o => RelicModelMappings.GetRelicModel(o)!.Id);
-        return options.Contains(relic.Id);
+        var options = list.Take(3);
+        return options.Contains(relic);
     }
 }

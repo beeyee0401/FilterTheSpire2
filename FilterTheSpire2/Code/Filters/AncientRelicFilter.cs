@@ -5,13 +5,12 @@ using FilterTheSpire2.Code.Helpers;
 using FilterTheSpire2.Code.SeedSearcher;
 using MegaCrit.Sts2.Core.Extensions;
 using MegaCrit.Sts2.Core.Helpers;
-using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Random;
 using MegaCrit.Sts2.Core.Runs;
 
 namespace FilterTheSpire2.Code.Filters;
 
-public class AncientRelicFilter(Ancient selectedAncient, RelicModel? relicModel, int actNum) : IFilter
+public class AncientRelicFilter(Ancient selectedAncient, Enum? relicOption, int actNum) : IFilter
 {
     private static List<ActDefinition> GetRandomActDefinitions(Rng actSelectionRng)
     {
@@ -33,7 +32,7 @@ public class AncientRelicFilter(Ancient selectedAncient, RelicModel? relicModel,
         if (actNum == 1)
         {
             var neow = AncientFactory.GetAncient(Ancient.Neow, actNum);
-            return relicModel != null && neow.CheckOptions(rng.Seed, relicModel);
+            return relicOption != null && neow.CheckOptions(rng.Seed, relicOption);
         } 
         else if (actNum > 1)
         {
@@ -72,13 +71,13 @@ public class AncientRelicFilter(Ancient selectedAncient, RelicModel? relicModel,
                 return false;
             }
 
-            if (relicModel == null)
+            if (relicOption == null)
             {
                 return true;
             }
 
             var ancient = AncientFactory.GetAncient(selectedAncient, actNum);
-            return ancient.CheckOptions(rng.Seed, relicModel);
+            return ancient.CheckOptions(rng.Seed, relicOption);
         }
         return true;
     }

@@ -1,7 +1,6 @@
 using FilterTheSpire2.Code.Ancients.Config;
 using FilterTheSpire2.Code.Helpers;
 using MegaCrit.Sts2.Core.Extensions;
-using MegaCrit.Sts2.Core.Models;
 
 namespace FilterTheSpire2.Code.Ancients.Filtering;
 
@@ -9,11 +8,16 @@ public class Neow : AbstractAncient
 {
     public Neow()
     {
-        Id = ModelDb.AncientEvent<MegaCrit.Sts2.Core.Models.Events.Neow>().Id.Entry;
+        Id = "NEOW";
     }
     
-    public override bool CheckOptions(uint seed, RelicModel relic)
+    public override bool CheckOptions(uint seed, Enum? relicOption)
     {
+        if (relicOption is not NeowOptions relic)
+        {
+            return true;
+        }
+        
         var rng = RngHelper.GetEventRng(seed, Id!);
 
         var cursedOptions = new List<NeowOptions>()
@@ -74,6 +78,6 @@ public class Neow : AbstractAncient
         positiveOptions.UnstableShuffle(rng);
         var finalOptions = positiveOptions.Take(2).ToList();
         finalOptions.Add(cursedOption);
-        return finalOptions.Select(o => RelicModelFactory.GetRelicModel(o)!.Id).Contains(relic.Id);
+        return finalOptions.Contains(relic);
     }
 }

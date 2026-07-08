@@ -2,7 +2,6 @@ using FilterTheSpire2.Code.Ancients.Config;
 using FilterTheSpire2.Code.Characters;
 using FilterTheSpire2.Code.Config;
 using FilterTheSpire2.Code.Helpers;
-using MegaCrit.Sts2.Core.Models;
 
 namespace FilterTheSpire2.Code.Ancients.Filtering;
 
@@ -10,12 +9,16 @@ public class Orobas : AbstractAncient
 {
     public Orobas()
     {
-        Id = ModelDb.AncientEvent<MegaCrit.Sts2.Core.Models.Events.Orobas>().Id.Entry;
-        Ancient = Ancient.Orobas;
+        Id = "OROBAS";
     }
 
-    public override bool CheckOptions(uint seed, RelicModel relic)
+    public override bool CheckOptions(uint seed, Enum? relicOption)
     {
+        if (relicOption is not OrobasOptions relic)
+        {
+            return true;
+        }
+
         var rng = RngHelper.GetEventRng(seed, Id!);
         CharacterOptions? seaGlassChar = null;
         if (FilterTheSpire2Config.Character != CharacterOptions.Any && 
@@ -61,8 +64,8 @@ public class Orobas : AbstractAncient
 
         foreach (var optionList in optionLists)
         {
-            var optionId =  RelicModelMappings.GetRelicModel(rng.NextItem(optionList))!.Id;
-            if (optionId == relic.Id && (seaGlassChar == null || seaGlassChar == FilterTheSpire2Config.SeaGlassCharacter))
+            var option =  rng.NextItem(optionList);
+            if (option == relic && (seaGlassChar == null || seaGlassChar == FilterTheSpire2Config.SeaGlassCharacter))
             {
                 return true;
             }

@@ -114,7 +114,7 @@ public static class FilterManager
             actNum == 2
                 ? FilterTheSpire2Config.Act2Ancient
                 : FilterTheSpire2Config.Act3Ancient,
-            isAnyVal ? null : RelicModelFactory.GetRelicModel(configVal)!,
+            isAnyVal ? null : configVal,
             actNum));
     }
 

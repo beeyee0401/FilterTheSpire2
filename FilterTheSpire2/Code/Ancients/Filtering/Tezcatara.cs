@@ -1,7 +1,5 @@
 using FilterTheSpire2.Code.Ancients.Config;
 using FilterTheSpire2.Code.Helpers;
-using MegaCrit.Sts2.Core.Extensions;
-using MegaCrit.Sts2.Core.Models;
 
 namespace FilterTheSpire2.Code.Ancients.Filtering;
 
@@ -9,12 +7,16 @@ public class Tezcatara : AbstractAncient
 {
     public Tezcatara()
     {
-        Id = ModelDb.AncientEvent<MegaCrit.Sts2.Core.Models.Events.Tezcatara>().Id.Entry;
-        Ancient = Ancient.Tezcatara;
+        Id = "TEZCATARA";
     }
 
-    public override bool CheckOptions(uint seed, RelicModel relic)
+    public override bool CheckOptions(uint seed, Enum? relicOption)
     {
+        if (relicOption is not TezcataraOptions relic)
+        {
+            return true;
+        }
+        
         var rng = RngHelper.GetEventRng(seed, Id!);
         var list1 = new List<TezcataraOptions>()
         {
@@ -47,8 +49,8 @@ public class Tezcatara : AbstractAncient
 
         foreach (var optionList in optionLists)
         {
-            var optionId =  RelicModelMappings.GetRelicModel(rng.NextItem(optionList))!.Id;
-            if (optionId == relic.Id)
+            var option = rng.NextItem(optionList);
+            if (option == relic)
             {
                 return true;
             }
