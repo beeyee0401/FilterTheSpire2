@@ -23,6 +23,7 @@
     </ItemGroup>
     
     <ItemGroup>
+        <PackageReference Include="Alchyr.Sts2.BaseLib" Version="3.3.4" />
         <PackageReference Include="MSTest" Version="4.0.2"/>
     </ItemGroup>
 

@@ -31,7 +31,9 @@ public abstract class BaseCardRewardFilter(
             .Where(c => c != CardOptions.Any)
             .ToList();
         if (requestedCardList.Count == 0 || requestedCardList.Count > cardRewardCount)
+        {
             return true;
+        }
 
         if (IsCharacterRequired && FilterTheSpire2Config.Character == CharacterOptions.Any)
             return true;

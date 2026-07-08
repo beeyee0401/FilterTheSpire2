@@ -24,10 +24,14 @@ public abstract class BaseCardTransformFilter(
             .Where(c => c != CardOptions.Any)
             .ToList();
         if (requestedCards.Count == 0 || requestedCards.Count > transformCount)
+        {
             return true;
+        }
 
         if (FilterTheSpire2Config.Character == CharacterOptions.Any)
+        {
             return true;
+        }
 
         var baseRng = new Rng((uint)StringHelper.GetDeterministicHashCode(seed));
         var rng = GetTransformRng(baseRng.Seed);

@@ -2,8 +2,6 @@
 using FilterTheSpire2.Code.Ancients.Config;
 using FilterTheSpire2.Code.Cards;
 using FilterTheSpire2.Code.Filters.RelicOutcomeFilters;
-using FilterTheSpire2.Code.SeedSearcher;
-using MegaCrit.Sts2.Core.Entities.Ascension;
 
 namespace FilterTheSpire2Tests.FilterTests;
 
@@ -11,14 +9,6 @@ namespace FilterTheSpire2Tests.FilterTests;
 public class NeowsBonesFilterTests
 {
     private const string Seed_Bones_NewLeaf_Kaleidoscope_Regret = "79U2UR9CSX";
-    private SeedSearchRequest CreateRequest()
-    {
-        return new SeedSearchRequest
-        {
-            AscensionLevel = AscensionLevel.None,
-            Filters = []
-        };
-    }
     
     [TestMethod]
     public void IsSeedValid_WithNoRestrictions_ReturnsTrue()
@@ -27,7 +17,7 @@ public class NeowsBonesFilterTests
             ImmutableArray<NeowOptions>.Empty,
             null);
 
-        var request = CreateRequest();
+        var request = FilterTestHelpers.Request();
 
         Assert.IsTrue(filter.IsSeedValid(request, "Hello"));
         Assert.IsTrue(filter.IsSeedValid(request, "ABC123"));
@@ -42,7 +32,7 @@ public class NeowsBonesFilterTests
             [NeowOptions.NewLeaf],
             null);
 
-        var request = CreateRequest();
+        var request = FilterTestHelpers.Request();
 
         Assert.IsTrue(filter.IsSeedValid(request, Seed_Bones_NewLeaf_Kaleidoscope_Regret));
     }
@@ -54,7 +44,7 @@ public class NeowsBonesFilterTests
             [NeowOptions.LeadPaperweight],
             null);
 
-        var request = CreateRequest();
+        var request = FilterTestHelpers.Request();
 
         Assert.IsFalse(filter.IsSeedValid(request, Seed_Bones_NewLeaf_Kaleidoscope_Regret));
     }
@@ -69,7 +59,7 @@ public class NeowsBonesFilterTests
             ],
             null);
 
-        var request = CreateRequest();
+        var request = FilterTestHelpers.Request();
 
         Assert.IsTrue(filter.IsSeedValid(request, Seed_Bones_NewLeaf_Kaleidoscope_Regret));
     }
@@ -81,7 +71,7 @@ public class NeowsBonesFilterTests
             ImmutableArray<NeowOptions>.Empty,
             CardOptions.Regret);
 
-        var request = CreateRequest();
+        var request = FilterTestHelpers.Request();
 
         Assert.IsTrue(filter.IsSeedValid(request, Seed_Bones_NewLeaf_Kaleidoscope_Regret));
     }
@@ -93,7 +83,7 @@ public class NeowsBonesFilterTests
             ImmutableArray<NeowOptions>.Empty,
             CardOptions.Shame);
 
-        var request = CreateRequest();
+        var request = FilterTestHelpers.Request();
 
         Assert.IsFalse(filter.IsSeedValid(request, Seed_Bones_NewLeaf_Kaleidoscope_Regret));
     }
@@ -108,7 +98,7 @@ public class NeowsBonesFilterTests
             ],
             null);
 
-        var request = CreateRequest();
+        var request = FilterTestHelpers.Request();
 
         Assert.IsTrue(filter.IsSeedValid(request, Seed_Bones_NewLeaf_Kaleidoscope_Regret));
     }
@@ -120,7 +110,7 @@ public class NeowsBonesFilterTests
             [NeowOptions.LeadPaperweight, NeowOptions.NewLeaf],
             null);
 
-        var request = CreateRequest();
+        var request = FilterTestHelpers.Request();
 
         Assert.IsFalse(filter.IsSeedValid(request, Seed_Bones_NewLeaf_Kaleidoscope_Regret));
     }
@@ -132,7 +122,7 @@ public class NeowsBonesFilterTests
             [NeowOptions.NewLeaf],
             CardOptions.Shame);
 
-        var request = CreateRequest();
+        var request = FilterTestHelpers.Request();
 
         Assert.IsFalse(filter.IsSeedValid(request, Seed_Bones_NewLeaf_Kaleidoscope_Regret));
     }
@@ -144,7 +134,7 @@ public class NeowsBonesFilterTests
             [NeowOptions.LeadPaperweight],
             CardOptions.Regret);
 
-        var request = CreateRequest();
+        var request = FilterTestHelpers.Request();
 
         Assert.IsFalse(filter.IsSeedValid(request, Seed_Bones_NewLeaf_Kaleidoscope_Regret));
     }
@@ -152,7 +142,7 @@ public class NeowsBonesFilterTests
     [TestMethod]
     public void IsSeedValid_UnorderedMode_AllowsSwappedTwoOptions()
     {
-        var request = CreateRequest();
+        var request = FilterTestHelpers.Request();
 
         var normal = new NeowsBonesFilter(
             [NeowOptions.NewLeaf, NeowOptions.Kaleidoscope],
@@ -171,7 +161,7 @@ public class NeowsBonesFilterTests
     [TestMethod]
     public void IsSeedValid_SequenceMode_RejectsSwappedTwoOptions()
     {
-        var request = CreateRequest();
+        var request = FilterTestHelpers.Request();
 
         var normal = new NeowsBonesFilter(
             [NeowOptions.NewLeaf, NeowOptions.Kaleidoscope],
@@ -190,7 +180,7 @@ public class NeowsBonesFilterTests
     [TestMethod]
     public void IsSeedValid_UnorderedMode_StillRejectsMissingOption()
     {
-        var request = CreateRequest();
+        var request = FilterTestHelpers.Request();
 
         var filter = new NeowsBonesFilter(
             [NeowOptions.NewLeaf, NeowOptions.LeadPaperweight],
@@ -203,7 +193,7 @@ public class NeowsBonesFilterTests
     [TestMethod]
     public void IsSeedValid_UnorderedMode_StillRequiresCurse()
     {
-        var request = CreateRequest();
+        var request = FilterTestHelpers.Request();
 
         var filter = new NeowsBonesFilter(
             [NeowOptions.Kaleidoscope, NeowOptions.NewLeaf],
