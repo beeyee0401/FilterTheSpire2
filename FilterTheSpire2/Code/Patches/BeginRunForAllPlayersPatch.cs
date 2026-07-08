@@ -290,6 +290,31 @@ internal class BeginRunForAllPlayersPatch
         ascensionTraverse.Field("_rightArrow").GetValue<NButton>().Visible = state.RightArrowWasVisible;
         ascensionTraverse.Field("_leftTriggerIcon").GetValue<TextureRect>().Visible = state.LeftTriggerWasVisible;
         ascensionTraverse.Field("_rightTriggerIcon").GetValue<TextureRect>().Visible = state.RightTriggerWasVisible;
+        
+        RestoreCharacterFocus(screen);
+    }
+    
+    private static void RestoreCharacterFocus(NCharacterSelectScreen screen)
+    {
+        var screenTraverse = Traverse.Create(screen);
+        var selectedButton = screenTraverse
+            .Field("_selectedButton")
+            .GetValue<NCharacterSelectButton?>();
+
+        if (selectedButton != null && selectedButton.Visible)
+        {
+            selectedButton.CallDeferred(Control.MethodName.GrabFocus);
+            return;
+        }
+
+        var characterButtonContainer = screenTraverse.Field("_charButtonContainer").GetValue<Control>();
+
+        var firstVisibleButton = characterButtonContainer
+            .GetChildren()
+            .OfType<NCharacterSelectButton>()
+            .FirstOrDefault(button => button.Visible);
+
+        firstVisibleButton?.CallDeferred(Control.MethodName.GrabFocus);
     }
 
     private static void BeginRunWithSeed(
