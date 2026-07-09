@@ -14,6 +14,6 @@ public class ActLocationFilter(ActLocations actLocation, int actNum) : IFilter
         }
 
         var actList = RngHelper.GetRandomActs(seed);
-        return actLocation == actList[0];
+        return actLocation == actList[actNum - 1];
     }
 }

@@ -20,6 +20,7 @@ public static class ActLocationRules
         ActLocations.Glory
     ];
     
+    // List order found in ModelDb.Acts
     public static ImmutableArray<ImmutableArray<ActLocations>> ActsByIndex =
     [
         [ActLocations.Overgrowth, ActLocations.Underdocks], 
