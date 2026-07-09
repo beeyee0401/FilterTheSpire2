@@ -359,9 +359,9 @@ public static class NeowConfigController
     
     private static List<NConfigDropdownItem.ItemData> FilterCapsuleRelics(List<NConfigDropdownItem.ItemData> source)
     {
-        var capsulePool = RelicRules.GetRelicPool(RelicRarity.Common)
-            .Concat(RelicRules.GetRelicPool(RelicRarity.Uncommon))
-            .Concat(RelicRules.GetRelicPool(RelicRarity.Rare))
+        var capsulePool = RelicRules.GetRelicDisplayPool(RelicRarity.Common)
+            .Concat(RelicRules.GetRelicDisplayPool(RelicRarity.Uncommon))
+            .Concat(RelicRules.GetRelicDisplayPool(RelicRarity.Rare))
             .ToHashSet();
 
         return source.Where(item =>

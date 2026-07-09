@@ -177,62 +177,57 @@ public static class RelicRules
             { RelicRarity.Shop, [RelicOptions.RunicCapacitor] },
         }}
     };
-    
-    private static Dictionary<RelicOptions, CharacterOptions>? _relicCharacterOptionsMap;
 
-    public static Dictionary<RelicOptions, CharacterOptions> RelicCharacterOptionsMap
+    private static List<RelicOptions> CreateRelicPool(RelicRarity rarity, bool includeCharacterRelics)
     {
-        get
+        var relicPool = GetBaseRelicPool(rarity).ToList();
+
+        if (!includeCharacterRelics)
         {
-            _relicCharacterOptionsMap ??= CharacterSpecificRelics.SelectMany(outer => outer.Value.SelectMany(inner =>
-                    inner.Value.Select(r => new
-                    {
-                        relic = r,
-                        outer.Key
-                    })))
-                .ToDictionary(x => x.relic, x => x.Key);
-            return _relicCharacterOptionsMap;
+            return relicPool;
         }
+
+        relicPool.AddRange(FilterTheSpire2Config.Character != CharacterOptions.Any
+            ? CharacterSpecificRelics[FilterTheSpire2Config.Character][rarity]
+            // Even if the character is Any, we need to add relics to the pool so it's the correct length for RNG
+            : CharacterSpecificRelics[CharacterOptions.Ironclad][rarity]);
+
+        return relicPool;
     }
 
     public static IEnumerable<RelicOptions> GetRelicPool(RelicRarity rarity)
     {
         var character = FilterTheSpire2Config.Character;
+
         if (!CachedPools.TryGetValue(character, out var poolsByRarity))
         {
             poolsByRarity = new Dictionary<RelicRarity, List<RelicOptions>>();
             CachedPools[character] = poolsByRarity;
         }
-        
+
         if (!poolsByRarity.TryGetValue(rarity, out var relicPool))
         {
-            // build once, cache
-            switch (rarity)
-            {
-                case RelicRarity.Common:
-                    relicPool = CommonRelicPool.ToList();
-                    break;
-                case RelicRarity.Uncommon:
-                    relicPool = UncommonRelicPool.ToList();
-                    break;
-                case RelicRarity.Rare:
-                    relicPool = RareRelicPool.ToList();
-                    break;
-                case RelicRarity.Shop:
-                    relicPool = ShopRelicPool.ToList();
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(rarity), rarity, null);
-            }
-            
-            relicPool.AddRange(FilterTheSpire2Config.Character != CharacterOptions.Any
-                ? CharacterSpecificRelics[FilterTheSpire2Config.Character][rarity]
-                // Even if the character is Any, we need to add relics to the pool so it's the correct length for RNG
-                : CharacterSpecificRelics[CharacterOptions.Ironclad][rarity]);
-            
+            relicPool = CreateRelicPool(rarity, includeCharacterRelics: true);
             poolsByRarity[rarity] = relicPool;
         }
-        
+
         return relicPool;
+    }
+
+    public static IEnumerable<RelicOptions> GetRelicDisplayPool(RelicRarity rarity)
+    {
+        return CreateRelicPool(rarity, includeCharacterRelics: FilterTheSpire2Config.Character != CharacterOptions.Any);
+    }
+
+    private static IEnumerable<RelicOptions> GetBaseRelicPool(RelicRarity rarity)
+    {
+        return rarity switch
+        {
+            RelicRarity.Common => CommonRelicPool,
+            RelicRarity.Uncommon => UncommonRelicPool,
+            RelicRarity.Rare => RareRelicPool,
+            RelicRarity.Shop => ShopRelicPool,
+            _ => throw new ArgumentOutOfRangeException(nameof(rarity), rarity, null)
+        };
     }
 }
