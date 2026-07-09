@@ -15,9 +15,9 @@ public class KaleidoscopeFilter : BaseCardRewardFilter
 
     // 2 rewards × 3 cards × 3 = 18 Rewards calls
     // 2 GetRewardPools calls, each shuffles 4 chars = 6 (N-1)*2 Niche calls
-    public override NeowRngConsumption RngConsumption { get; }
+    public override RngConsumptionSteps RngConsumptionSteps { get; }
 
-    public KaleidoscopeFilter(List<CardOptions> cardOptions, NeowRngConsumption? slot1Consumption = null)
+    public KaleidoscopeFilter(List<CardOptions> cardOptions, RngConsumptionSteps? slot1Consumption = null)
         : base(CardRarityOddsType.RegularEncounter, cardOptions, 2,
             slot1Consumption: slot1Consumption)
     {
@@ -35,7 +35,7 @@ public class KaleidoscopeFilter : BaseCardRewardFilter
         var rewardsSteps = CardsPerReward * 3 * 2;
         // (N-1) Niche calls per shuffle × 2 rewards
         var nicheSteps = (_charListFiltered.Count - 1) * 2;
-        RngConsumption = new NeowRngConsumption(rewardsSteps, 0, nicheSteps);
+        RngConsumptionSteps = new RngConsumptionSteps(rewardsSteps, 0, nicheSteps);
     }
 
     protected override bool IsCharacterRequired => true;

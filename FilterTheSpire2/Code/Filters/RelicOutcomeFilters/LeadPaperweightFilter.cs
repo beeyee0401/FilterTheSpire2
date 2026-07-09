@@ -8,12 +8,12 @@ using MegaCrit.Sts2.Core.Runs;
 
 namespace FilterTheSpire2.Code.Filters.RelicOutcomeFilters;
 
-public class LeadPaperweightFilter(List<CardOptions> cardOptions, NeowRngConsumption? slot1Consumption = null)
+public class LeadPaperweightFilter(List<CardOptions> cardOptions, RngConsumptionSteps? slot1Consumption = null)
     : BaseCardRewardFilter(CardRarityOddsType.RegularEncounter, cardOptions, 1, 2,
         slot1Consumption: slot1Consumption)
 {
     // 1 reward × 2 cards × 3 = 6 Rewards calls
-    public override NeowRngConsumption RngConsumption => new(6, 0, 0);
+    public override RngConsumptionSteps RngConsumptionSteps => new(6, 0, 0);
     protected override bool IsCharacterRequired => false;
     protected override Rng GetRewardRng(uint seed) => RngHelper.GetPlayerRngType(seed, PlayerRngType.Rewards);
     protected override Rng? GetCardPoolRng(uint seed) => null;

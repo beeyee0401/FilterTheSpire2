@@ -33,6 +33,18 @@ public class FilterTheSpire2Config : SimpleModConfig
     public static CardOptions NeowsBonesCurseOption { get; set; } = CardOptions.Any;
     
     [ConfigHideInUI]
+    [ConfigDropdownOverrideLocalization("RELIC_OPTIONS")]
+    public static RelicOptions CapsuleRelicOption1 { get; set; } = RelicOptions.Any;
+
+    [ConfigHideInUI]
+    [ConfigDropdownOverrideLocalization("RELIC_OPTIONS")]
+    public static RelicOptions CapsuleRelicOption2 { get; set; } = RelicOptions.Any;
+    
+    [ConfigHideInUI]
+    [ConfigDropdownOverrideLocalization("RELIC_OPTIONS")]
+    public static RelicOptions CapsuleRelicOption3 { get; set; } = RelicOptions.Any;
+    
+    [ConfigHideInUI]
     [ConfigDropdownOverrideLocalization("CARD_OPTIONS")]
     public static CardOptions LeadPaperweightOption { get; set; } = CardOptions.Any;
     
@@ -96,13 +108,18 @@ public class FilterTheSpire2Config : SimpleModConfig
     
     [ConfigSection("RelicsSection")]
     [ConfigHoverTip]
+    [ConfigDropdownOverrideLocalization("RELIC_OPTIONS")]
     public static RelicOptions CommonRelic { get; set; } = RelicOptions.Any;
     
     [ConfigHoverTip]
+    [ConfigDropdownOverrideLocalization("RELIC_OPTIONS")]
     public static RelicOptions UncommonRelic { get; set; } = RelicOptions.Any;
     
     [ConfigHoverTip]
+    [ConfigDropdownOverrideLocalization("RELIC_OPTIONS")]
     public static RelicOptions RareRelic { get; set; } = RelicOptions.Any;
+    
+    [ConfigDropdownOverrideLocalization("RELIC_OPTIONS")]
     public static RelicOptions ShopRelic { get; set; } = RelicOptions.Any;
 
     [ConfigSection("ActLocationsSection")]
@@ -177,5 +194,15 @@ public class FilterTheSpire2Config : SimpleModConfig
         return Character != CharacterOptions.Any && 
                Act2Ancient == Ancient.Orobas && 
                OrobasOptions == OrobasOptions.SeaGlass;
+    }
+    
+    public static bool IsCapsuleSelected()
+    {
+        return NeowOptions is NeowOptions.SmallCapsule or NeowOptions.LargeCapsule;
+    }
+
+    public static bool ShouldShowCapsuleRelicOption2()
+    {
+        return NeowOptions == NeowOptions.LargeCapsule;
     }
 }

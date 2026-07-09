@@ -7,10 +7,10 @@ using MegaCrit.Sts2.Core.Random;
 
 namespace FilterTheSpire2.Code.Filters.RelicOutcomeFilters;
 
-public class NewLeafFilter(CardOptions cardOptions, NeowRngConsumption? slot1Consumption = null) : 
+public class NewLeafFilter(CardOptions cardOptions, RngConsumptionSteps? slot1Consumption = null) : 
     BaseCardTransformFilter([cardOptions], 1, slot1Consumption)
 {
-    public override NeowRngConsumption RngConsumption => new(0, 0, 1); // 1 Niche call
+    public override RngConsumptionSteps RngConsumptionSteps => new(0, 0, 1); // 1 Niche call
     
     protected override Rng GetTransformRng(uint seed) => 
         RngHelper.GetRunRngType(seed, RunRngType.Niche); 
@@ -18,6 +18,6 @@ public class NewLeafFilter(CardOptions cardOptions, NeowRngConsumption? slot1Con
     protected override ImmutableArray<CardOptions> GetCardPool() => 
         CardRules.AvailableCardPools[FilterTheSpire2Config.Character];
     
-    protected override void FastForward(Rng rng, NeowRngConsumption consumption) =>
-        rng.FastForwardCounter(consumption.NicheRngSteps);
+    protected override void FastForward(Rng rng, RngConsumptionSteps consumptionSteps) =>
+        rng.FastForwardCounter(consumptionSteps.NicheRngSteps);
 }

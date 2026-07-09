@@ -49,7 +49,7 @@ public class NeowOutcomeFilterTests
     {
         var filter = new LeadPaperweightFilter([LeadPaperweightTarget]);
 
-        Assert.AreEqual(new NeowRngConsumption(6, 0, 0), filter.RngConsumption);
+        Assert.AreEqual(new RngConsumptionSteps(6, 0, 0), filter.RngConsumptionSteps);
     }
 
     [TestMethod]
@@ -91,7 +91,7 @@ public class NeowOutcomeFilterTests
     {
         var filter = new NewLeafFilter(IroncladTarget1);
 
-        Assert.AreEqual(new NeowRngConsumption(0, 0, 1), filter.RngConsumption);
+        Assert.AreEqual(new RngConsumptionSteps(0, 0, 1), filter.RngConsumptionSteps);
     }
 
     [TestMethod]
@@ -121,7 +121,7 @@ public class NeowOutcomeFilterTests
     {
         var filter = new LeafyPoulticeFilter([IroncladTarget1]);
 
-        Assert.AreEqual(new NeowRngConsumption(0, 2, 0), filter.RngConsumption);
+        Assert.AreEqual(new RngConsumptionSteps(0, 2, 0), filter.RngConsumptionSteps);
     }
 
     [TestMethod]
@@ -150,7 +150,7 @@ public class NeowOutcomeFilterTests
     {
         var filter = new LostCofferFilter([IroncladTarget1]);
 
-        Assert.AreEqual(new NeowRngConsumption(9, 0, 0), filter.RngConsumption);
+        Assert.AreEqual(new RngConsumptionSteps(9, 0, 0), filter.RngConsumptionSteps);
     }
 
     [TestMethod]
@@ -180,9 +180,9 @@ public class NeowOutcomeFilterTests
     {
         var filter = new KaleidoscopeFilter([KaleidoscopeTarget1]);
 
-        Assert.AreEqual(18, filter.RngConsumption.RewardsRngSteps);
-        Assert.AreEqual(0, filter.RngConsumption.TransformationsRngSteps);
-        Assert.AreEqual(6, filter.RngConsumption.NicheRngSteps);
+        Assert.AreEqual(18, filter.RngConsumptionSteps.RewardsRngSteps);
+        Assert.AreEqual(0, filter.RngConsumptionSteps.TransformationsRngSteps);
+        Assert.AreEqual(6, filter.RngConsumptionSteps.NicheRngSteps);
     }
 
     [TestMethod]
@@ -200,7 +200,7 @@ public class NeowOutcomeFilterTests
     {
         var filter = new ArcaneScrollFilter([IroncladRareTarget]);
 
-        Assert.AreEqual(new NeowRngConsumption(1, 0, 0), filter.RngConsumption);
+        Assert.AreEqual(new RngConsumptionSteps(1, 0, 0), filter.RngConsumptionSteps);
     }
 
     [TestMethod]
@@ -216,7 +216,7 @@ public class NeowOutcomeFilterTests
     [TestMethod]
     public void LeadPaperweight_WithBonesBaseRewardOffset_ReturnsTrue()
     {
-        var bonesBaseConsumption = new NeowRngConsumption(
+        var bonesBaseConsumption = new RngConsumptionSteps(
             RewardsRngSteps: AncientRules.NeowsBonesOptions.Length - 1,
             TransformationsRngSteps: 0,
             NicheRngSteps: 0);
@@ -233,7 +233,7 @@ public class NeowOutcomeFilterTests
     [TestMethod]
     public void LeafyPoultice_AsSlot2AfterKaleidoscope_IgnoresKaleidoscopeRewardAndNicheConsumption()
     {
-        var bonesBasePlusKaleidoscope = new NeowRngConsumption(
+        var bonesBasePlusKaleidoscope = new RngConsumptionSteps(
             RewardsRngSteps: AncientRules.NeowsBonesOptions.Length - 1 + 18,
             TransformationsRngSteps: 0,
             NicheRngSteps: 6);
@@ -250,7 +250,7 @@ public class NeowOutcomeFilterTests
     [TestMethod]
     public void Kaleidoscope_AsSlot2AfterLeafyPoultice_IgnoresLeafyPoulticeTransformationConsumption()
     {
-        var bonesBasePlusLeafyPoultice = new NeowRngConsumption(
+        var bonesBasePlusLeafyPoultice = new RngConsumptionSteps(
             RewardsRngSteps: AncientRules.NeowsBonesOptions.Length - 1,
             TransformationsRngSteps: 2,
             NicheRngSteps: 0);

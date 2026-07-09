@@ -12,11 +12,11 @@ namespace FilterTheSpire2.Code.Filters;
 public abstract class BaseCardTransformFilter(
     List<CardOptions> cardOptions,
     int transformCount,
-    NeowRngConsumption? slot1Consumption = null) : INeowOutcomeFilter
+    RngConsumptionSteps? slot1Consumption = null) : INeowOutcomeFilter
 {
     protected abstract Rng GetTransformRng(uint seed);
     protected abstract ImmutableArray<CardOptions> GetCardPool();
-    public abstract NeowRngConsumption RngConsumption { get; }
+    public abstract RngConsumptionSteps RngConsumptionSteps { get; }
 
     public bool IsSeedValid(SeedSearchRequest request, string seed)
     {
@@ -56,7 +56,7 @@ public abstract class BaseCardTransformFilter(
         return remaining.Count == 0;
     }
 
-    protected virtual void FastForward(Rng rng, NeowRngConsumption consumption)
+    protected virtual void FastForward(Rng rng, RngConsumptionSteps consumptionSteps)
     {
         // Subclasses override to fast-forward the specific stream this filter uses.
         // Default: no-op (streams that this filter doesn't need fast forwarding).

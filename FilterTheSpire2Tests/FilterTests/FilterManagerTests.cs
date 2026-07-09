@@ -91,4 +91,101 @@ public class FilterManagerTests
         Assert.IsTrue(filters.OfType<KaleidoscopeFilter>().Any());
         Assert.IsTrue(filters.OfType<LeafyPoulticeFilter>().Any());
     }
+
+    #region Capsule relic tests
+
+    [TestMethod]
+    public void CreateFiltersFromSettings_WhenSmallCapsuleHasRelic_AddsAncientAndCapsuleFilters()
+    {
+        FilterTheSpire2Config.NeowOptions = NeowOptions.SmallCapsule;
+        FilterTheSpire2Config.CapsuleRelicOption1 = RelicOptions.Anchor;
+
+        var filters = FilterManager.CreateFiltersFromSettings();
+
+        Assert.IsTrue(filters.OfType<AncientRelicFilter>().Any());
+        Assert.IsTrue(filters.OfType<CapsuleRelicFilter>().Any());
+    }
+
+    [TestMethod]
+    public void CreateFiltersFromSettings_WhenLargeCapsuleHasTwoRelics_AddsOneCapsuleFilter()
+    {
+        FilterTheSpire2Config.NeowOptions = NeowOptions.LargeCapsule;
+        FilterTheSpire2Config.CapsuleRelicOption1 = RelicOptions.Anchor;
+        FilterTheSpire2Config.CapsuleRelicOption2 = RelicOptions.Vajra;
+
+        var filters = FilterManager.CreateFiltersFromSettings();
+
+        Assert.AreEqual(1, filters.OfType<CapsuleRelicFilter>().Count());
+    }
+
+    [TestMethod]
+    public void CreateFiltersFromSettings_WhenCapsuleHasAllAny_DoesNotAddCapsuleFilter()
+    {
+        FilterTheSpire2Config.NeowOptions = NeowOptions.LargeCapsule;
+
+        var filters = FilterManager.CreateFiltersFromSettings();
+
+        Assert.IsFalse(filters.OfType<CapsuleRelicFilter>().Any());
+    }
+
+    [TestMethod]
+    public void CreateFiltersFromSettings_WhenBonesHasSmallAndLargeCapsuleWithRelics_AddsNeowsBonesAndCapsuleFilters()
+    {
+        FilterTheSpire2Config.NeowOptions = NeowOptions.NeowsBones;
+        FilterTheSpire2Config.NeowsBonesRelicOption1 = NeowOptions.SmallCapsule;
+        FilterTheSpire2Config.NeowsBonesRelicOption2 = NeowOptions.LargeCapsule;
+        FilterTheSpire2Config.CapsuleRelicOption1 = RelicOptions.AmethystAubergine;
+        FilterTheSpire2Config.CapsuleRelicOption2 = RelicOptions.Anchor;
+        FilterTheSpire2Config.CapsuleRelicOption3 = RelicOptions.BloodVial;
+
+        var filters = FilterManager.CreateFiltersFromSettings();
+
+        Assert.IsTrue(filters.OfType<NeowsBonesFilter>().Any());
+        Assert.IsTrue(filters.OfType<CapsuleRelicFilter>().Any());
+    }
+
+    [TestMethod]
+    public void CreateFiltersFromSettings_WhenCapsuleRelicSelected_SuppressesCommonUncommonRareButNotShop()
+    {
+        FilterTheSpire2Config.NeowOptions = NeowOptions.SmallCapsule;
+        FilterTheSpire2Config.CapsuleRelicOption1 = RelicOptions.Anchor;
+
+        FilterTheSpire2Config.CommonRelic = RelicOptions.Anchor;
+        FilterTheSpire2Config.UncommonRelic = RelicOptions.Akabeko;
+        FilterTheSpire2Config.RareRelic = RelicOptions.ArtOfWar;
+        FilterTheSpire2Config.ShopRelic = RelicOptions.MiniatureTent;
+
+        var filters = FilterManager.CreateFiltersFromSettings();
+
+        Assert.IsFalse(filters.OfType<CommonRelicFilter>().Any());
+        Assert.IsFalse(filters.OfType<UncommonRelicFilter>().Any());
+        Assert.IsFalse(filters.OfType<RareRelicFilter>().Any());
+        Assert.IsTrue(filters.OfType<ShopRelicFilter>().Any());
+    }
+
+    [TestMethod]
+    public void CreateFiltersFromSettings_WhenCapsuleSelectedButNoCapsuleRelicSelected_DoesNotSuppressGenericRelicFilters()
+    {
+        FilterTheSpire2Config.NeowOptions = NeowOptions.SmallCapsule;
+        FilterTheSpire2Config.CommonRelic = RelicOptions.Anchor;
+
+        var filters = FilterManager.CreateFiltersFromSettings();
+
+        Assert.IsTrue(filters.OfType<CommonRelicFilter>().Any());
+        Assert.IsFalse(filters.OfType<CapsuleRelicFilter>().Any());
+    }
+
+    [TestMethod]
+    public void CreateFiltersFromSettings_WhenLargeCapsuleOnlySecondRelicSelected_TreatsSecondAsEffectiveFirstSelection()
+    {
+        FilterTheSpire2Config.NeowOptions = NeowOptions.LargeCapsule;
+        FilterTheSpire2Config.CapsuleRelicOption1 = RelicOptions.Any;
+        FilterTheSpire2Config.CapsuleRelicOption2 = RelicOptions.Vajra;
+
+        var filters = FilterManager.CreateFiltersFromSettings();
+
+        Assert.AreEqual(1, filters.OfType<CapsuleRelicFilter>().Count());
+    }
+
+    #endregion
 }

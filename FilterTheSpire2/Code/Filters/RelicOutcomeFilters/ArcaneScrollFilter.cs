@@ -7,10 +7,10 @@ using MegaCrit.Sts2.Core.Random;
 
 namespace FilterTheSpire2.Code.Filters.RelicOutcomeFilters;
 
-public class ArcaneScrollFilter(List<CardOptions> cardOptions, NeowRngConsumption? slot1Consumption = null)
+public class ArcaneScrollFilter(List<CardOptions> cardOptions, RngConsumptionSteps? slot1Consumption = null)
     : BaseCardTransformFilter(cardOptions, 1, slot1Consumption)
 {
-    public override NeowRngConsumption RngConsumption => new(1, 0, 0); // 1 Rewards call
+    public override RngConsumptionSteps RngConsumptionSteps => new(1, 0, 0); // 1 Rewards call
 
     protected override Rng GetTransformRng(uint seed) =>
         RngHelper.GetPlayerRngType(seed, PlayerRngType.Rewards);
@@ -18,6 +18,6 @@ public class ArcaneScrollFilter(List<CardOptions> cardOptions, NeowRngConsumptio
     protected override ImmutableArray<CardOptions> GetCardPool() =>
         CardRules.RareCardPools[FilterTheSpire2Config.Character];
 
-    protected override void FastForward(Rng rng, NeowRngConsumption consumption) =>
-        rng.FastForwardCounter(consumption.RewardsRngSteps);
+    protected override void FastForward(Rng rng, RngConsumptionSteps consumptionSteps) =>
+        rng.FastForwardCounter(consumptionSteps.RewardsRngSteps);
 }

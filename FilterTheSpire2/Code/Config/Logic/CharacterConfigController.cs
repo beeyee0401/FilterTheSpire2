@@ -22,6 +22,8 @@ public static class CharacterConfigController
     private static Control? _cardSectionContainer;
     private static readonly Dictionary<string, NConfigDropdown> CardDropdowns = new();
     private static readonly Dictionary<string, NConfigOptionRow> CardRows = new();
+    private static readonly Dictionary<RelicRarity, NConfigOptionRow> RelicRows = new();
+    private static readonly Dictionary<RelicRarity, ColorRect> RelicDividers = new();
     private static readonly Dictionary<string, List<NConfigDropdownItem.ItemData>> CardMasterItems = new();
     private static readonly Dictionary<string, bool> CardRowVisibility = new();
     
@@ -67,6 +69,8 @@ public static class CharacterConfigController
         SetRelicDropdownsFromCharacter(optionContainer, RelicRarity.Rare, nameof(FilterTheSpire2Config.RareRelic));
         SetRelicDropdownsFromCharacter(optionContainer, RelicRarity.Shop, nameof(FilterTheSpire2Config.ShopRelic));
 
+        SyncRelicRowVisibility();
+        
         EnsureCardRows(optionContainer, characterChanged: false);
     }
     
@@ -78,6 +82,19 @@ public static class CharacterConfigController
     
     private static void SetRelicDropdownsFromCharacter(Control optionContainer, RelicRarity relicRarity, string propName)
     {
+        var row = optionContainer.GetNodeOrNull<NConfigOptionRow>("%" + propName);
+        if (row != null)
+        {
+            RelicRows[relicRarity] = row;
+
+            var parent = row.GetParent();
+            var rowIndex = row.GetIndex();
+            if (parent != null && rowIndex > 0 && parent.GetChild(rowIndex - 1) is ColorRect divider)
+            {
+                RelicDividers[relicRarity] = divider;
+            }
+        }
+
         var (dropdown, items) = ConfigDropdownUtilities.GetDropdownListItems(optionContainer, propName);
         
         RegisterDropdown(relicRarity, dropdown);
@@ -187,6 +204,7 @@ public static class CharacterConfigController
             rebuilt.Add(new NConfigDropdownItem.ItemData(item.Text, item.Value, () =>
             {
                 originalOnSet.Invoke();
+                SyncRelicRowVisibility();
                 EnsureCardRows(optionContainer, characterChanged: false);
             }));
         }
@@ -227,6 +245,8 @@ public static class CharacterConfigController
             RebuildDropdownForCharacter(kvp.Key, kvp.Value, GetRelicOption(kvp.Key), shouldCheckToReset);
         }
 
+        NeowConfigController.RefreshSubOptionRows(_optionContainer!);
+        SyncRelicRowVisibility();
         EnsureCardRows(_optionContainer!, shouldCheckToReset);
     }
     
@@ -303,6 +323,13 @@ public static class CharacterConfigController
     public static void RefreshCardRows(Control optionContainer)
     {
         EnsureCardRows(optionContainer, characterChanged: false);
+    }
+    
+    public static void RefreshRelicRows(Control optionContainer)
+    {
+        _optionContainer = optionContainer;
+        SyncRelicRowVisibility();
+        SimpleModConfig.SetupFocusNeighbors(optionContainer);
     }
 
     private static Control? GetCardSectionContainer(Control optionContainer)
@@ -385,6 +412,66 @@ public static class CharacterConfigController
         }
 
         ConfigDropdownUtilities.RefreshDropdownItems(dropdown, rebuilt);
+    }
+    
+    private static void SyncRelicRowVisibility()
+    {
+        var hideRarityRelicRows = ShouldHideRarityRelicRows();
+
+        foreach (var rarity in new[] { RelicRarity.Common, RelicRarity.Uncommon, RelicRarity.Rare })
+        {
+            if (RelicRows.TryGetValue(rarity, out var row))
+            {
+                row.Visible = !hideRarityRelicRows;
+            }
+
+            if (RelicDividers.TryGetValue(rarity, out var divider))
+            {
+                divider.Visible = !hideRarityRelicRows;
+            }
+        }
+
+        // Shop relics are not affected because capsules never roll shop relics.
+        if (RelicRows.TryGetValue(RelicRarity.Shop, out var shopRow))
+        {
+            shopRow.Visible = true;
+        }
+
+        if (RelicDividers.TryGetValue(RelicRarity.Shop, out var shopDivider))
+        {
+            shopDivider.Visible = true;
+        }
+    }
+
+    private static bool ShouldHideRarityRelicRows()
+    {
+        return GetVisibleCapsuleRelicCount() > 0;
+    }
+
+    private static int GetVisibleCapsuleRelicCount()
+    {
+        if (FilterTheSpire2Config.NeowOptions != NeowOptions.NeowsBones)
+        {
+            return FilterTheSpire2Config.NeowOptions switch
+            {
+                NeowOptions.SmallCapsule => 1,
+                NeowOptions.LargeCapsule => 2,
+                _ => 0
+            };
+        }
+
+        return GetCapsuleRelicCount(FilterTheSpire2Config.NeowsBonesRelicOption1) +
+               GetCapsuleRelicCount(FilterTheSpire2Config.NeowsBonesRelicOption2);
+    }
+
+    private static int GetCapsuleRelicCount(NeowOptions option)
+    {
+        return option switch
+        {
+            NeowOptions.SmallCapsule => 1,
+            NeowOptions.LargeCapsule => 2,
+            _ => 0
+        };
     }
     #endregion
 }

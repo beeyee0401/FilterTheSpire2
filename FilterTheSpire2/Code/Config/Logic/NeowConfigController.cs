@@ -4,22 +4,32 @@ using BaseLib.Config.UI;
 using FilterTheSpire2.Code.Ancients.Config;
 using FilterTheSpire2.Code.Cards;
 using FilterTheSpire2.Code.Characters;
+using FilterTheSpire2.Code.Filters;
+using FilterTheSpire2.Code.Relics;
 using Godot;
+using MegaCrit.Sts2.Core.Entities.Relics;
 
 namespace FilterTheSpire2.Code.Config.Logic;
 
 public static class NeowConfigController
 {
+    private static readonly Dictionary<string, NConfigDropdown> Dropdowns = new();
+    private static readonly Dictionary<string, List<NConfigDropdownItem.ItemData>> MasterItems = new();
     private static readonly Dictionary<string, NConfigOptionRow> OptionRows = new();
     private static readonly Dictionary<string, ColorRect> Dividers = new();
     private static Control? _optionContainer;
  
     private static readonly (string PropName, NeowOptions RequiredOption)[] NeowSubOptions =
     [
-        (nameof(FilterTheSpire2Config.LeadPaperweightOption), NeowOptions.LeadPaperweight),
         (nameof(FilterTheSpire2Config.NeowsBonesRelicOption1), NeowOptions.NeowsBones),
         (nameof(FilterTheSpire2Config.NeowsBonesRelicOption2), NeowOptions.NeowsBones),
         (nameof(FilterTheSpire2Config.NeowsBonesCurseOption), NeowOptions.NeowsBones),
+
+        (nameof(FilterTheSpire2Config.CapsuleRelicOption1), NeowOptions.SmallCapsule),
+        (nameof(FilterTheSpire2Config.CapsuleRelicOption2), NeowOptions.LargeCapsule),
+        (nameof(FilterTheSpire2Config.CapsuleRelicOption3), NeowOptions.LargeCapsule),
+
+        (nameof(FilterTheSpire2Config.LeadPaperweightOption), NeowOptions.LeadPaperweight),
     ];
     
     // Propnames for the bones relic selectors that affect card outcome row visibility
@@ -34,6 +44,8 @@ public static class NeowConfigController
         _optionContainer = optionContainer;
         OptionRows.Clear();
         Dividers.Clear();
+        Dropdowns.Clear();
+        MasterItems.Clear();
  
         WrapNeowOptionsDropdown(optionContainer);
         EnsureSubOptionRows(optionContainer);
@@ -75,6 +87,23 @@ public static class NeowConfigController
             {
                 divider.Visible = isRelevant;
             }
+
+            if (isRelevant && Dropdowns.TryGetValue(propName, out var dropdown))
+            {
+                var filtered = FilterItems(propName, MasterItems[propName]);
+
+                if (BonesRelicOptionPropNames.Contains(propName))
+                {
+                    filtered = WrapBonesRelicItems(filtered, optionContainer);
+                }
+
+                if (!filtered.Any(i => Equals(i.Value, GetCurrentValue(propName))))
+                {
+                    ResetOption(propName);
+                }
+
+                ConfigDropdownUtilities.RefreshDropdownItems(dropdown, filtered);
+            }
         }
 
         SimpleModConfig.SetupFocusNeighbors(optionContainer);
@@ -83,6 +112,22 @@ public static class NeowConfigController
     private static bool IsSubOptionRelevant(string propName, NeowOptions requiredOption)
     {
         var currentNeow = FilterTheSpire2Config.NeowOptions;
+        var capsuleRelicCount = GetVisibleCapsuleRelicCount();
+
+        if (propName == nameof(FilterTheSpire2Config.CapsuleRelicOption1))
+        {
+            return capsuleRelicCount >= 1;
+        }
+
+        if (propName == nameof(FilterTheSpire2Config.CapsuleRelicOption2))
+        {
+            return capsuleRelicCount >= 2;
+        }
+
+        if (propName == nameof(FilterTheSpire2Config.CapsuleRelicOption3))
+        {
+            return capsuleRelicCount >= 3;
+        }
 
         if (currentNeow == requiredOption)
         {
@@ -126,6 +171,9 @@ public static class NeowConfigController
         {
             return;
         }
+        
+        Dropdowns[propName] = dropdown;
+        MasterItems[propName] = masterItems;
 
         var filtered = FilterItems(propName, masterItems);
 
@@ -149,7 +197,7 @@ public static class NeowConfigController
         // Move the divider+row to just after the last known Neow bones row,
         // or just after the NeowOptions row if none exist yet — so bones rows
         // always sit above card outcome rows.
-        InsertAfterBonesAnchor(container, divider, row);
+        InsertNeowSubOptionRow(container, propName, divider, row);
         
         Dividers[propName] = divider;
         OptionRows[propName] = row;
@@ -167,37 +215,52 @@ public static class NeowConfigController
                 originalOnSet.Invoke();
 
                 EnsureSubOptionRows(optionContainer);
+                CharacterConfigController.RefreshRelicRows(optionContainer);
                 CharacterConfigController.RefreshCardRows(optionContainer);
             });
         }).ToList();
     }
     
-    /// <summary>
-    /// Moves the divider and row to appear after the last already-placed Neow bones row
-    /// (or after the NeowOptions row itself if no bones rows exist yet), ensuring bones
-    /// rows always sit above any card outcome rows appended later.
-    /// </summary>
-    private static void InsertAfterBonesAnchor(Control container, ColorRect divider, NConfigOptionRow row)
+    private static int GetNeowRowOrder(string propName)
     {
-        // Find the last bones row already in the container, falling back to the NeowOptions row
-        Node? anchor = null;
-        foreach (var (_, existingRow) in OptionRows)
+        return propName switch
         {
-            if (existingRow.GetParent() == container)
-            {
-                anchor = existingRow;
-            }
-        }
+            nameof(FilterTheSpire2Config.NeowsBonesRelicOption1) => 0,
+            nameof(FilterTheSpire2Config.NeowsBonesRelicOption2) => 1,
+            nameof(FilterTheSpire2Config.NeowsBonesCurseOption) => 2,
+            nameof(FilterTheSpire2Config.CapsuleRelicOption1) => 3,
+            nameof(FilterTheSpire2Config.CapsuleRelicOption2) => 4,
+            nameof(FilterTheSpire2Config.CapsuleRelicOption3) => 5,
+            nameof(FilterTheSpire2Config.LeadPaperweightOption) => 6,
+            _ => 100,
+        };
+    }
+
+    private static void InsertNeowSubOptionRow(
+        Control container,
+        string propName,
+        ColorRect divider,
+        NConfigOptionRow row)
+    {
+        var myOrder = GetNeowRowOrder(propName);
+
+        Node? anchor = OptionRows
+            .Where(kvp =>
+                kvp.Value.GetParent() == container &&
+                kvp.Value.Visible &&
+                GetNeowRowOrder(kvp.Key) < myOrder)
+            .OrderBy(kvp => GetNeowRowOrder(kvp.Key))
+            .LastOrDefault()
+            .Value;
+
+        anchor ??= container.GetChildren()
+            .OfType<NConfigOptionRow>()
+            .FirstOrDefault(r => r.Name == nameof(FilterTheSpire2Config.NeowOptions));
 
         if (anchor == null)
         {
-            // No bones rows yet — find the NeowOptions row as the anchor
-            anchor = container.GetChildren()
-                .OfType<NConfigOptionRow>()
-                .FirstOrDefault(r => r.Name == nameof(FilterTheSpire2Config.NeowOptions));
+            return;
         }
-
-        if (anchor == null) { return; }
 
         var anchorIndex = anchor.GetIndex();
         container.MoveChild(divider, anchorIndex + 1);
@@ -209,9 +272,16 @@ public static class NeowConfigController
         return propName switch
         {
             nameof(FilterTheSpire2Config.LeadPaperweightOption) => FilterColorlessCards(source),
-            nameof(FilterTheSpire2Config.NeowsBonesRelicOption1) or
-            nameof(FilterTheSpire2Config.NeowsBonesRelicOption2) => FilterNeowsBoneOptions(source),
+
+            nameof(FilterTheSpire2Config.NeowsBonesRelicOption1) or 
+                nameof(FilterTheSpire2Config.NeowsBonesRelicOption2) => FilterNeowsBoneOptions(propName, source),
+
             nameof(FilterTheSpire2Config.NeowsBonesCurseOption) => FilterCurseCards(source),
+
+            nameof(FilterTheSpire2Config.CapsuleRelicOption1) or 
+                nameof(FilterTheSpire2Config.CapsuleRelicOption2) or
+                nameof(FilterTheSpire2Config.CapsuleRelicOption3) => FilterCapsuleRelics(source),
+
             _ => source
         };
     }
@@ -226,12 +296,29 @@ public static class NeowConfigController
         }).ToList();
     }
  
-    private static List<NConfigDropdownItem.ItemData> FilterNeowsBoneOptions(List<NConfigDropdownItem.ItemData> source)
+    private static List<NConfigDropdownItem.ItemData> FilterNeowsBoneOptions(
+        string propName,
+        List<NConfigDropdownItem.ItemData> source)
     {
+        var otherSelected = propName == nameof(FilterTheSpire2Config.NeowsBonesRelicOption1)
+            ? FilterTheSpire2Config.NeowsBonesRelicOption2
+            : FilterTheSpire2Config.NeowsBonesRelicOption1;
+
         return source.Where(item =>
         {
             var value = (NeowOptions)item.Value!;
-            return value == NeowOptions.Any || AncientRules.NeowsBonesOptions.Contains(value);
+
+            if (value == NeowOptions.Any)
+            {
+                return true;
+            }
+
+            if (!AncientRules.NeowsBonesOptions.Contains(value))
+            {
+                return false;
+            }
+
+            return otherSelected == NeowOptions.Any || value != otherSelected;
         }).ToList();
     }
  
@@ -256,13 +343,52 @@ public static class NeowConfigController
     {
         var property = typeof(FilterTheSpire2Config)
             .GetCachedProperty(propName, BindingFlags.Public | BindingFlags.Static);
-        if (property == null) return;
- 
-        var defaultValue = property.PropertyType == typeof(CardOptions)
-            ? CardOptions.Any
-            : (object)NeowOptions.Any;
- 
+        if (property == null)
+        {
+            return;
+        }
+
+        object defaultValue =
+            property.PropertyType == typeof(CardOptions) ? CardOptions.Any :
+            property.PropertyType == typeof(RelicOptions) ? RelicOptions.Any :
+            NeowOptions.Any;
+
         property.SetValue(null, defaultValue);
         ModConfig.SaveDebounced<FilterTheSpire2Config>();
+    }
+    
+    private static List<NConfigDropdownItem.ItemData> FilterCapsuleRelics(List<NConfigDropdownItem.ItemData> source)
+    {
+        var capsulePool = RelicRules.GetRelicPool(RelicRarity.Common)
+            .Concat(RelicRules.GetRelicPool(RelicRarity.Uncommon))
+            .Concat(RelicRules.GetRelicPool(RelicRarity.Rare))
+            .ToHashSet();
+
+        return source.Where(item =>
+        {
+            var value = (RelicOptions)item.Value!;
+            return value == RelicOptions.Any || capsulePool.Contains(value);
+        }).ToList();
+    }
+    
+    private static int GetVisibleCapsuleRelicCount()
+    {
+        if (FilterTheSpire2Config.NeowOptions != NeowOptions.NeowsBones)
+        {
+            return FilterTheSpire2Config.NeowOptions switch
+            {
+                NeowOptions.SmallCapsule => 1,
+                NeowOptions.LargeCapsule => 2,
+                _ => 0
+            };
+        }
+
+        return FilterManager.GetCapsuleRelicCount(FilterTheSpire2Config.NeowsBonesRelicOption1) +
+               FilterManager.GetCapsuleRelicCount(FilterTheSpire2Config.NeowsBonesRelicOption2);
+    }
+    
+    public static void RefreshSubOptionRows(Control optionContainer)
+    {
+        EnsureSubOptionRows(optionContainer);
     }
 }

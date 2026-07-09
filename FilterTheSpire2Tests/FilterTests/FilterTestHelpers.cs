@@ -24,6 +24,10 @@ internal static class FilterTestHelpers
         FilterTheSpire2Config.NeowsBonesRelicOption1 = NeowOptions.Any;
         FilterTheSpire2Config.NeowsBonesRelicOption2 = NeowOptions.Any;
         FilterTheSpire2Config.NeowsBonesCurseOption = CardOptions.Any;
+        
+        FilterTheSpire2Config.CapsuleRelicOption1 = RelicOptions.Any;
+        FilterTheSpire2Config.CapsuleRelicOption2 = RelicOptions.Any;
+        FilterTheSpire2Config.CapsuleRelicOption3 = RelicOptions.Any;
 
         FilterTheSpire2Config.LeadPaperweightOption = CardOptions.Any;
         FilterTheSpire2Config.NewLeafOption = CardOptions.Any;

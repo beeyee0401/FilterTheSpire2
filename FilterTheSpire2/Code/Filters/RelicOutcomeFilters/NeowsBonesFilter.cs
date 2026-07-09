@@ -38,16 +38,39 @@ public class NeowsBonesFilter(
         nicheRng.FastForwardCounter(fastForwardCounter);
         
         var chosenCurse = nicheRng.NextItem(availableCurses.ToArray());
+        var mustPutScrollBoxesSecond = RequiresScrollBoxesSecond(requested);
+
         var optionsMatch = requested.Length switch
         {
             0 => true,
             1 => chosen.Contains(requested[0]),
-            2 when requireSequenceForTwoOptions => requested.SequenceEqual(chosen),
-            2 => requested.All(chosen.Contains),
+            2 when mustPutScrollBoxesSecond =>
+                chosen is [_, NeowOptions.ScrollBoxes, ..] &&
+                requested.All(chosen.Contains),
+            2 when requireSequenceForTwoOptions =>
+                requested.SequenceEqual(chosen),
+            2 =>
+                requested.All(chosen.Contains),
             _ => true
         };
 
         return optionsMatch &&
                (curse == null || chosenCurse == curse);
+    }
+    
+    private static bool RequiresScrollBoxesSecond(IReadOnlyList<NeowOptions> requested)
+    {
+        return requested.Contains(NeowOptions.ScrollBoxes) &&
+               requested.Any(option => GetCapsuleRelicCount(option) > 0);
+    }
+
+    private static int GetCapsuleRelicCount(NeowOptions option)
+    {
+        return option switch
+        {
+            NeowOptions.SmallCapsule => 1,
+            NeowOptions.LargeCapsule => 2,
+            _ => 0
+        };
     }
 }

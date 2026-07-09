@@ -3,7 +3,6 @@ using FilterTheSpire2.Code.Ancients.Config;
 using FilterTheSpire2.Code.Cards;
 using FilterTheSpire2.Code.Config;
 using FilterTheSpire2.Code.Filters.RelicOutcomeFilters;
-using FilterTheSpire2.Code.Helpers;
 using FilterTheSpire2.Code.Relics;
 using FilterTheSpire2.Code.SeedSearcher;
 
@@ -23,6 +22,7 @@ public static class FilterManager
 
         HandleAncientFilters(filters);
         AddNeowRelicOutcomeFilters(filters);
+        AddCapsuleRelicOutcomeFilter(filters);
         AddGenericRelicFilters(filters);
         AddActLocationFilters(filters);
 
@@ -118,9 +118,18 @@ public static class FilterManager
             actNum));
     }
 
-    private static void AddGenericRelicFilters(
-        List<IFilter> filters)
+    private static void AddGenericRelicFilters(List<IFilter> filters)
     {
+        if (FilterTheSpire2Config.ShopRelic != RelicOptions.Any)
+        {
+            filters.Add(new ShopRelicFilter(FilterTheSpire2Config.ShopRelic));
+        }
+
+        if (ShouldSuppressGenericRelicFilters())
+        {
+            return;
+        }
+
         if (FilterTheSpire2Config.CommonRelic != RelicOptions.Any)
         {
             filters.Add(new CommonRelicFilter(FilterTheSpire2Config.CommonRelic));
@@ -135,12 +144,49 @@ public static class FilterManager
         {
             filters.Add(new RareRelicFilter(FilterTheSpire2Config.RareRelic));
         }
-
-        if (FilterTheSpire2Config.ShopRelic != RelicOptions.Any)
-        {
-            filters.Add(new ShopRelicFilter(FilterTheSpire2Config.ShopRelic));
-        }
     }
+
+    private static bool ShouldSuppressGenericRelicFilters()
+    {
+        return GetTotalCapsuleRelicCount() > 0 &&
+               (
+                   FilterTheSpire2Config.CapsuleRelicOption1 != RelicOptions.Any ||
+                   FilterTheSpire2Config.CapsuleRelicOption2 != RelicOptions.Any ||
+                   FilterTheSpire2Config.CapsuleRelicOption3 != RelicOptions.Any
+               );
+    }
+
+    // private static void AddCapsuleRelicOutcomeFilter(List<IFilter> filters)
+    // {
+    //     var generatedRelicCount = GetTotalCapsuleRelicCount();
+    //
+    //     if (generatedRelicCount == 0)
+    //     {
+    //         return;
+    //     }
+    //
+    //     var selectedRelics = new List<RelicOptions>
+    //     {
+    //         FilterTheSpire2Config.CapsuleRelicOption1,
+    //         FilterTheSpire2Config.CapsuleRelicOption2,
+    //         FilterTheSpire2Config.CapsuleRelicOption3,
+    //     };
+    //
+    //     selectedRelics = selectedRelics
+    //         .Take(generatedRelicCount)
+    //         .Where(relic => relic != RelicOptions.Any)
+    //         .Distinct()
+    //         .ToList();
+    //
+    //     if (selectedRelics.Count == 0)
+    //     {
+    //         return;
+    //     }
+    //
+    //     filters.Add(new CapsuleRelicFilter(
+    //         selectedRelics,
+    //         generatedRelicCount));
+    // }
 
     /// <summary>
     ///     For specifically the outcome of what Neow relic is chosen. Such as card transforms or specific relics
@@ -168,13 +214,10 @@ public static class FilterManager
                 ? FilterTheSpire2Config.NeowsBonesCurseOption
                 : null;
 
-            if (neowOptions.Count != 0 || curseOption != null)
-            {
-                filters.Add(new NeowsBonesFilter([..neowOptions], curseOption));
-            }
-
-            var bonesBaseConsumption = new NeowRngConsumption(
-                RewardsRngSteps: AncientRules.NeowsBonesOptions.Length-1, TransformationsRngSteps: 0, NicheRngSteps: 0);
+            var bonesBaseConsumption = new RngConsumptionSteps(
+                RewardsRngSteps: AncientRules.NeowsBonesOptions.Length - 1,
+                TransformationsRngSteps: 0,
+                NicheRngSteps: 0);
 
             var option1Filter = BuildNeowOutcomeFilter(bonesOption1, bonesBaseConsumption);
             var option2Filter = BuildNeowOutcomeFilter(bonesOption2, bonesBaseConsumption);
@@ -182,9 +225,12 @@ public static class FilterManager
             var requireSequence =
                 bonesOption1 != NeowOptions.Any &&
                 bonesOption2 != NeowOptions.Any &&
-                option1Filter != null &&
-                option2Filter != null &&
-                DoConsumptionsOverlap(option1Filter.RngConsumption, option2Filter.RngConsumption);
+                (
+                    RequiresScrollBoxesSecond(neowOptions) ||
+                    option1Filter != null &&
+                    option2Filter != null &&
+                    DoConsumptionsOverlap(option1Filter.RngConsumptionSteps, option2Filter.RngConsumptionSteps)
+                );
 
             if (neowOptions.Count != 0 || curseOption != null)
             {
@@ -206,7 +252,6 @@ public static class FilterManager
                 return;
             }
 
-            // Sequence matters, so slot 2 must fast-forward past slot 1's consumption.
             if (option1Filter != null)
             {
                 filters.Add(option1Filter);
@@ -214,10 +259,9 @@ public static class FilterManager
 
             if (bonesOption2 != NeowOptions.Any)
             {
-                var slot2Consumption = new NeowRngConsumption(
-                    RewardsRngSteps: bonesBaseConsumption.RewardsRngSteps + (option1Filter?.RngConsumption.RewardsRngSteps ?? 0),
-                    TransformationsRngSteps: bonesBaseConsumption.TransformationsRngSteps + (option1Filter?.RngConsumption.TransformationsRngSteps ?? 0),
-                    NicheRngSteps: bonesBaseConsumption.NicheRngSteps + (option1Filter?.RngConsumption.NicheRngSteps ?? 0));
+                var slot2Consumption = AddConsumption(
+                    bonesBaseConsumption,
+                    option1Filter?.RngConsumptionSteps ?? RngConsumptionSteps.None);
 
                 var slot2Filter = BuildNeowOutcomeFilter(bonesOption2, slot2Consumption);
                 if (slot2Filter != null)
@@ -229,7 +273,6 @@ public static class FilterManager
             return;
         }
 
-        // Non-bones path — no base consumption, no slot 2
         var directFilter = BuildNeowOutcomeFilter(FilterTheSpire2Config.NeowOptions, null);
         if (directFilter != null)
         {
@@ -239,7 +282,7 @@ public static class FilterManager
 
     private static INeowOutcomeFilter? BuildNeowOutcomeFilter(
         NeowOptions option,
-        NeowRngConsumption? slot1Consumption)
+        RngConsumptionSteps? slot1Consumption)
     {
         return option switch
         {
@@ -263,7 +306,7 @@ public static class FilterManager
         };
     }
 
-    private static INeowOutcomeFilter? BuildLeafyPoulticeFilter(NeowRngConsumption? slot1Consumption)
+    private static INeowOutcomeFilter? BuildLeafyPoulticeFilter(RngConsumptionSteps? slot1Consumption)
     {
         var cardOptions = new List<CardOptions>();
         if (FilterTheSpire2Config.LeafyPoulticeOption1 != CardOptions.Any)
@@ -276,7 +319,7 @@ public static class FilterManager
             : null;
     }
 
-    private static INeowOutcomeFilter? BuildKaleidoscopeFilter(NeowRngConsumption? slot1Consumption)
+    private static INeowOutcomeFilter? BuildKaleidoscopeFilter(RngConsumptionSteps? slot1Consumption)
     {
         var cardOptions = new List<CardOptions>();
         if (FilterTheSpire2Config.KaleidoscopeOption1 != CardOptions.Any)
@@ -306,13 +349,121 @@ public static class FilterManager
             filters.Add(new ActLocationFilter(FilterTheSpire2Config.Act3Locations, 3));
     }
 
+    private static void AddCapsuleRelicOutcomeFilter(List<IFilter> filters)
+    {
+        var generatedRelicCount = GetTotalCapsuleRelicCount();
+
+        if (generatedRelicCount == 0)
+        {
+            return;
+        }
+
+        var selectedRelics = new List<RelicOptions>
+            {
+                FilterTheSpire2Config.CapsuleRelicOption1,
+                FilterTheSpire2Config.CapsuleRelicOption2,
+                FilterTheSpire2Config.CapsuleRelicOption3,
+            }
+            .Take(generatedRelicCount)
+            // Intentionally collapse Any slots. Capsule relic filters are treated as
+            // "match these selected relics in order from the first generated relic",
+            // not as positional slot constraints.
+            .Where(relic => relic != RelicOptions.Any)
+            .Distinct()
+            .ToList();
+
+        if (selectedRelics.Count == 0)
+        {
+            return;
+        }
+
+        filters.Add(new CapsuleRelicFilter(
+            selectedRelics,
+            generatedRelicCount,
+            GetCapsulePriorConsumption()));
+    }
+
     #region helpers
 
-    private static bool DoConsumptionsOverlap(NeowRngConsumption a, NeowRngConsumption b)
+    private static bool DoConsumptionsOverlap(RngConsumptionSteps a, RngConsumptionSteps b)
     {
         return (a.RewardsRngSteps > 0 && b.RewardsRngSteps > 0) ||
                (a.TransformationsRngSteps > 0 && b.TransformationsRngSteps > 0) ||
                (a.NicheRngSteps > 0 && b.NicheRngSteps > 0);
+    }
+
+    private static RngConsumptionSteps GetCapsulePriorConsumption()
+    {
+        if (FilterTheSpire2Config.NeowOptions != NeowOptions.NeowsBones)
+        {
+            return RngConsumptionSteps.None;
+        }
+
+        var bonesOption1 = FilterTheSpire2Config.NeowsBonesRelicOption1;
+        var bonesOption2 = FilterTheSpire2Config.NeowsBonesRelicOption2;
+
+        var bonesBaseConsumption = new RngConsumptionSteps(
+            RewardsRngSteps: AncientRules.NeowsBonesOptions.Length - 1,
+            TransformationsRngSteps: 0,
+            NicheRngSteps: 0);
+
+        var option1Filter = BuildNeowOutcomeFilter(bonesOption1, bonesBaseConsumption);
+
+        // If ScrollBoxes is paired with a capsule, NeowsBonesFilter forces ScrollBoxes second.
+        // This is so ScrollBoxes does not consume Rewards RNG before the capsule relic rolls.
+        if (bonesOption1 == NeowOptions.ScrollBoxes || bonesOption2 == NeowOptions.ScrollBoxes)
+        {
+            if (GetCapsuleRelicCount(bonesOption1) > 0 || GetCapsuleRelicCount(bonesOption2) > 0)
+            {
+                return bonesBaseConsumption;
+            }
+        }
+
+        if (GetCapsuleRelicCount(bonesOption1) > 0)
+        {
+            return bonesBaseConsumption;
+        }
+
+        return AddConsumption(
+            bonesBaseConsumption,
+            option1Filter?.RngConsumptionSteps ?? RngConsumptionSteps.None);
+    }
+
+    private static int GetTotalCapsuleRelicCount()
+    {
+        if (FilterTheSpire2Config.NeowOptions != NeowOptions.NeowsBones)
+        {
+            return GetCapsuleRelicCount(FilterTheSpire2Config.NeowOptions);
+        }
+
+        return GetCapsuleRelicCount(FilterTheSpire2Config.NeowsBonesRelicOption1) +
+               GetCapsuleRelicCount(FilterTheSpire2Config.NeowsBonesRelicOption2);
+    }
+
+    public static int GetCapsuleRelicCount(NeowOptions option)
+    {
+        return option switch
+        {
+            NeowOptions.SmallCapsule => 1,
+            NeowOptions.LargeCapsule => 2,
+            _ => 0
+        };
+    }
+
+    private static bool RequiresScrollBoxesSecond(IReadOnlyList<NeowOptions> requested)
+    {
+        return requested.Contains(NeowOptions.ScrollBoxes) &&
+               requested.Any(option => GetCapsuleRelicCount(option) > 0);
+    }
+
+    private static RngConsumptionSteps AddConsumption(
+        RngConsumptionSteps a,
+        RngConsumptionSteps b)
+    {
+        return new RngConsumptionSteps(
+            RewardsRngSteps: a.RewardsRngSteps + b.RewardsRngSteps,
+            TransformationsRngSteps: a.TransformationsRngSteps + b.TransformationsRngSteps,
+            NicheRngSteps: a.NicheRngSteps + b.NicheRngSteps);
     }
 
     #endregion
