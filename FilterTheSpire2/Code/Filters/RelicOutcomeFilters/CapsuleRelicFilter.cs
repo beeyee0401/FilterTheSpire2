@@ -34,14 +34,10 @@ public class CapsuleRelicFilter(
                 RelicRewardSimulator.PullNextRolledRelic(rewardsRng, relicPools));
         }
 
-        for (var i = 0; i < relicsToMatch.Count; i++)
-        {
-            if (generatedRelics[i] != relicsToMatch[i])
-            {
-                return false;
-            }
-        }
+        var generatedRelicsToCheck = generatedRelics
+            .Take(relicsToMatch.Count)
+            .ToHashSet();
 
-        return true;
+        return relicsToMatch.All(generatedRelicsToCheck.Contains);
     }
 }
