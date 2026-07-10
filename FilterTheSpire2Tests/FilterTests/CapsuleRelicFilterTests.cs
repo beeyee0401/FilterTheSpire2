@@ -12,7 +12,7 @@ public class CapsuleRelicFilterTests
     private const string BonesSmallAndLargeThreeRelicSeed = "KNXJMHDE6Q"; // AmethystAubergine, Anchor, BloodVial
 
     [TestMethod]
-    public void SmallCapsule_WhenFirstRelicMatches_ReturnsTrue()
+    public void SmallCapsule_WhenRelicMatches_ReturnsTrue()
     {
         var filter = new CapsuleRelicFilter(
             relicsToMatch: [RelicOptions.Anchor],
@@ -22,7 +22,7 @@ public class CapsuleRelicFilterTests
     }
 
     [TestMethod]
-    public void SmallCapsule_WhenFirstRelicDoesNotMatch_ReturnsFalse()
+    public void SmallCapsule_WhenRelicDoesNotMatch_ReturnsFalse()
     {
         var filter = new CapsuleRelicFilter(
             relicsToMatch: [RelicOptions.Vajra],
@@ -32,23 +32,13 @@ public class CapsuleRelicFilterTests
     }
 
     [TestMethod]
-    public void LargeCapsule_WhenBothRelicsMatchInOrder_ReturnsTrue()
+    public void LargeCapsule_WhenBothRelicsMatch_ReturnsTrue()
     {
         var filter = new CapsuleRelicFilter(
             relicsToMatch: [RelicOptions.Anchor, RelicOptions.Vajra],
             generatedRelicCount: 2);
 
         Assert.IsTrue(filter.IsSeedValid(FilterTestHelpers.Request(), LargeCapsuleAnchorVajraSeed));
-    }
-
-    [TestMethod]
-    public void LargeCapsule_WhenRelicsMatchButWrongOrder_ReturnsFalse()
-    {
-        var filter = new CapsuleRelicFilter(
-            relicsToMatch: [RelicOptions.Vajra, RelicOptions.Anchor],
-            generatedRelicCount: 2);
-
-        Assert.IsFalse(filter.IsSeedValid(FilterTestHelpers.Request(), LargeCapsuleAnchorVajraSeed));
     }
 
     [TestMethod]

@@ -368,7 +368,8 @@ public static class NeowConfigController
         {
             var value = (RelicOptions)item.Value!;
             return value == RelicOptions.Any || capsulePool.Contains(value);
-        }).ToList();
+        }).OrderBy(item => (RelicOptions)item.Value! == RelicOptions.Any ? 0 : 1)
+        .ThenBy(item => ((RelicOptions)item.Value!).ToString()).ToList();
     }
     
     private static int GetVisibleCapsuleRelicCount()
