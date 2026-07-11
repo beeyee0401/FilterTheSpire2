@@ -20,7 +20,7 @@ public static class RngHelper
     }
 
     public static Rng GetActSelectionRng(string seed) =>
-        new((uint)StringHelper.GetDeterministicHashCode(seed), "act_selection");
+        new(GetSeedHash(seed), "act_selection");
     
     /// <summary>
     /// Logic starts in StartRunLobby.BeginRunLocally, ignores multiplayer and unlock logic
@@ -42,7 +42,7 @@ public static class RngHelper
     
     public static Rng GetEventRng(uint seed, string eventId)
     {
-        return new Rng((uint) (seed + 0UL + (ulong) StringHelper.GetDeterministicHashCode(eventId)));
+        return new Rng((uint) (seed + 0UL + GetSeedHash(eventId)));
     }
 
     public static Rng GetPlayerRngType(uint seed, PlayerRngType playerRngType)
@@ -71,4 +71,8 @@ public static class RngHelper
         while (BadWordChecker.ContainsBadWord(text));
         return text;
     }
+    
+    public static uint GetSeedHash(string seed) => (uint)StringHelper.GetDeterministicHashCode(seed);
+
+    public static Rng GetBaseRng(string seed) => new(GetSeedHash(seed));
 }

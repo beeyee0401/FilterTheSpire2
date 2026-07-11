@@ -2,6 +2,7 @@ using FilterTheSpire2.Code.Cards;
 using FilterTheSpire2.Code.Characters;
 using FilterTheSpire2.Code.Config;
 using FilterTheSpire2.Code.Filters.RelicOutcomeFilters;
+using FilterTheSpire2.Code.Helpers;
 using FilterTheSpire2.Code.SeedSearcher;
 using MegaCrit.Sts2.Core.Entities.Ascension;
 using MegaCrit.Sts2.Core.Entities.Cards;
@@ -36,9 +37,11 @@ public abstract class BaseCardRewardFilter(
         }
 
         if (IsCharacterRequired && FilterTheSpire2Config.Character == CharacterOptions.Any)
+        {
             return true;
+        }
 
-        var baseRng = new Rng((uint)StringHelper.GetDeterministicHashCode(seed));
+        var baseRng = RngHelper.GetBaseRng(seed);
         var rng = GetRewardRng(baseRng.Seed);
         var poolRng = GetCardPoolRng(baseRng.Seed);
 

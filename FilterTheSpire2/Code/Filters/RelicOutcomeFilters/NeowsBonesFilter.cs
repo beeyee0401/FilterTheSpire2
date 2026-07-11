@@ -18,7 +18,7 @@ public class NeowsBonesFilter(
         var requested = neowOptions.Distinct().ToArray();
         var allPossibleOptions = AncientRules.NeowsBonesOptions.ToList();
 
-        var numSeed = (uint)StringHelper.GetDeterministicHashCode(seed);
+        var numSeed = RngHelper.GetSeedHash(seed);
         var rng = RngHelper.GetPlayerRngType(numSeed, PlayerRngType.Rewards);
         rng.Shuffle(allPossibleOptions);
         var chosen = allPossibleOptions.Take(2).ToList();

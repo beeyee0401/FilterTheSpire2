@@ -3,6 +3,7 @@ using FilterTheSpire2.Code.Cards;
 using FilterTheSpire2.Code.Characters;
 using FilterTheSpire2.Code.Config;
 using FilterTheSpire2.Code.Filters.RelicOutcomeFilters;
+using FilterTheSpire2.Code.Helpers;
 using FilterTheSpire2.Code.SeedSearcher;
 using MegaCrit.Sts2.Core.Helpers;
 using MegaCrit.Sts2.Core.Random;
@@ -33,7 +34,7 @@ public abstract class BaseCardTransformFilter(
             return true;
         }
 
-        var baseRng = new Rng((uint)StringHelper.GetDeterministicHashCode(seed));
+        var baseRng = RngHelper.GetBaseRng(seed);
         var rng = GetTransformRng(baseRng.Seed);
 
         // Fast-forward past slot 1's consumption if we are slot 2

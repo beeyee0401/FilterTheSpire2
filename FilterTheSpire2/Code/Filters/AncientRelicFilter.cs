@@ -27,7 +27,7 @@ public class AncientRelicFilter(Ancient selectedAncient, Enum? relicOption, int 
     
     public bool IsSeedValid(SeedSearchRequest request, string seed)
     {
-        var rng = new Rng((uint) StringHelper.GetDeterministicHashCode(seed));
+        var rng = RngHelper.GetBaseRng(seed);
         
         if (actNum == 1)
         {

@@ -40,9 +40,8 @@ public sealed class SeedSearchWorker(
         // var stringSeed = "H8G58Z3P8H";
 
         var seed =
-            (uint)StringHelper.GetDeterministicHashCode(stringSeed) +
-            (uint)StringHelper.GetDeterministicHashCode(
-                StringHelper.SnakeCase(nameof(RunRngType.UpFront)));
+            RngHelper.GetSeedHash(stringSeed) +
+            RngHelper.GetSeedHash(StringHelper.SnakeCase(nameof(RunRngType.UpFront)));
 
         var passed = FilterManager.ValidateFilters(request, stringSeed);
 
