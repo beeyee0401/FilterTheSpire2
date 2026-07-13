@@ -5,6 +5,7 @@ using FilterTheSpire2.Code.Relics;
 namespace FilterTheSpire2Tests.FilterTests;
 
 [TestClass]
+[DoNotParallelize]
 public class CapsuleRelicFilterTests
 {
     private const string SmallCapsuleAnchorSeed = "SHFRFA087T";

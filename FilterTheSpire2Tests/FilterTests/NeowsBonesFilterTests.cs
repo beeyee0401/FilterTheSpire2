@@ -8,7 +8,7 @@ namespace FilterTheSpire2Tests.FilterTests;
 [TestClass]
 public class NeowsBonesFilterTests
 {
-    private const string Seed_Bones_NewLeaf_Kaleidoscope_Regret = "79U2UR9CSX";
+    private const string SeedBonesNewLeafKaleidoscopeRegret = "79U2UR9CSX";
     
     [TestMethod]
     public void IsSeedValid_WithNoRestrictions_ReturnsTrue()
@@ -34,7 +34,7 @@ public class NeowsBonesFilterTests
 
         var request = FilterTestHelpers.Request();
 
-        Assert.IsTrue(filter.IsSeedValid(request, Seed_Bones_NewLeaf_Kaleidoscope_Regret));
+        Assert.IsTrue(filter.IsSeedValid(request, SeedBonesNewLeafKaleidoscopeRegret));
     }
     
     [TestMethod]
@@ -46,7 +46,7 @@ public class NeowsBonesFilterTests
 
         var request = FilterTestHelpers.Request();
 
-        Assert.IsFalse(filter.IsSeedValid(request, Seed_Bones_NewLeaf_Kaleidoscope_Regret));
+        Assert.IsFalse(filter.IsSeedValid(request, SeedBonesNewLeafKaleidoscopeRegret));
     }
     
     [TestMethod]
@@ -61,7 +61,7 @@ public class NeowsBonesFilterTests
 
         var request = FilterTestHelpers.Request();
 
-        Assert.IsTrue(filter.IsSeedValid(request, Seed_Bones_NewLeaf_Kaleidoscope_Regret));
+        Assert.IsTrue(filter.IsSeedValid(request, SeedBonesNewLeafKaleidoscopeRegret));
     }
     
     [TestMethod]
@@ -73,7 +73,7 @@ public class NeowsBonesFilterTests
 
         var request = FilterTestHelpers.Request();
 
-        Assert.IsTrue(filter.IsSeedValid(request, Seed_Bones_NewLeaf_Kaleidoscope_Regret));
+        Assert.IsTrue(filter.IsSeedValid(request, SeedBonesNewLeafKaleidoscopeRegret));
     }
     
     [TestMethod]
@@ -85,7 +85,7 @@ public class NeowsBonesFilterTests
 
         var request = FilterTestHelpers.Request();
 
-        Assert.IsFalse(filter.IsSeedValid(request, Seed_Bones_NewLeaf_Kaleidoscope_Regret));
+        Assert.IsFalse(filter.IsSeedValid(request, SeedBonesNewLeafKaleidoscopeRegret));
     }
     
     [TestMethod]
@@ -100,7 +100,7 @@ public class NeowsBonesFilterTests
 
         var request = FilterTestHelpers.Request();
 
-        Assert.IsTrue(filter.IsSeedValid(request, Seed_Bones_NewLeaf_Kaleidoscope_Regret));
+        Assert.IsTrue(filter.IsSeedValid(request, SeedBonesNewLeafKaleidoscopeRegret));
     }
     
     [TestMethod]
@@ -112,7 +112,7 @@ public class NeowsBonesFilterTests
 
         var request = FilterTestHelpers.Request();
 
-        Assert.IsFalse(filter.IsSeedValid(request, Seed_Bones_NewLeaf_Kaleidoscope_Regret));
+        Assert.IsFalse(filter.IsSeedValid(request, SeedBonesNewLeafKaleidoscopeRegret));
     }
     
     [TestMethod]
@@ -124,7 +124,7 @@ public class NeowsBonesFilterTests
 
         var request = FilterTestHelpers.Request();
 
-        Assert.IsFalse(filter.IsSeedValid(request, Seed_Bones_NewLeaf_Kaleidoscope_Regret));
+        Assert.IsFalse(filter.IsSeedValid(request, SeedBonesNewLeafKaleidoscopeRegret));
     }
     
     [TestMethod]
@@ -136,7 +136,7 @@ public class NeowsBonesFilterTests
 
         var request = FilterTestHelpers.Request();
 
-        Assert.IsFalse(filter.IsSeedValid(request, Seed_Bones_NewLeaf_Kaleidoscope_Regret));
+        Assert.IsFalse(filter.IsSeedValid(request, SeedBonesNewLeafKaleidoscopeRegret));
     }
     
     [TestMethod]
@@ -154,8 +154,8 @@ public class NeowsBonesFilterTests
             null,
             requireSequenceForTwoOptions: false);
 
-        Assert.IsTrue(normal.IsSeedValid(request, Seed_Bones_NewLeaf_Kaleidoscope_Regret));
-        Assert.IsTrue(swapped.IsSeedValid(request, Seed_Bones_NewLeaf_Kaleidoscope_Regret));
+        Assert.IsTrue(normal.IsSeedValid(request, SeedBonesNewLeafKaleidoscopeRegret));
+        Assert.IsTrue(swapped.IsSeedValid(request, SeedBonesNewLeafKaleidoscopeRegret));
     }
 
     [TestMethod]
@@ -173,8 +173,8 @@ public class NeowsBonesFilterTests
             null,
             requireSequenceForTwoOptions: true);
 
-        Assert.IsTrue(normal.IsSeedValid(request, Seed_Bones_NewLeaf_Kaleidoscope_Regret));
-        Assert.IsFalse(swapped.IsSeedValid(request, Seed_Bones_NewLeaf_Kaleidoscope_Regret));
+        Assert.IsTrue(normal.IsSeedValid(request, SeedBonesNewLeafKaleidoscopeRegret));
+        Assert.IsFalse(swapped.IsSeedValid(request, SeedBonesNewLeafKaleidoscopeRegret));
     }
 
     [TestMethod]
@@ -187,7 +187,7 @@ public class NeowsBonesFilterTests
             null,
             requireSequenceForTwoOptions: false);
 
-        Assert.IsFalse(filter.IsSeedValid(request, Seed_Bones_NewLeaf_Kaleidoscope_Regret));
+        Assert.IsFalse(filter.IsSeedValid(request, SeedBonesNewLeafKaleidoscopeRegret));
     }
 
     [TestMethod]
@@ -200,6 +200,6 @@ public class NeowsBonesFilterTests
             CardOptions.Shame,
             requireSequenceForTwoOptions: false);
 
-        Assert.IsFalse(filter.IsSeedValid(request, Seed_Bones_NewLeaf_Kaleidoscope_Regret));
+        Assert.IsFalse(filter.IsSeedValid(request, SeedBonesNewLeafKaleidoscopeRegret));
     }
 }

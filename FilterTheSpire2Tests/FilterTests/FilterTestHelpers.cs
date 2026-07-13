@@ -3,9 +3,11 @@ using FilterTheSpire2.Code.Ancients.Config;
 using FilterTheSpire2.Code.Cards;
 using FilterTheSpire2.Code.Characters;
 using FilterTheSpire2.Code.Config;
+using FilterTheSpire2.Code.Helpers;
 using FilterTheSpire2.Code.Relics;
 using FilterTheSpire2.Code.SeedSearcher;
 using MegaCrit.Sts2.Core.Entities.Ascension;
+using MegaCrit.Sts2.Core.Entities.Rngs;
 
 namespace FilterTheSpire2Tests.FilterTests;
 
@@ -56,5 +58,47 @@ internal static class FilterTestHelpers
         FilterTheSpire2Config.Act1Locations = ActLocations.Any;
         FilterTheSpire2Config.Act2Locations = ActLocations.Any;
         FilterTheSpire2Config.Act3Locations = ActLocations.Any;
+    }
+    
+    private static readonly Dictionary<
+        (NeowOptions Option1, NeowOptions Option2),
+        string> BonesSeedCache = [];
+    
+    public static string FindSeedWithBonesOptions(
+        NeowOptions option1,
+        NeowOptions option2)
+    {
+        var key = (option1, option2);
+
+        if (BonesSeedCache.TryGetValue(key, out var cachedSeed))
+        {
+            return cachedSeed;
+        }
+
+        for (var candidate = 0u; candidate < 1_000_000; candidate++)
+        {
+            var seed = candidate.ToString();
+
+            var options = AncientRules.NeowsBonesOptions.ToList();
+            var rng = RngHelper.GetPlayerRngType(
+                RngHelper.GetSeedHash(seed),
+                PlayerRngType.Rewards);
+
+            rng.Shuffle(options);
+
+            if (options[0] != option1 || options[1] != option2)
+            {
+                continue;
+            }
+
+            BonesSeedCache[key] = seed;
+            return seed;
+        }
+
+        Assert.Fail(
+            $"Could not find a seed with Neow's Bones options " +
+            $"{option1}, {option2}.");
+
+        return null!;
     }
 }

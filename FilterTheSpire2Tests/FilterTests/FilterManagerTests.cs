@@ -12,6 +12,8 @@ namespace FilterTheSpire2Tests.FilterTests;
 [DoNotParallelize]
 public class FilterManagerTests
 {
+    private const string SeedBonesNewLeafKaleidoscope = "79U2UR9CSX";
+    
     [TestInitialize]
     public void Setup()
     {
@@ -63,7 +65,7 @@ public class FilterManagerTests
     }
     
     [TestMethod]
-    public void CreateFiltersFromSettings_WhenBonesHasOnlySlot2_TreatsSlot2AsEffectiveSlot1()
+    public void CreateFiltersFromSettings_WhenOnlyBonesSlot2Configured_AddsItsOutcomeFilterWithBaseOffset()
     {
         FilterTheSpire2Config.NeowOptions = NeowOptions.NeowsBones;
         FilterTheSpire2Config.NeowsBonesRelicOption1 = NeowOptions.Any;
@@ -90,6 +92,127 @@ public class FilterManagerTests
         Assert.IsTrue(filters.OfType<NeowsBonesFilter>().Any());
         Assert.IsTrue(filters.OfType<KaleidoscopeFilter>().Any());
         Assert.IsTrue(filters.OfType<LeafyPoulticeFilter>().Any());
+    }
+    
+
+    [TestMethod]
+    public void CreateFiltersFromSettings_WhenOptionsOverlap_RequiresConfiguredOrderWithoutOutcomeFilters()
+    {
+        FilterTheSpire2Config.NeowOptions = NeowOptions.NeowsBones;
+        FilterTheSpire2Config.NeowsBonesRelicOption1 = NeowOptions.NewLeaf;
+        FilterTheSpire2Config.NeowsBonesRelicOption2 = NeowOptions.Kaleidoscope;
+
+        // Leave NewLeaf and Kaleidoscope card selections as Any so no outcome
+        // filters are created. Ordering should still come from option metadata.
+        var filters = FilterManager.CreateFiltersFromSettings();
+        var bonesFilter = filters.OfType<NeowsBonesFilter>().Single();
+
+        Assert.IsTrue(bonesFilter.IsSeedValid(
+            FilterTestHelpers.Request(),
+            SeedBonesNewLeafKaleidoscope));
+    }
+
+    [TestMethod]
+    public void CreateFiltersFromSettings_WhenOverlappingOptionsConfiguredInWrongOrder_RejectsSeed()
+    {
+        FilterTheSpire2Config.NeowOptions = NeowOptions.NeowsBones;
+        FilterTheSpire2Config.NeowsBonesRelicOption1 = NeowOptions.Kaleidoscope;
+        FilterTheSpire2Config.NeowsBonesRelicOption2 = NeowOptions.NewLeaf;
+
+        // No outcome filters are configured. The manager must still recognize
+        // that both options consume Niche RNG and require sequence.
+        var filters = FilterManager.CreateFiltersFromSettings();
+        var bonesFilter = filters.OfType<NeowsBonesFilter>().Single();
+
+        Assert.IsFalse(bonesFilter.IsSeedValid(
+            FilterTestHelpers.Request(),
+            SeedBonesNewLeafKaleidoscope));
+    }
+    
+    [TestMethod]
+    public void CreateFiltersFromSettings_WhenOptionsDoNotOverlap_AllowsEitherConfiguredOrder()
+    {
+        FilterTheSpire2Config.NeowOptions = NeowOptions.NeowsBones;
+        FilterTheSpire2Config.NeowsBonesRelicOption1 = NeowOptions.LeafyPoultice;
+        FilterTheSpire2Config.NeowsBonesRelicOption2 = NeowOptions.Kaleidoscope;
+
+        var filters = FilterManager.CreateFiltersFromSettings();
+        var bonesFilter = filters.OfType<NeowsBonesFilter>().Single();
+
+        var seed = FilterTestHelpers.FindSeedWithBonesOptions(
+            NeowOptions.Kaleidoscope,
+            NeowOptions.LeafyPoultice);
+
+        Assert.IsTrue(bonesFilter.IsSeedValid(
+            FilterTestHelpers.Request(),
+            seed));
+    }
+    
+    [TestMethod]
+    [DataRow(NeowOptions.SmallCapsule)]
+    [DataRow(NeowOptions.LargeCapsule)]
+    [DataRow(NeowOptions.ArcaneScroll)]
+    [DataRow(NeowOptions.LeadPaperweight)]
+    [DataRow(NeowOptions.LostCoffer)]
+    [DataRow(NeowOptions.Kaleidoscope)]
+    public void CreateFiltersFromSettings_WhenScrollBoxesOverlapsRewards_ForcesScrollBoxesSecond(
+        NeowOptions otherOption)
+    {
+        FilterTheSpire2Config.NeowOptions = NeowOptions.NeowsBones;
+
+        // Deliberately configure Scroll Boxes first. FilterManager should resolve
+        // the required order as the deterministic option first, Scroll Boxes second.
+        FilterTheSpire2Config.NeowsBonesRelicOption1 = NeowOptions.ScrollBoxes;
+        FilterTheSpire2Config.NeowsBonesRelicOption2 = otherOption;
+
+        var filters = FilterManager.CreateFiltersFromSettings();
+        var bonesFilter = filters.OfType<NeowsBonesFilter>().Single();
+
+        var correctOrderSeed = FilterTestHelpers.FindSeedWithBonesOptions(
+            otherOption,
+            NeowOptions.ScrollBoxes);
+
+        var incorrectOrderSeed = FilterTestHelpers.FindSeedWithBonesOptions(
+            NeowOptions.ScrollBoxes,
+            otherOption);
+
+        Assert.IsTrue(bonesFilter.IsSeedValid(
+            FilterTestHelpers.Request(),
+            correctOrderSeed));
+
+        Assert.IsFalse(bonesFilter.IsSeedValid(
+            FilterTestHelpers.Request(),
+            incorrectOrderSeed));
+    }
+    
+    [TestMethod]
+    [DataRow(NeowOptions.NewLeaf)]
+    [DataRow(NeowOptions.LeafyPoultice)]
+    public void CreateFiltersFromSettings_WhenScrollBoxesDoesNotOverlap_DoesNotForceSequence(
+        NeowOptions otherOption)
+    {
+        FilterTheSpire2Config.NeowOptions = NeowOptions.NeowsBones;
+        FilterTheSpire2Config.NeowsBonesRelicOption1 = NeowOptions.ScrollBoxes;
+        FilterTheSpire2Config.NeowsBonesRelicOption2 = otherOption;
+
+        var filters = FilterManager.CreateFiltersFromSettings();
+        var bonesFilter = filters.OfType<NeowsBonesFilter>().Single();
+
+        var scrollBoxesFirstSeed = FilterTestHelpers.FindSeedWithBonesOptions(
+            NeowOptions.ScrollBoxes,
+            otherOption);
+
+        var scrollBoxesSecondSeed = FilterTestHelpers.FindSeedWithBonesOptions(
+            otherOption,
+            NeowOptions.ScrollBoxes);
+
+        Assert.IsTrue(bonesFilter.IsSeedValid(
+            FilterTestHelpers.Request(),
+            scrollBoxesFirstSeed));
+
+        Assert.IsTrue(bonesFilter.IsSeedValid(
+            FilterTestHelpers.Request(),
+            scrollBoxesSecondSeed));
     }
 
     #region Capsule relic tests

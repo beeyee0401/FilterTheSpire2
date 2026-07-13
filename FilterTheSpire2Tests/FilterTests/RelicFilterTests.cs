@@ -5,12 +5,13 @@ using FilterTheSpire2.Code.Relics;
 namespace FilterTheSpire2Tests.FilterTests;
 
 [TestClass]
+[DoNotParallelize]
 public class RelicFilterTests
 {
-    private const string Seed_CommonRelic_Target = "FBHQ4E6JJ4";
-    private const string Seed_UncommonRelic_Target = "EXEGYHCM0T";
-    private const string Seed_RareRelic_Target = "RLKAU60YWS";
-    private const string Seed_ShopRelic_Target = "XSWBZ6TKZ3";
+    private const string SeedCommonRelicTarget = "FBHQ4E6JJ4";
+    private const string SeedUncommonRelicTarget = "EXEGYHCM0T";
+    private const string SeedRareRelicTarget = "RLKAU60YWS";
+    private const string SeedShopRelicTarget = "XSWBZ6TKZ3";
 
     private const RelicOptions CommonTarget = RelicOptions.Anchor;
     private const RelicOptions UncommonTarget = RelicOptions.HornCleat;
@@ -28,7 +29,7 @@ public class RelicFilterTests
     {
         var filter = new CommonRelicFilter(CommonTarget);
 
-        Assert.IsTrue(filter.IsSeedValid(FilterTestHelpers.Request(), Seed_CommonRelic_Target));
+        Assert.IsTrue(filter.IsSeedValid(FilterTestHelpers.Request(), SeedCommonRelicTarget));
     }
 
     [TestMethod]
@@ -36,7 +37,7 @@ public class RelicFilterTests
     {
         var filter = new UncommonRelicFilter(UncommonTarget);
 
-        Assert.IsTrue(filter.IsSeedValid(FilterTestHelpers.Request(), Seed_UncommonRelic_Target));
+        Assert.IsTrue(filter.IsSeedValid(FilterTestHelpers.Request(), SeedUncommonRelicTarget));
     }
 
     [TestMethod]
@@ -44,7 +45,7 @@ public class RelicFilterTests
     {
         var filter = new RareRelicFilter(RareTarget);
 
-        Assert.IsTrue(filter.IsSeedValid(FilterTestHelpers.Request(), Seed_RareRelic_Target));
+        Assert.IsTrue(filter.IsSeedValid(FilterTestHelpers.Request(), SeedRareRelicTarget));
     }
 
     [TestMethod]
@@ -52,6 +53,6 @@ public class RelicFilterTests
     {
         var filter = new ShopRelicFilter(ShopTarget);
 
-        Assert.IsTrue(filter.IsSeedValid(FilterTestHelpers.Request(), Seed_ShopRelic_Target));
+        Assert.IsTrue(filter.IsSeedValid(FilterTestHelpers.Request(), SeedShopRelicTarget));
     }
 }
