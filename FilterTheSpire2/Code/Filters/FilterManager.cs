@@ -3,6 +3,7 @@ using FilterTheSpire2.Code.Ancients.Config;
 using FilterTheSpire2.Code.Cards;
 using FilterTheSpire2.Code.Config;
 using FilterTheSpire2.Code.Filters.RelicOutcomeFilters;
+using FilterTheSpire2.Code.Potions;
 using FilterTheSpire2.Code.Relics;
 using FilterTheSpire2.Code.SeedSearcher;
 
@@ -303,8 +304,28 @@ public static class FilterManager
             NeowOptions.ArcaneScroll when FilterTheSpire2Config.ArcaneScrollOption != CardOptions.Any =>
                 new ArcaneScrollFilter([FilterTheSpire2Config.ArcaneScrollOption], slot1Consumption),
 
+            NeowOptions.PhialHolster => BuildPhialHolsterFilter(slot1Consumption),
+
             _ => null
         };
+    }
+
+    private static INeowOutcomeFilter? BuildPhialHolsterFilter(RngConsumptionSteps? slot1Consumption)
+    {
+        var potionOptions = new List<PotionOptions>();
+        if (FilterTheSpire2Config.PhialHolsterOption1 != PotionOptions.Any)
+        {
+            potionOptions.Add(FilterTheSpire2Config.PhialHolsterOption1);
+        }
+
+        if (FilterTheSpire2Config.PhialHolsterOption2 != PotionOptions.Any)
+        {
+            potionOptions.Add(FilterTheSpire2Config.PhialHolsterOption2);
+        }
+
+        return potionOptions.Count > 0
+            ? new PhialHolsterFilter(potionOptions, slot1Consumption)
+            : null;
     }
 
     private static INeowOutcomeFilter? BuildLeafyPoulticeFilter(RngConsumptionSteps? slot1Consumption)
@@ -403,12 +424,8 @@ public static class FilterManager
         None = 0,
         Rewards = 1 << 0,
         Transformations = 1 << 1,
-        Niche = 1 << 2
-    }
-
-    private static bool DoRngStreamsOverlap(RngStreams a, RngStreams b)
-    {
-        return (a & b) != RngStreams.None;
+        Niche = 1 << 2,
+        CombatPotionGeneration = 1 << 3
     }
 
     private static RngStreams GetRngStreams(NeowOptions option)
@@ -416,17 +433,23 @@ public static class FilterManager
         return option switch
         {
             NeowOptions.SmallCapsule or
-            NeowOptions.LargeCapsule or
-            NeowOptions.LeadPaperweight or
-            NeowOptions.LostCoffer or
-            NeowOptions.ArcaneScroll or
-            NeowOptions.ScrollBoxes => RngStreams.Rewards,
+                NeowOptions.LargeCapsule or
+                NeowOptions.LeadPaperweight or
+                NeowOptions.LostCoffer or
+                NeowOptions.ArcaneScroll or
+                NeowOptions.ScrollBoxes => RngStreams.Rewards,
 
             NeowOptions.Kaleidoscope => RngStreams.Rewards | RngStreams.Niche,
             NeowOptions.LeafyPoultice => RngStreams.Transformations,
             NeowOptions.NewLeaf => RngStreams.Niche,
+            NeowOptions.PhialHolster => RngStreams.CombatPotionGeneration,
             _ => RngStreams.None
         };
+    }
+
+    private static bool DoRngStreamsOverlap(RngStreams a, RngStreams b)
+    {
+        return (a & b) != RngStreams.None;
     }
 
     private static RngConsumptionSteps GetDeterministicConsumption(NeowOptions option)
@@ -441,10 +464,8 @@ public static class FilterManager
             NeowOptions.ArcaneScroll => new RngConsumptionSteps(1, 0, 0),
             NeowOptions.LeafyPoultice => new RngConsumptionSteps(0, 2, 0),
             NeowOptions.NewLeaf => new RngConsumptionSteps(0, 0, 1),
+            NeowOptions.PhialHolster => new RngConsumptionSteps(0, 0, 0, 4),
 
-            // Scroll Boxes uses Rewards RNG, but its consumption varies by character
-            // and by whether a Claw bundle is rolled. It is therefore always forced
-            // into slot 2 when paired with another Rewards-consuming option.
             NeowOptions.ScrollBoxes => RngConsumptionSteps.None,
             _ => RngConsumptionSteps.None
         };
@@ -525,7 +546,8 @@ public static class FilterManager
         return new RngConsumptionSteps(
             RewardsRngSteps: a.RewardsRngSteps + b.RewardsRngSteps,
             TransformationsRngSteps: a.TransformationsRngSteps + b.TransformationsRngSteps,
-            NicheRngSteps: a.NicheRngSteps + b.NicheRngSteps);
+            NicheRngSteps: a.NicheRngSteps + b.NicheRngSteps,
+            CombatPotionGenerationRngSteps: a.CombatPotionGenerationRngSteps + b.CombatPotionGenerationRngSteps);
     }
 
     #endregion

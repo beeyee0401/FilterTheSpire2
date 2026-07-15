@@ -5,6 +5,7 @@ using FilterTheSpire2.Code.Ancients.Config;
 using FilterTheSpire2.Code.Cards;
 using FilterTheSpire2.Code.Characters;
 using FilterTheSpire2.Code.Filters;
+using FilterTheSpire2.Code.Potions;
 using FilterTheSpire2.Code.Relics;
 using Godot;
 using MegaCrit.Sts2.Core.Entities.Relics;
@@ -30,6 +31,9 @@ public static class NeowConfigController
         (nameof(FilterTheSpire2Config.CapsuleRelicOption3), NeowOptions.LargeCapsule),
 
         (nameof(FilterTheSpire2Config.LeadPaperweightOption), NeowOptions.LeadPaperweight),
+
+        (nameof(FilterTheSpire2Config.PhialHolsterOption1), NeowOptions.PhialHolster),
+        (nameof(FilterTheSpire2Config.PhialHolsterOption2), NeowOptions.PhialHolster),
     ];
     
     // Propnames for the bones relic selectors that affect card outcome row visibility
@@ -232,6 +236,8 @@ public static class NeowConfigController
             nameof(FilterTheSpire2Config.CapsuleRelicOption2) => 4,
             nameof(FilterTheSpire2Config.CapsuleRelicOption3) => 5,
             nameof(FilterTheSpire2Config.LeadPaperweightOption) => 6,
+            nameof(FilterTheSpire2Config.PhialHolsterOption1) => 7,
+            nameof(FilterTheSpire2Config.PhialHolsterOption2) => 8,
             _ => 100,
         };
     }
@@ -282,8 +288,25 @@ public static class NeowConfigController
                 nameof(FilterTheSpire2Config.CapsuleRelicOption2) or
                 nameof(FilterTheSpire2Config.CapsuleRelicOption3) => FilterCapsuleRelics(source),
 
+            nameof(FilterTheSpire2Config.PhialHolsterOption1) or
+                nameof(FilterTheSpire2Config.PhialHolsterOption2) => FilterPotionsForCharacter(source),
+
             _ => source
         };
+    }
+
+    private static List<NConfigDropdownItem.ItemData> FilterPotionsForCharacter(List<NConfigDropdownItem.ItemData> source)
+    {
+        var character = FilterTheSpire2Config.Character;
+        var pool = character != CharacterOptions.Any
+            ? PotionRules.GetFullPoolForCharacter(character).Select(p => p.Potion).ToHashSet()
+            : PotionRules.SharedPotions.Select(p => p.Potion).ToHashSet();
+
+        return source.Where(item =>
+        {
+            var value = (PotionOptions)item.Value!;
+            return value == PotionOptions.Any || pool.Contains(value);
+        }).ToList();
     }
  
     private static List<NConfigDropdownItem.ItemData> FilterColorlessCards(List<NConfigDropdownItem.ItemData> source)

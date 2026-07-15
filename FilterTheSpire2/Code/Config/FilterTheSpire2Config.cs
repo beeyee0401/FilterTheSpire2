@@ -6,6 +6,7 @@ using FilterTheSpire2.Code.Ancients.Config;
 using FilterTheSpire2.Code.Cards;
 using FilterTheSpire2.Code.Characters;
 using FilterTheSpire2.Code.Config.Logic;
+using FilterTheSpire2.Code.Potions;
 using FilterTheSpire2.Code.Relics;
 using Godot;
 
@@ -75,6 +76,14 @@ public class FilterTheSpire2Config : SimpleModConfig
     [ConfigHideInUI]
     [ConfigDropdownOverrideLocalization("CARD_OPTIONS")]
     public static CardOptions ArcaneScrollOption { get; set; } = CardOptions.Any;
+    
+    [ConfigHideInUI]
+    [ConfigDropdownOverrideLocalization("POTION_OPTIONS")]
+    public static PotionOptions PhialHolsterOption1 { get; set; } = PotionOptions.Any;
+
+    [ConfigHideInUI]
+    [ConfigDropdownOverrideLocalization("POTION_OPTIONS")]
+    public static PotionOptions PhialHolsterOption2 { get; set; } = PotionOptions.Any;
     
     [ConfigSection("Act2Section")]
     public static Ancient Act2Ancient { get; set; } = Ancient.Any;
