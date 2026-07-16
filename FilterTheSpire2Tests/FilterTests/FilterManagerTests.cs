@@ -3,7 +3,9 @@ using FilterTheSpire2.Code.Cards;
 using FilterTheSpire2.Code.Characters;
 using FilterTheSpire2.Code.Config;
 using FilterTheSpire2.Code.Filters;
+using FilterTheSpire2.Code.Filters.PotionFilters;
 using FilterTheSpire2.Code.Filters.RelicOutcomeFilters;
+using FilterTheSpire2.Code.Potions;
 using FilterTheSpire2.Code.Relics;
 
 namespace FilterTheSpire2Tests.FilterTests;
@@ -14,12 +16,20 @@ public class FilterManagerTests
 {
     private const string SeedBonesNewLeafKaleidoscope = "79U2UR9CSX";
     
+    // Block/Attack from Holster, Blood from Coffer
+    private const string SeedBonesLostCofferPhialHolster = "ZWKXKNE31X";
+    
+    // Attack and block pots from Phial, attack pot from Coffer
+    private const string SeedBonesPhialCofferDupePotions = "0A9LUUWQTU";
+    
     [TestInitialize]
     public void Setup()
     {
         FilterTestHelpers.ResetConfig();
         FilterTheSpire2Config.Character = CharacterOptions.Ironclad;
     }
+
+    #region General logic
 
     [TestMethod]
     public void CreateFiltersFromSettings_WhenAllSettingsAreAny_ReturnsNoFilters()
@@ -64,6 +74,61 @@ public class FilterManagerTests
         Assert.IsTrue(filters.OfType<ShopRelicFilter>().Any());
     }
     
+    [TestMethod]
+    public void CreateFiltersFromSettings_WhenDirectPhialHolsterHasPotions_AddsPhialFilter()
+    {
+        FilterTheSpire2Config.NeowOptions = NeowOptions.PhialHolster;
+        FilterTheSpire2Config.PhialHolsterPotionOption1 =
+            PotionOptions.AttackPotion;
+        FilterTheSpire2Config.PhialHolsterPotionOption2 =
+            PotionOptions.BlockPotion;
+
+        var filters = FilterManager.CreateFiltersFromSettings();
+
+        Assert.AreEqual(1, filters.OfType<PhialHolsterFilter>().Count());
+    }
+    
+    [TestMethod]
+    public void CreateFiltersFromSettings_WhenPhialPotionsAreAny_DoesNotAddPhialFilter()
+    {
+        FilterTheSpire2Config.NeowOptions = NeowOptions.PhialHolster;
+
+        var filters = FilterManager.CreateFiltersFromSettings();
+
+        Assert.IsFalse(filters.OfType<PhialHolsterFilter>().Any());
+    }
+    
+    [TestMethod]
+    public void CreateFiltersFromSettings_WhenLostCofferHasOnlyPotion_AddsLostCofferFilter()
+    {
+        FilterTheSpire2Config.NeowOptions = NeowOptions.LostCoffer;
+        FilterTheSpire2Config.LostCofferCardOption = CardOptions.Any;
+        FilterTheSpire2Config.LostCofferPotionOption =
+            PotionOptions.BloodPotion;
+
+        var filters = FilterManager.CreateFiltersFromSettings();
+
+        Assert.AreEqual(1, filters.OfType<LostCofferFilter>().Count());
+    }
+    
+    [TestMethod]
+    public void CreateFiltersFromSettings_WhenLostCofferHasOnlyCard_AddsLostCofferFilter()
+    {
+        FilterTheSpire2Config.NeowOptions = NeowOptions.LostCoffer;
+        FilterTheSpire2Config.LostCofferCardOption =
+            CardOptions.BattleTrance;
+        FilterTheSpire2Config.LostCofferPotionOption =
+            PotionOptions.Any;
+
+        var filters = FilterManager.CreateFiltersFromSettings();
+
+        Assert.AreEqual(1, filters.OfType<LostCofferFilter>().Count());
+    }
+
+    #endregion
+
+    #region Neow's Bones tests
+
     [TestMethod]
     public void CreateFiltersFromSettings_WhenOnlyBonesSlot2Configured_AddsItsOutcomeFilterWithBaseOffset()
     {
@@ -214,6 +279,104 @@ public class FilterManagerTests
             FilterTestHelpers.Request(),
             scrollBoxesSecondSeed));
     }
+    
+    [TestMethod]
+    public void CreateFiltersFromSettings_WhenBonesHasPhialAndLostCoffer_AddsSeparatePotionFilters()
+    {
+        FilterTheSpire2Config.NeowOptions = NeowOptions.NeowsBones;
+        FilterTheSpire2Config.NeowsBonesRelicOption1 =
+            NeowOptions.PhialHolster;
+        FilterTheSpire2Config.NeowsBonesRelicOption2 =
+            NeowOptions.LostCoffer;
+
+        FilterTheSpire2Config.PhialHolsterPotionOption1 =
+            PotionOptions.AttackPotion;
+        FilterTheSpire2Config.PhialHolsterPotionOption2 =
+            PotionOptions.BlockPotion;
+        FilterTheSpire2Config.LostCofferPotionOption =
+            PotionOptions.BloodPotion;
+
+        var filters = FilterManager.CreateFiltersFromSettings();
+
+        Assert.AreEqual(1, filters.OfType<PhialHolsterFilter>().Count());
+        Assert.AreEqual(1, filters.OfType<LostCofferFilter>().Count());
+    }
+    
+    [TestMethod]
+    public void CreateFiltersFromSettings_WhenBonesPotionOutcomesMatch_ValidatesSeed()
+    {
+        FilterTheSpire2Config.NeowOptions = NeowOptions.NeowsBones;
+        FilterTheSpire2Config.NeowsBonesRelicOption1 =
+            NeowOptions.PhialHolster;
+        FilterTheSpire2Config.NeowsBonesRelicOption2 =
+            NeowOptions.LostCoffer;
+
+        FilterTheSpire2Config.PhialHolsterPotionOption1 =
+            PotionOptions.AttackPotion;
+        FilterTheSpire2Config.PhialHolsterPotionOption2 =
+            PotionOptions.BlockPotion;
+        FilterTheSpire2Config.LostCofferPotionOption =
+            PotionOptions.BloodPotion;
+
+        var filters = FilterManager.CreateFiltersFromSettings();
+        var request = FilterTestHelpers.Request(filters: filters);
+
+        Assert.IsTrue(FilterManager.ValidateFilters(
+            request,
+            SeedBonesLostCofferPhialHolster));
+    }
+    
+    [TestMethod]
+    public void CreateFiltersFromSettings_WhenBonesAndPhialPotionSelectionsAreReversed_ValidatesSeed()
+    {
+        FilterTheSpire2Config.NeowOptions = NeowOptions.NeowsBones;
+        FilterTheSpire2Config.NeowsBonesRelicOption1 =
+            NeowOptions.LostCoffer;
+        FilterTheSpire2Config.NeowsBonesRelicOption2 =
+            NeowOptions.PhialHolster;
+
+        FilterTheSpire2Config.PhialHolsterPotionOption1 =
+            PotionOptions.BlockPotion;
+        FilterTheSpire2Config.PhialHolsterPotionOption2 =
+            PotionOptions.AttackPotion;
+        FilterTheSpire2Config.LostCofferPotionOption =
+            PotionOptions.BloodPotion;
+
+        var filters = FilterManager.CreateFiltersFromSettings();
+        var request = FilterTestHelpers.Request(filters: filters);
+
+        Assert.IsTrue(FilterManager.ValidateFilters(
+            request,
+            SeedBonesLostCofferPhialHolster));
+    }
+    
+    [TestMethod]
+    public void LostCoffer_CanMatchPotionAlsoGeneratedByPhialHolster()
+    {
+        FilterTheSpire2Config.NeowOptions = NeowOptions.NeowsBones;
+        FilterTheSpire2Config.NeowsBonesRelicOption1 =
+            NeowOptions.PhialHolster;
+        FilterTheSpire2Config.NeowsBonesRelicOption2 =
+            NeowOptions.LostCoffer;
+
+        FilterTheSpire2Config.PhialHolsterPotionOption1 =
+            PotionOptions.AttackPotion;
+        FilterTheSpire2Config.PhialHolsterPotionOption2 =
+            PotionOptions.BlockPotion;
+
+        // Lost Coffer duplicates one of Phial Holster's potions.
+        FilterTheSpire2Config.LostCofferPotionOption =
+            PotionOptions.AttackPotion;
+
+        var filters = FilterManager.CreateFiltersFromSettings();
+        var request = FilterTestHelpers.Request(filters: filters);
+
+        Assert.IsTrue(FilterManager.ValidateFilters(
+            request,
+            SeedBonesPhialCofferDupePotions));
+    }
+
+    #endregion
 
     #region Capsule relic tests
 

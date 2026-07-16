@@ -1,5 +1,6 @@
 using System.Collections.Immutable;
 using FilterTheSpire2.Code.Characters;
+using FilterTheSpire2.Code.Config;
 using MegaCrit.Sts2.Core.Entities.Potions;
 
 namespace FilterTheSpire2.Code.Potions;
@@ -92,26 +93,66 @@ public static class PotionRules
         #endregion
     ];
 
-    public static readonly ImmutableArray<PotionDefinition> SharedPotions =
-        AllPotionDefinitions.Where(p => p.Character == CharacterOptions.Any).ToImmutableArray();
+    private static readonly ImmutableArray<PotionDefinition> SharedPotions =
+        [..AllPotionDefinitions.Where(p => p.Character == CharacterOptions.Any)];
 
-    public static readonly ImmutableDictionary<CharacterOptions, ImmutableArray<PotionDefinition>>
+    private static readonly ImmutableDictionary<CharacterOptions, ImmutableArray<PotionDefinition>>
         CharacterSpecificPotions =
             AllPotionDefinitions
                 .Where(p => p.Character != CharacterOptions.Any)
                 .GroupBy(p => p.Character)
                 .ToImmutableDictionary(g => g.Key, g => g.ToImmutableArray());
 
-    /// <summary>
-    /// Mirrors PotionFactory.GetPotionOptions: character-specific potions first, then the shared pool,
-    /// in the same order they'd be concatenated in-game (matters for NextItem indexing).
-    /// </summary>
-    public static ImmutableArray<PotionDefinition> GetFullPoolForCharacter(CharacterOptions character)
-    {
-        var characterPotions = CharacterSpecificPotions.TryGetValue(character, out var pool)
-            ? pool
-            : ImmutableArray<PotionDefinition>.Empty;
+    private static readonly Dictionary<CharacterOptions, List<PotionDefinition>> CachedPools = new();
 
-        return [..characterPotions.Concat(SharedPotions)];
+    
+    /// <summary>
+    /// The pool actually used for RNG matching/filtering. Always includes a character-specific set of
+    /// potions — the real character's if selected, otherwise a placeholder's — so the pool length (and
+    /// therefore index-based selection within it) stays consistent regardless of whether Character is
+    /// known. Mirrors RelicRules.GetRelicPool.
+    /// </summary>
+    public static List<PotionDefinition> GetPotionPool()
+    {
+        var character = FilterTheSpire2Config.Character;
+
+        if (!CachedPools.TryGetValue(character, out var pool))
+        {
+            pool = CreatePotionPool(includeCharacterPotions: true);
+            CachedPools[character] = pool;
+        }
+
+        return pool;
+    }
+
+    /// <summary>
+    /// The pool used to populate the config UI dropdown. Only includes character-specific potions when
+    /// an actual character is selected, so users can't pick a character-specific potion while Character
+    /// is Any (matching RelicRules.GetRelicDisplayPool).
+    /// </summary>
+    public static List<PotionDefinition> GetPotionDisplayPool()
+    {
+        return CreatePotionPool(includeCharacterPotions: FilterTheSpire2Config.Character != CharacterOptions.Any);
+    }
+
+    private static List<PotionDefinition> CreatePotionPool(bool includeCharacterPotions)
+    {
+        var pool = new List<PotionDefinition>();
+
+        if (includeCharacterPotions)
+        {
+            var character = FilterTheSpire2Config.Character != CharacterOptions.Any
+                ? FilterTheSpire2Config.Character
+                : CharacterOptions.Ironclad; // placeholder to keep length
+
+            if (CharacterSpecificPotions.TryGetValue(character, out var specificPotions))
+            {
+                pool.AddRange(specificPotions);
+            }
+        }
+
+        pool.AddRange(SharedPotions);
+
+        return pool;
     }
 }

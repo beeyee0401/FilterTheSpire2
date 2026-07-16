@@ -3,7 +3,9 @@ using FilterTheSpire2.Code.Ancients.Config;
 using FilterTheSpire2.Code.Cards;
 using FilterTheSpire2.Code.Characters;
 using FilterTheSpire2.Code.Config;
+using FilterTheSpire2.Code.Filters;
 using FilterTheSpire2.Code.Helpers;
+using FilterTheSpire2.Code.Potions;
 using FilterTheSpire2.Code.Relics;
 using FilterTheSpire2.Code.SeedSearcher;
 using MegaCrit.Sts2.Core.Entities.Ascension;
@@ -13,10 +15,12 @@ namespace FilterTheSpire2Tests.FilterTests;
 
 internal static class FilterTestHelpers
 {
-    public static SeedSearchRequest Request(AscensionLevel ascensionLevel = AscensionLevel.None) => new()
+    public static SeedSearchRequest Request(
+        AscensionLevel ascensionLevel = AscensionLevel.None,
+        IReadOnlyList<IFilter>? filters = null) => new()
     {
         AscensionLevel = ascensionLevel,
-        Filters = []
+        Filters = filters ?? []
     };
 
     public static void ResetConfig()
@@ -30,16 +34,19 @@ internal static class FilterTestHelpers
         FilterTheSpire2Config.CapsuleRelicOption1 = RelicOptions.Any;
         FilterTheSpire2Config.CapsuleRelicOption2 = RelicOptions.Any;
         FilterTheSpire2Config.CapsuleRelicOption3 = RelicOptions.Any;
-
+        
         FilterTheSpire2Config.LeadPaperweightOption = CardOptions.Any;
         FilterTheSpire2Config.NewLeafOption = CardOptions.Any;
         FilterTheSpire2Config.LeafyPoulticeOption1 = CardOptions.Any;
         FilterTheSpire2Config.LeafyPoulticeOption2 = CardOptions.Any;
-        FilterTheSpire2Config.LostCofferOption = CardOptions.Any;
+        FilterTheSpire2Config.LostCofferCardOption = CardOptions.Any;
+        FilterTheSpire2Config.LostCofferPotionOption = PotionOptions.Any;
         FilterTheSpire2Config.KaleidoscopeOption1 = CardOptions.Any;
         FilterTheSpire2Config.KaleidoscopeOption2 = CardOptions.Any;
         FilterTheSpire2Config.ArcaneScrollOption = CardOptions.Any;
-
+        FilterTheSpire2Config.PhialHolsterPotionOption1 = PotionOptions.Any;
+        FilterTheSpire2Config.PhialHolsterPotionOption2 = PotionOptions.Any;
+        
         FilterTheSpire2Config.Act2Ancient = Ancient.Any;
         FilterTheSpire2Config.Act3Ancient = Ancient.Any;
         FilterTheSpire2Config.OrobasOptions = OrobasOptions.Any;

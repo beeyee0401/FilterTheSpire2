@@ -32,7 +32,7 @@ public static class CharacterConfigController
         (nameof(FilterTheSpire2Config.LeafyPoulticeOption1), NeowOptions.LeafyPoultice),
         (nameof(FilterTheSpire2Config.LeafyPoulticeOption2), NeowOptions.LeafyPoultice),
         (nameof(FilterTheSpire2Config.NewLeafOption), NeowOptions.NewLeaf),
-        (nameof(FilterTheSpire2Config.LostCofferOption), NeowOptions.LostCoffer),
+        (nameof(FilterTheSpire2Config.LostCofferCardOption), NeowOptions.LostCoffer),
         (nameof(FilterTheSpire2Config.KaleidoscopeOption1), NeowOptions.Kaleidoscope),
         (nameof(FilterTheSpire2Config.KaleidoscopeOption2), NeowOptions.Kaleidoscope),
         (nameof(FilterTheSpire2Config.ArcaneScrollOption), NeowOptions.ArcaneScroll)

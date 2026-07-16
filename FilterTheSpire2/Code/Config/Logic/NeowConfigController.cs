@@ -32,8 +32,9 @@ public static class NeowConfigController
 
         (nameof(FilterTheSpire2Config.LeadPaperweightOption), NeowOptions.LeadPaperweight),
 
-        (nameof(FilterTheSpire2Config.PhialHolsterOption1), NeowOptions.PhialHolster),
-        (nameof(FilterTheSpire2Config.PhialHolsterOption2), NeowOptions.PhialHolster),
+        (nameof(FilterTheSpire2Config.PhialHolsterPotionOption1), NeowOptions.PhialHolster),
+        (nameof(FilterTheSpire2Config.PhialHolsterPotionOption2), NeowOptions.PhialHolster),
+        (nameof(FilterTheSpire2Config.LostCofferPotionOption), NeowOptions.LostCoffer),
     ];
     
     // Propnames for the bones relic selectors that affect card outcome row visibility
@@ -100,13 +101,25 @@ public static class NeowConfigController
                 {
                     filtered = WrapBonesRelicItems(filtered, optionContainer);
                 }
+                else if (IsPhialPotionProp(propName))
+                {
+                    filtered = WrapRefreshItems(filtered, optionContainer);
+                }
 
-                if (!filtered.Any(i => Equals(i.Value, GetCurrentValue(propName))))
+                var optionWasReset =
+                    !filtered.Any(i => Equals(i.Value, GetCurrentValue(propName)));
+
+                if (optionWasReset)
                 {
                     ResetOption(propName);
                 }
 
                 ConfigDropdownUtilities.RefreshDropdownItems(dropdown, filtered);
+
+                if (optionWasReset)
+                {
+                    dropdown.SetFromProperty();
+                }
             }
         }
 
@@ -133,6 +146,17 @@ public static class NeowConfigController
             return capsuleRelicCount >= 3;
         }
 
+        if (propName == nameof(FilterTheSpire2Config.PhialHolsterPotionOption1) ||
+            propName == nameof(FilterTheSpire2Config.PhialHolsterPotionOption2))
+        {
+            return IsNeowOutcomeSelected(NeowOptions.PhialHolster);
+        }
+
+        if (propName == nameof(FilterTheSpire2Config.LostCofferPotionOption))
+        {
+            return IsNeowOutcomeSelected(NeowOptions.LostCoffer);
+        }
+
         if (currentNeow == requiredOption)
         {
             return true;
@@ -146,6 +170,14 @@ public static class NeowConfigController
         }
 
         return false;
+    }
+
+    private static bool IsNeowOutcomeSelected(NeowOptions option)
+    {
+        return FilterTheSpire2Config.NeowOptions == option ||
+               (FilterTheSpire2Config.NeowOptions == NeowOptions.NeowsBones &&
+                (FilterTheSpire2Config.NeowsBonesRelicOption1 == option ||
+                 FilterTheSpire2Config.NeowsBonesRelicOption2 == option));
     }
 
     private static Control? GetNeowSectionContainer(Control optionContainer)
@@ -191,6 +223,10 @@ public static class NeowConfigController
         {
             filtered = WrapBonesRelicItems(filtered, optionContainer);
         }
+        else if (IsPhialPotionProp(propName))
+        {
+            filtered = WrapRefreshItems(filtered, optionContainer);
+        }
         
         ConfigDropdownUtilities.SeedItemsBeforeReady(dropdown, filtered);
         
@@ -207,6 +243,25 @@ public static class NeowConfigController
         OptionRows[propName] = row;
     }
     
+    private static bool IsPhialPotionProp(string propName) =>
+        propName == nameof(FilterTheSpire2Config.PhialHolsterPotionOption1) ||
+        propName == nameof(FilterTheSpire2Config.PhialHolsterPotionOption2);
+
+    private static List<NConfigDropdownItem.ItemData> WrapRefreshItems(
+        List<NConfigDropdownItem.ItemData> items,
+        Control optionContainer)
+    {
+        return items.Select(item =>
+        {
+            var originalOnSet = item.OnSet;
+            return new NConfigDropdownItem.ItemData(item.Text, item.Value, () =>
+            {
+                originalOnSet.Invoke();
+                EnsureSubOptionRows(optionContainer);
+            });
+        }).ToList();
+    }
+
     private static List<NConfigDropdownItem.ItemData> WrapBonesRelicItems(
         List<NConfigDropdownItem.ItemData> items,
         Control optionContainer)
@@ -236,8 +291,9 @@ public static class NeowConfigController
             nameof(FilterTheSpire2Config.CapsuleRelicOption2) => 4,
             nameof(FilterTheSpire2Config.CapsuleRelicOption3) => 5,
             nameof(FilterTheSpire2Config.LeadPaperweightOption) => 6,
-            nameof(FilterTheSpire2Config.PhialHolsterOption1) => 7,
-            nameof(FilterTheSpire2Config.PhialHolsterOption2) => 8,
+            nameof(FilterTheSpire2Config.PhialHolsterPotionOption1) => 7,
+            nameof(FilterTheSpire2Config.PhialHolsterPotionOption2) => 8,
+            nameof(FilterTheSpire2Config.LostCofferPotionOption) => 9,
             _ => 100,
         };
     }
@@ -288,25 +344,46 @@ public static class NeowConfigController
                 nameof(FilterTheSpire2Config.CapsuleRelicOption2) or
                 nameof(FilterTheSpire2Config.CapsuleRelicOption3) => FilterCapsuleRelics(source),
 
-            nameof(FilterTheSpire2Config.PhialHolsterOption1) or
-                nameof(FilterTheSpire2Config.PhialHolsterOption2) => FilterPotionsForCharacter(source),
+            nameof(FilterTheSpire2Config.PhialHolsterPotionOption1) or
+                nameof(FilterTheSpire2Config.PhialHolsterPotionOption2) =>
+                FilterPhialHolsterPotions(propName, source),
+
+            nameof(FilterTheSpire2Config.LostCofferPotionOption) =>
+                FilterPotionsForCharacter(source),
 
             _ => source
         };
     }
 
+    private static List<NConfigDropdownItem.ItemData> FilterPhialHolsterPotions(
+        string propName,
+        List<NConfigDropdownItem.ItemData> source)
+    {
+        var otherSelected = propName == nameof(FilterTheSpire2Config.PhialHolsterPotionOption1)
+            ? FilterTheSpire2Config.PhialHolsterPotionOption2
+            : FilterTheSpire2Config.PhialHolsterPotionOption1;
+
+        return FilterPotionsForCharacter(source)
+            .Where(item =>
+            {
+                var value = (PotionOptions)item.Value!;
+                return value == PotionOptions.Any ||
+                       otherSelected == PotionOptions.Any ||
+                       value != otherSelected;
+            })
+            .ToList();
+    }
+
     private static List<NConfigDropdownItem.ItemData> FilterPotionsForCharacter(List<NConfigDropdownItem.ItemData> source)
     {
-        var character = FilterTheSpire2Config.Character;
-        var pool = character != CharacterOptions.Any
-            ? PotionRules.GetFullPoolForCharacter(character).Select(p => p.Potion).ToHashSet()
-            : PotionRules.SharedPotions.Select(p => p.Potion).ToHashSet();
+        var pool = PotionRules.GetPotionDisplayPool().Select(p => p.Potion).ToHashSet();
 
         return source.Where(item =>
         {
             var value = (PotionOptions)item.Value!;
             return value == PotionOptions.Any || pool.Contains(value);
-        }).ToList();
+        }).OrderBy(item => (PotionOptions)item.Value! == PotionOptions.Any ? 0 : 1)
+        .ThenBy(item => ((PotionOptions)item.Value!).ToString()).ToList();
     }
  
     private static List<NConfigDropdownItem.ItemData> FilterColorlessCards(List<NConfigDropdownItem.ItemData> source)
@@ -374,6 +451,7 @@ public static class NeowConfigController
         object defaultValue =
             property.PropertyType == typeof(CardOptions) ? CardOptions.Any :
             property.PropertyType == typeof(RelicOptions) ? RelicOptions.Any :
+            property.PropertyType == typeof(PotionOptions) ? PotionOptions.Any :
             NeowOptions.Any;
 
         property.SetValue(null, defaultValue);

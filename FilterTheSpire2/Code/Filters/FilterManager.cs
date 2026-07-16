@@ -2,6 +2,7 @@ using FilterTheSpire2.Code.Acts;
 using FilterTheSpire2.Code.Ancients.Config;
 using FilterTheSpire2.Code.Cards;
 using FilterTheSpire2.Code.Config;
+using FilterTheSpire2.Code.Filters.PotionFilters;
 using FilterTheSpire2.Code.Filters.RelicOutcomeFilters;
 using FilterTheSpire2.Code.Potions;
 using FilterTheSpire2.Code.Relics;
@@ -24,6 +25,7 @@ public static class FilterManager
         HandleAncientFilters(filters);
         AddNeowRelicOutcomeFilters(filters);
         AddCapsuleRelicOutcomeFilter(filters);
+        AddPhialHolsterPotionFilter(filters);
         AddGenericRelicFilters(filters);
         AddActLocationFilters(filters);
 
@@ -296,36 +298,21 @@ public static class FilterManager
             NeowOptions.LeadPaperweight when FilterTheSpire2Config.LeadPaperweightOption != CardOptions.Any =>
                 new LeadPaperweightFilter([FilterTheSpire2Config.LeadPaperweightOption], slot1Consumption),
 
-            NeowOptions.LostCoffer when FilterTheSpire2Config.LostCofferOption != CardOptions.Any =>
-                new LostCofferFilter([FilterTheSpire2Config.LostCofferOption], slot1Consumption),
+            NeowOptions.LostCoffer when
+                FilterTheSpire2Config.LostCofferCardOption != CardOptions.Any ||
+                FilterTheSpire2Config.LostCofferPotionOption != PotionOptions.Any =>
+                new LostCofferFilter(
+                    [FilterTheSpire2Config.LostCofferCardOption],
+                    FilterTheSpire2Config.LostCofferPotionOption,
+                    slot1Consumption),
 
             NeowOptions.Kaleidoscope => BuildKaleidoscopeFilter(slot1Consumption),
 
             NeowOptions.ArcaneScroll when FilterTheSpire2Config.ArcaneScrollOption != CardOptions.Any =>
                 new ArcaneScrollFilter([FilterTheSpire2Config.ArcaneScrollOption], slot1Consumption),
 
-            NeowOptions.PhialHolster => BuildPhialHolsterFilter(slot1Consumption),
-
             _ => null
         };
-    }
-
-    private static INeowOutcomeFilter? BuildPhialHolsterFilter(RngConsumptionSteps? slot1Consumption)
-    {
-        var potionOptions = new List<PotionOptions>();
-        if (FilterTheSpire2Config.PhialHolsterOption1 != PotionOptions.Any)
-        {
-            potionOptions.Add(FilterTheSpire2Config.PhialHolsterOption1);
-        }
-
-        if (FilterTheSpire2Config.PhialHolsterOption2 != PotionOptions.Any)
-        {
-            potionOptions.Add(FilterTheSpire2Config.PhialHolsterOption2);
-        }
-
-        return potionOptions.Count > 0
-            ? new PhialHolsterFilter(potionOptions, slot1Consumption)
-            : null;
     }
 
     private static INeowOutcomeFilter? BuildLeafyPoulticeFilter(RngConsumptionSteps? slot1Consumption)
@@ -459,7 +446,8 @@ public static class FilterManager
             NeowOptions.SmallCapsule => new RngConsumptionSteps(1, 0, 0),
             NeowOptions.LargeCapsule => new RngConsumptionSteps(2, 0, 0),
             NeowOptions.LeadPaperweight => new RngConsumptionSteps(6, 0, 0),
-            NeowOptions.LostCoffer => new RngConsumptionSteps(9, 0, 0),
+            // 9 for card reward, 2 for potion
+            NeowOptions.LostCoffer => new RngConsumptionSteps(11, 0, 0),
             NeowOptions.Kaleidoscope => new RngConsumptionSteps(18, 0, 6),
             NeowOptions.ArcaneScroll => new RngConsumptionSteps(1, 0, 0),
             NeowOptions.LeafyPoultice => new RngConsumptionSteps(0, 2, 0),
@@ -469,6 +457,54 @@ public static class FilterManager
             NeowOptions.ScrollBoxes => RngConsumptionSteps.None,
             _ => RngConsumptionSteps.None
         };
+    }
+    
+    private static void AddPhialHolsterPotionFilter(List<IFilter> filters)
+    {
+        var selectedPotions = new List<PotionOptions>
+            {
+                FilterTheSpire2Config.PhialHolsterPotionOption1,
+                FilterTheSpire2Config.PhialHolsterPotionOption2,
+            }
+            .Where(potion => potion != PotionOptions.Any)
+            .Distinct()
+            .ToList();
+
+        if (selectedPotions.Count == 0)
+        {
+            return;
+        }
+
+        if (FilterTheSpire2Config.NeowOptions == NeowOptions.PhialHolster)
+        {
+            filters.Add(new PhialHolsterFilter(selectedPotions));
+            return;
+        }
+
+        if (FilterTheSpire2Config.NeowOptions != NeowOptions.NeowsBones)
+        {
+            return;
+        }
+
+        var option1 = FilterTheSpire2Config.NeowsBonesRelicOption1;
+        var option2 = FilterTheSpire2Config.NeowsBonesRelicOption2;
+
+        if (option1 == NeowOptions.PhialHolster)
+        {
+            filters.Add(new PhialHolsterFilter(
+                selectedPotions,
+                GetNeowsBonesBaseConsumption().CombatPotionGenerationRngSteps));
+        }
+        else if (option2 == NeowOptions.PhialHolster)
+        {
+            var priorConsumption = AddConsumption(
+                GetNeowsBonesBaseConsumption(),
+                GetDeterministicConsumption(option1));
+
+            filters.Add(new PhialHolsterFilter(
+                selectedPotions,
+                priorConsumption.CombatPotionGenerationRngSteps));
+        }
     }
 
     private static RngConsumptionSteps GetCapsulePriorConsumption()

@@ -63,7 +63,11 @@ public class FilterTheSpire2Config : SimpleModConfig
     
     [ConfigHideInUI]
     [ConfigDropdownOverrideLocalization("CARD_OPTIONS")]
-    public static CardOptions LostCofferOption { get; set; } = CardOptions.Any;
+    public static CardOptions LostCofferCardOption { get; set; } = CardOptions.Any;
+    
+    [ConfigHideInUI]
+    [ConfigDropdownOverrideLocalization("POTION_OPTIONS")]
+    public static PotionOptions LostCofferPotionOption { get; set; } = PotionOptions.Any;
     
     [ConfigHideInUI]
     [ConfigDropdownOverrideLocalization("CARD_OPTIONS")]
@@ -79,11 +83,11 @@ public class FilterTheSpire2Config : SimpleModConfig
     
     [ConfigHideInUI]
     [ConfigDropdownOverrideLocalization("POTION_OPTIONS")]
-    public static PotionOptions PhialHolsterOption1 { get; set; } = PotionOptions.Any;
+    public static PotionOptions PhialHolsterPotionOption1 { get; set; } = PotionOptions.Any;
 
     [ConfigHideInUI]
     [ConfigDropdownOverrideLocalization("POTION_OPTIONS")]
-    public static PotionOptions PhialHolsterOption2 { get; set; } = PotionOptions.Any;
+    public static PotionOptions PhialHolsterPotionOption2 { get; set; } = PotionOptions.Any;
     
     [ConfigSection("Act2Section")]
     public static Ancient Act2Ancient { get; set; } = Ancient.Any;

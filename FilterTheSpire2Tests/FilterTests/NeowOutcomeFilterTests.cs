@@ -1,8 +1,9 @@
-using FilterTheSpire2.Code.Ancients.Config;
 using FilterTheSpire2.Code.Cards;
 using FilterTheSpire2.Code.Characters;
 using FilterTheSpire2.Code.Config;
+using FilterTheSpire2.Code.Filters.PotionFilters;
 using FilterTheSpire2.Code.Filters.RelicOutcomeFilters;
+using FilterTheSpire2.Code.Potions;
 using MegaCrit.Sts2.Core.Entities.Ascension;
 
 namespace FilterTheSpire2Tests.FilterTests;
@@ -11,21 +12,19 @@ namespace FilterTheSpire2Tests.FilterTests;
 [DoNotParallelize]
 public class NeowOutcomeFilterTests
 {
-    private const string Seed_LeadPaperweight_Target = "PRN3PVXDF3"; // Master of Strat
-    private const string Seed_NewLeaf_Target = "LU6B4H9EQ8"; // BTrance
-    private const string Seed_LeafyPoultice_TwoTargets = "3XQ41HEQN4"; // Shrug and BTrance
-    private const string Seed_LostCoffer_Target = "YWMH7BYBFG"; // Btrance
-    private const string Seed_Kaleidoscope_TwoTargets = "XVHD11039A"; // Backstab and Ball lightning
-    private const string Seed_ArcaneScroll_Target = "L86GUD376W"; // Feed
+    private const string SeedLeadPaperweightTarget = "PRN3PVXDF3"; // Master of Strat
+    private const string SeedNewLeafTarget = "LU6B4H9EQ8"; // BTrance
+    private const string SeedLeafyPoulticeTwoTargets = "3XQ41HEQN4"; // Shrug and BTrance
+    private const string SeedLostCofferTarget = "YWMH7BYBFG"; // Btrance
+    private const string SeedKaleidoscopeTwoTargets = "XVHD11039A"; // Backstab and Ball lightning
+    private const string SeedArcaneScrollTarget = "L86GUD376W"; // Feed
+    private const string SeedPhialHolsterAttackAndBlockPotions = "L48DDTQJ9P";
+    private const string SeedLostCofferBeetleJuicePotion = "4XG9JV4T70";
+    private const string SeedLostCofferAggressionAndAshwaterPotion = "24Q5A5Z8RA";
 
     // Same seed, different card reward result because rarity odds change after Scarcity.
     // Master of Strat on high asc, Jackpot and Mayhem on low asc
-    private const string Seed_LeadPaperweight_AscSensitiveSeed = "PRN3PVXDF3"; 
-
-    // Bones / slot offset scenarios.
-    private const string Seed_Bones_LeadPaperweight_Target = "G8PD31ML6X"; // Bones with Paperweight and Master of Strat
-    private const string Seed_Bones_KaleidoscopeSlot1_LeafyPoulticeSlot2_Target = "J8P5E8FXG3";
-    private const string Seed_Bones_LeafyPoulticeSlot1_KaleidoscopeSlot2_Target = "K3RBVYU86J";
+    private const string SeedLeadPaperweightAscSensitiveSeed = "PRN3PVXDF3"; 
 
     private const CardOptions LeadPaperweightTarget = CardOptions.MasterOfStrategy;
     private const CardOptions KaleidoscopeTarget1 = CardOptions.Backstab;
@@ -36,7 +35,7 @@ public class NeowOutcomeFilterTests
 
     // The card that would be a rare in low Asc but not rare in high Asc
     private const CardOptions AscensionSensitiveCard = CardOptions.Jackpot;
-
+    
     [TestInitialize]
     public void Setup()
     {
@@ -59,7 +58,7 @@ public class NeowOutcomeFilterTests
 
         Assert.IsTrue(filter.IsSeedValid(
             FilterTestHelpers.Request(AscensionLevel.DoubleBoss),
-            Seed_LeadPaperweight_Target));
+            SeedLeadPaperweightTarget));
     }
     
     [TestMethod]
@@ -69,11 +68,11 @@ public class NeowOutcomeFilterTests
 
         Assert.IsTrue(filter.IsSeedValid(
             FilterTestHelpers.Request(AscensionLevel.None),
-            Seed_LeadPaperweight_AscSensitiveSeed));
+            SeedLeadPaperweightAscSensitiveSeed));
 
         Assert.IsFalse(filter.IsSeedValid(
             FilterTestHelpers.Request(AscensionLevel.DoubleBoss),
-            Seed_LeadPaperweight_AscSensitiveSeed));
+            SeedLeadPaperweightAscSensitiveSeed));
     }
 
     [TestMethod]
@@ -113,7 +112,7 @@ public class NeowOutcomeFilterTests
 
         Assert.IsTrue(filter.IsSeedValid(
             FilterTestHelpers.Request(),
-            Seed_NewLeaf_Target));
+            SeedNewLeafTarget));
     }
 
     [TestMethod]
@@ -131,7 +130,7 @@ public class NeowOutcomeFilterTests
 
         Assert.IsTrue(filter.IsSeedValid(
             FilterTestHelpers.Request(),
-            Seed_LeafyPoultice_TwoTargets));
+            SeedLeafyPoulticeTwoTargets));
     }
 
     [TestMethod]
@@ -145,12 +144,14 @@ public class NeowOutcomeFilterTests
             "ANY_SEED"));
     }
 
+    #region Lost Coffer
+    
     [TestMethod]
     public void LostCoffer_RngConsumption_IsNineRewardSteps()
     {
-        var filter = new LostCofferFilter([IroncladTarget1]);
+        var filter = new LostCofferFilter([IroncladTarget1], PotionOptions.Any);
 
-        Assert.AreEqual(new RngConsumptionSteps(9, 0, 0), filter.RngConsumptionSteps);
+        Assert.AreEqual(new RngConsumptionSteps(11, 0, 0), filter.RngConsumptionSteps);
     }
 
     [TestMethod]
@@ -158,7 +159,7 @@ public class NeowOutcomeFilterTests
     {
         FilterTheSpire2Config.Character = CharacterOptions.Any;
 
-        var filter = new LostCofferFilter([IroncladTarget1]);
+        var filter = new LostCofferFilter([IroncladTarget1], PotionOptions.Any);
 
         Assert.IsTrue(filter.IsSeedValid(
             FilterTestHelpers.Request(),
@@ -168,13 +169,83 @@ public class NeowOutcomeFilterTests
     [TestMethod]
     public void LostCoffer_WhenRequestedCardAppears_ReturnsTrue()
     {
-        var filter = new LostCofferFilter([IroncladTarget1]);
+        var filter = new LostCofferFilter([IroncladTarget1], PotionOptions.Any);
 
         Assert.IsTrue(filter.IsSeedValid(
             FilterTestHelpers.Request(),
-            Seed_LostCoffer_Target));
+            SeedLostCofferTarget));
+    }
+    
+    [TestMethod]
+    public void LostCoffer_WhenRequestedPotionMatches_ReturnsTrue()
+    {
+        var filter = new LostCofferFilter(
+            [],
+            PotionOptions.BeetleJuice);
+
+        Assert.IsTrue(filter.IsSeedValid(
+            FilterTestHelpers.Request(),
+            SeedLostCofferBeetleJuicePotion));
+    }
+    
+    [TestMethod]
+    public void LostCoffer_WhenRequestedPotionDoesNotMatch_ReturnsFalse()
+    {
+        var filter = new LostCofferFilter(
+            [],
+            PotionOptions.AttackPotion);
+
+        Assert.IsFalse(filter.IsSeedValid(
+            FilterTestHelpers.Request(),
+            SeedLostCofferBeetleJuicePotion));
+    }
+    
+    [TestMethod]
+    public void LostCoffer_WhenCardAndPotionMatch_ReturnsTrue()
+    {
+        FilterTheSpire2Config.Character = CharacterOptions.Ironclad;
+        
+        var filter = new LostCofferFilter(
+            [CardOptions.Aggression],
+            PotionOptions.Ashwater);
+
+        Assert.IsTrue(filter.IsSeedValid(
+            FilterTestHelpers.Request(),
+            SeedLostCofferAggressionAndAshwaterPotion));
     }
 
+    [TestMethod]
+    public void LostCoffer_WhenCardMatchesButPotionDoesNot_ReturnsFalse()
+    {
+        FilterTheSpire2Config.Character = CharacterOptions.Ironclad;
+        
+        var filter = new LostCofferFilter(
+            [CardOptions.Aggression],
+            PotionOptions.FirePotion);
+
+        Assert.IsFalse(filter.IsSeedValid(
+            FilterTestHelpers.Request(),
+            SeedLostCofferAggressionAndAshwaterPotion));
+    }
+
+    [TestMethod]
+    public void LostCoffer_WhenPotionMatchesButCardDoesNot_ReturnsFalse()
+    {
+        FilterTheSpire2Config.Character = CharacterOptions.Ironclad;
+        
+        var filter = new LostCofferFilter(
+            [CardOptions.Anger],
+            PotionOptions.Ashwater);
+
+        Assert.IsFalse(filter.IsSeedValid(
+            FilterTestHelpers.Request(),
+            SeedLostCofferAggressionAndAshwaterPotion));
+    }
+
+    #endregion
+    
+    #region Kaleidoscope
+    
     [TestMethod]
     public void Kaleidoscope_RngConsumption_UsesRewardsAndNiche()
     {
@@ -192,8 +263,12 @@ public class NeowOutcomeFilterTests
 
         Assert.IsTrue(filter.IsSeedValid(
             FilterTestHelpers.Request(),
-            Seed_Kaleidoscope_TwoTargets));
+            SeedKaleidoscopeTwoTargets));
     }
+
+    #endregion
+
+    #region Arcane Scroll
 
     [TestMethod]
     public void ArcaneScroll_RngConsumption_IsOneRewardStep()
@@ -210,57 +285,67 @@ public class NeowOutcomeFilterTests
 
         Assert.IsTrue(filter.IsSeedValid(
             FilterTestHelpers.Request(),
-            Seed_ArcaneScroll_Target));
+            SeedArcaneScrollTarget));
     }
 
-    [TestMethod]
-    public void LeadPaperweight_WithBonesBaseRewardOffset_ReturnsTrue()
-    {
-        var bonesBaseConsumption = new RngConsumptionSteps(
-            RewardsRngSteps: AncientRules.NeowsBonesOptions.Length - 1,
-            TransformationsRngSteps: 0,
-            NicheRngSteps: 0);
+    #endregion
+    
+    #region Phial Holster
 
-        var filter = new LeadPaperweightFilter(
-            [LeadPaperweightTarget],
-            bonesBaseConsumption);
+    [TestMethod]
+    public void PhialHolster_WhenBothRequestedPotionsMatch_ReturnsTrue()
+    {
+        var filter = new PhialHolsterFilter(
+        [
+            PotionOptions.AttackPotion,
+            PotionOptions.BlockPotion
+        ]);
 
         Assert.IsTrue(filter.IsSeedValid(
             FilterTestHelpers.Request(),
-            Seed_Bones_LeadPaperweight_Target));
+            SeedPhialHolsterAttackAndBlockPotions));
     }
-
+    
     [TestMethod]
-    public void LeafyPoultice_AsSlot2AfterKaleidoscope_IgnoresKaleidoscopeRewardAndNicheConsumption()
+    public void PhialHolster_WhenRequestedPotionsAreReversed_ReturnsTrue()
     {
-        var bonesBasePlusKaleidoscope = new RngConsumptionSteps(
-            RewardsRngSteps: AncientRules.NeowsBonesOptions.Length - 1 + 18,
-            TransformationsRngSteps: 0,
-            NicheRngSteps: 6);
-
-        var filter = new LeafyPoulticeFilter(
-            [IroncladTarget1, IroncladTarget2],
-            bonesBasePlusKaleidoscope);
+        var filter = new PhialHolsterFilter(
+        [
+            PotionOptions.BlockPotion,
+            PotionOptions.AttackPotion
+        ]);
 
         Assert.IsTrue(filter.IsSeedValid(
             FilterTestHelpers.Request(),
-            Seed_Bones_KaleidoscopeSlot1_LeafyPoulticeSlot2_Target));
+            SeedPhialHolsterAttackAndBlockPotions));
     }
-
+    
     [TestMethod]
-    public void Kaleidoscope_AsSlot2AfterLeafyPoultice_IgnoresLeafyPoulticeTransformationConsumption()
+    [DataRow(PotionOptions.AttackPotion)]
+    [DataRow(PotionOptions.BlockPotion)]
+    public void PhialHolster_WhenOneRequestedPotionAppears_ReturnsTrue(
+        PotionOptions potion)
     {
-        var bonesBasePlusLeafyPoultice = new RngConsumptionSteps(
-            RewardsRngSteps: AncientRules.NeowsBonesOptions.Length - 1,
-            TransformationsRngSteps: 2,
-            NicheRngSteps: 0);
-
-        var filter = new KaleidoscopeFilter(
-            [KaleidoscopeTarget1, KaleidoscopeTarget2],
-            bonesBasePlusLeafyPoultice);
+        var filter = new PhialHolsterFilter([potion]);
 
         Assert.IsTrue(filter.IsSeedValid(
             FilterTestHelpers.Request(),
-            Seed_Bones_LeafyPoulticeSlot1_KaleidoscopeSlot2_Target));
+            SeedPhialHolsterAttackAndBlockPotions));
     }
+    
+    [TestMethod]
+    public void PhialHolster_WhenRequestedPotionDoesNotAppear_ReturnsFalse()
+    {
+        var filter = new PhialHolsterFilter(
+        [
+            PotionOptions.AttackPotion,
+            PotionOptions.FirePotion
+        ]);
+
+        Assert.IsFalse(filter.IsSeedValid(
+            FilterTestHelpers.Request(),
+            SeedPhialHolsterAttackAndBlockPotions));
+    }
+    
+    #endregion
 }

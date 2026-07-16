@@ -6,7 +6,6 @@ using FilterTheSpire2.Code.Helpers;
 using FilterTheSpire2.Code.SeedSearcher;
 using MegaCrit.Sts2.Core.Entities.Ascension;
 using MegaCrit.Sts2.Core.Entities.Cards;
-using MegaCrit.Sts2.Core.Helpers;
 using MegaCrit.Sts2.Core.Random;
 using MegaCrit.Sts2.Core.Runs;
 using CardRarityOdds = FilterTheSpire2.Code.Cards.CardRarityOdds;
@@ -26,7 +25,7 @@ public abstract class BaseCardRewardFilter(
     protected abstract Rng? GetCardPoolRng(uint seed);
     protected abstract List<List<CardDefinition>> GetRewardPools(Rng rng);
     public abstract RngConsumptionSteps RngConsumptionSteps { get; }
-    public bool IsSeedValid(SeedSearchRequest request, string seed)
+    public virtual bool IsSeedValid(SeedSearchRequest request, string seed)
     {
         var requestedCardList = requestedCards
             .Where(c => c != CardOptions.Any)
