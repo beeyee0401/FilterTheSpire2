@@ -51,9 +51,10 @@ public static class RelicRewardSimulator
         RelicRarity rarity,
         int counter)
     {
-        var rng = new Rng(runRng.UpFront.Seed, counter);
+        var upfrontRng = runRng.UpFront;
+        upfrontRng.FastForwardCounter(counter);
         var pool = RelicRules.GetRelicPool(rarity).ToList();
-        pool.UnstableShuffle(rng);
+        pool.UnstableShuffle(upfrontRng);
         return pool;
     }
 }

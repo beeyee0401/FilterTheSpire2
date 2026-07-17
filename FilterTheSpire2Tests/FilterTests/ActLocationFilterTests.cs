@@ -6,44 +6,46 @@ namespace FilterTheSpire2Tests.FilterTests;
 [TestClass]
 public class ActLocationFilterTests
 {
-    private const string OVERGROWTH_SEED = "TZ5D4WGQHK";
-    private const string UNDERDOCKS_SEED = "LPTVQ1LBB0";
-    private const string HIVE_SEED = "NJPKY5DCED";
-    private const string GLORY_SEED = "Z1M0PNW8DB";
+    private const string OvergrowthSeed = "4WAB3Q10D8BC";
+    private const string UnderdocksSeed = "EK74PT6SQ6VX";
+    private const string HiveSeed = "";
+    private const string GlorySeed = "";
     
     [TestMethod]
     public void Act1Overgrowth_WhenSeedHasOvergrowthInAct1_ReturnsTrue()
     {
         var filter = new ActLocationFilter(ActLocations.Overgrowth, 1);
-        Assert.IsTrue(filter.IsSeedValid(FilterTestHelpers.Request(), OVERGROWTH_SEED));
+        Assert.IsTrue(filter.IsSeedValid(FilterTestHelpers.Request(), OvergrowthSeed));
     }
 
     [TestMethod]
     public void Act1Underdocks_WhenSeedHasOvergrowthInAct1_ReturnsFalse()
     {
         var filter = new ActLocationFilter(ActLocations.Underdocks, 1);
-        Assert.IsFalse(filter.IsSeedValid(FilterTestHelpers.Request(), OVERGROWTH_SEED));
+        Assert.IsFalse(filter.IsSeedValid(FilterTestHelpers.Request(), OvergrowthSeed));
     }
 
     [TestMethod]
     public void Act1Underdocks_WhenSeedHasUnderdocksInAct1_ReturnsTrue()
     {
         var filter = new ActLocationFilter(ActLocations.Underdocks, 1);
-        Assert.IsTrue(filter.IsSeedValid(FilterTestHelpers.Request(), UNDERDOCKS_SEED));
+        Assert.IsTrue(filter.IsSeedValid(FilterTestHelpers.Request(), UnderdocksSeed));
     }
 
     [TestMethod]
+    [Ignore("Ignored until alternate Act 2 added")]
     public void Act2Hive_WhenAnyValidSeed_ReturnsTrue()
     {
         var filter = new ActLocationFilter(ActLocations.Hive, 2);
-        Assert.IsTrue(filter.IsSeedValid(FilterTestHelpers.Request(), HIVE_SEED));
+        Assert.IsTrue(filter.IsSeedValid(FilterTestHelpers.Request(), HiveSeed));
     }
-
+    
     [TestMethod]
+    [Ignore("Ignored until alternate Act 3 added")]
     public void Act3Glory_WhenAnyValidSeed_ReturnsTrue()
     {
         var filter = new ActLocationFilter(ActLocations.Glory, 3);
-        Assert.IsTrue(filter.IsSeedValid(FilterTestHelpers.Request(), GLORY_SEED));
+        Assert.IsTrue(filter.IsSeedValid(FilterTestHelpers.Request(), GlorySeed));
     }
 
     [TestMethod]

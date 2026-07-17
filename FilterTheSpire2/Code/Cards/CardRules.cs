@@ -5,13 +5,6 @@ using MegaCrit.Sts2.Core.Entities.Cards;
 
 namespace FilterTheSpire2.Code.Cards;
 
-// public enum CardRarity
-// {
-//     Common,
-//     Uncommon,
-//     Rare,
-// }
-
 public sealed record CardDefinition(
     CardOptions Card,
     CharacterOptions Character,
@@ -31,7 +24,7 @@ public static class CardRules
         new(CardOptions.Bash, CharacterOptions.Ironclad, CardRarity.Basic),
         new(CardOptions.BattleTrance, CharacterOptions.Ironclad, CardRarity.Uncommon),
         new(CardOptions.BloodWall, CharacterOptions.Ironclad, CardRarity.Common),
-        new(CardOptions.Bloodletting, CharacterOptions.Ironclad, CardRarity.Common),
+        new(CardOptions.Bloodletting, CharacterOptions.Ironclad, CardRarity.Uncommon),
         new(CardOptions.Bludgeon, CharacterOptions.Ironclad, CardRarity.Uncommon),
         new(CardOptions.BodySlam, CharacterOptions.Ironclad, CardRarity.Common),
         new(CardOptions.Brand, CharacterOptions.Ironclad, CardRarity.Rare),
@@ -45,12 +38,12 @@ public static class CardRules
         new(CardOptions.Conflagration, CharacterOptions.Ironclad, CardRarity.Rare),
         new(CardOptions.Corruption, CharacterOptions.Ironclad, CardRarity.Ancient),
         new(CardOptions.CrimsonMantle, CharacterOptions.Ironclad, CardRarity.Rare),
-        new(CardOptions.Cruelty, CharacterOptions.Ironclad, CardRarity.Rare),
+        new(CardOptions.Cruelty, CharacterOptions.Ironclad, CardRarity.Uncommon),
         new(CardOptions.DarkEmbrace, CharacterOptions.Ironclad, CardRarity.Rare),
         new(CardOptions.DefendIronclad, CharacterOptions.Ironclad, CardRarity.Basic),
         new(CardOptions.DemonForm, CharacterOptions.Ironclad, CardRarity.Rare),
         new(CardOptions.Dismantle, CharacterOptions.Ironclad, CardRarity.Uncommon),
-        new(CardOptions.Dominate, CharacterOptions.Ironclad, CardRarity.Uncommon),
+        new(CardOptions.Dominate, CharacterOptions.Ironclad, CardRarity.Rare),
         new(CardOptions.DrumOfBattle, CharacterOptions.Ironclad, CardRarity.Uncommon),
         new(CardOptions.EvilEye, CharacterOptions.Ironclad, CardRarity.Uncommon),
         new(CardOptions.ExpectAFight, CharacterOptions.Ironclad, CardRarity.Uncommon),
@@ -96,7 +89,7 @@ public static class CardRules
         new(CardOptions.StoneArmor, CharacterOptions.Ironclad, CardRarity.Uncommon),
         new(CardOptions.StrikeIronclad, CharacterOptions.Ironclad, CardRarity.Basic),
         new(CardOptions.SwordBoomerang, CharacterOptions.Ironclad, CardRarity.Common),
-        new(CardOptions.Taunt, CharacterOptions.Ironclad, CardRarity.Uncommon),
+        new(CardOptions.Taunt, CharacterOptions.Ironclad, CardRarity.Common),
         new(CardOptions.TearAsunder, CharacterOptions.Ironclad, CardRarity.Rare),
         new(CardOptions.Thrash, CharacterOptions.Ironclad, CardRarity.Rare),
         new(CardOptions.Thunderclap, CharacterOptions.Ironclad, CardRarity.Common),
@@ -114,7 +107,7 @@ public static class CardRules
         #region Silent pool
 
         new(CardOptions.Abrasive, CharacterOptions.Silent, CardRarity.Rare),
-        new(CardOptions.Accelerant, CharacterOptions.Silent, CardRarity.Rare),
+        new(CardOptions.Accelerant, CharacterOptions.Silent, CardRarity.Uncommon),
         new(CardOptions.Accuracy, CharacterOptions.Silent, CardRarity.Uncommon),
         new(CardOptions.Acrobatics, CharacterOptions.Silent, CardRarity.Uncommon),
         new(CardOptions.Adrenaline, CharacterOptions.Silent, CardRarity.Rare),
@@ -197,7 +190,7 @@ public static class CardRules
         new(CardOptions.Tracking, CharacterOptions.Silent, CardRarity.Rare),
         new(CardOptions.Untouchable, CharacterOptions.Silent, CardRarity.Common),
         new(CardOptions.UpMySleeve, CharacterOptions.Silent, CardRarity.Uncommon),
-        new(CardOptions.WellLaidPlans, CharacterOptions.Silent, CardRarity.Uncommon),
+        new(CardOptions.WellLaidPlans, CharacterOptions.Silent, CardRarity.Rare),
         new(CardOptions.WraithForm, CharacterOptions.Silent, CardRarity.Ancient),
 
         #endregion

@@ -15,7 +15,7 @@ public abstract class BaseCardTransformFilter(
     int transformCount,
     RngConsumptionSteps? slot1Consumption = null) : INeowOutcomeFilter
 {
-    protected abstract Rng GetTransformRng(uint seed);
+    protected abstract Rng GetTransformRng(ulong seed);
     protected abstract ImmutableArray<CardOptions> GetCardPool();
     public abstract RngConsumptionSteps RngConsumptionSteps { get; }
 
@@ -34,8 +34,7 @@ public abstract class BaseCardTransformFilter(
             return true;
         }
 
-        var baseRng = RngHelper.GetBaseRng(seed);
-        var rng = GetTransformRng(baseRng.Seed);
+        var rng = GetTransformRng(RngHelper.GetSeedHash(seed));
 
         // Fast-forward past slot 1's consumption if we are slot 2
         if (slot1Consumption != null)

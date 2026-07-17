@@ -27,12 +27,12 @@ public class AncientRelicFilter(Ancient selectedAncient, Enum? relicOption, int 
     
     public bool IsSeedValid(SeedSearchRequest request, string seed)
     {
-        var rng = RngHelper.GetBaseRng(seed);
+        var seedLong = RngHelper.GetSeedHash(seed);
         
         if (actNum == 1)
         {
             var neow = AncientFactory.GetAncient(Ancient.Neow, actNum);
-            return relicOption != null && neow.CheckOptions(rng.Seed, relicOption);
+            return relicOption != null && neow.CheckOptions(seedLong, relicOption);
         } 
         else if (actNum > 1)
         {
@@ -41,7 +41,8 @@ public class AncientRelicFilter(Ancient selectedAncient, Enum? relicOption, int 
             var actList = GetRandomActDefinitions(actSelectionRng);
 
             var runRng = new RunRngSet(seed);
-            var upfrontRng = new Rng(runRng.UpFront.Seed, RngHelper.RngCounters.AncientCounter);
+            var upfrontRng = runRng.UpFront;
+            upfrontRng.FastForwardCounter(RngHelper.RngCounters.AncientCounter);
 
             var multiActAncients = AncientRules.MultiActAncientsAndRelics.Keys.ToList();
 
@@ -77,7 +78,7 @@ public class AncientRelicFilter(Ancient selectedAncient, Enum? relicOption, int 
             }
 
             var ancient = AncientFactory.GetAncient(selectedAncient, actNum);
-            return ancient.CheckOptions(rng.Seed, relicOption);
+            return ancient.CheckOptions(seedLong, relicOption);
         }
         return true;
     }

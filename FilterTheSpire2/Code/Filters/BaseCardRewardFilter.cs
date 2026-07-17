@@ -21,8 +21,8 @@ public abstract class BaseCardRewardFilter(
 {
     protected int CardsPerReward => cardsPerReward;
     protected abstract bool IsCharacterRequired { get; }
-    protected abstract Rng GetRewardRng(uint seed);
-    protected abstract Rng? GetCardPoolRng(uint seed);
+    protected abstract Rng GetRewardRng(ulong seed);
+    protected abstract Rng? GetCardPoolRng(ulong seed);
     protected abstract List<List<CardDefinition>> GetRewardPools(Rng rng);
     public abstract RngConsumptionSteps RngConsumptionSteps { get; }
     public virtual bool IsSeedValid(SeedSearchRequest request, string seed)
@@ -40,16 +40,18 @@ public abstract class BaseCardRewardFilter(
             return true;
         }
 
-        var baseRng = RngHelper.GetBaseRng(seed);
-        var rng = GetRewardRng(baseRng.Seed);
-        var poolRng = GetCardPoolRng(baseRng.Seed);
+        var seedLong = RngHelper.GetSeedHash(seed);
+        var rng = GetRewardRng(seedLong);
+        var poolRng = GetCardPoolRng(seedLong);
 
         // Fast-forward past slot 1's consumption if we are slot 2
         if (slot1Consumption != null)
         {
             rng.FastForwardCounter(slot1Consumption.RewardsRngSteps);
             if (poolRng != null)
+            {
                 poolRng.FastForwardCounter(slot1Consumption.NicheRngSteps);
+            }
         }
 
         var remaining = requestedCardList

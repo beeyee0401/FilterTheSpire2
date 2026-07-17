@@ -22,8 +22,8 @@ public class LostCofferFilter(
     // The card reward consumes 9 Rewards calls. The potion then consumes 2 more.
     public override RngConsumptionSteps RngConsumptionSteps => new(11, 0, 0);
     protected override bool IsCharacterRequired => true;
-    protected override Rng GetRewardRng(uint seed) => RngHelper.GetPlayerRngType(seed, PlayerRngType.Rewards);
-    protected override Rng? GetCardPoolRng(uint seed) => null;
+    protected override Rng GetRewardRng(ulong seed) => RngHelper.GetPlayerRngType(seed, PlayerRngType.Rewards);
+    protected override Rng? GetCardPoolRng(ulong seed) => null;
     protected override List<List<CardDefinition>> GetRewardPools(Rng rng) =>
         Enumerable.Repeat(CardRules.EntireCardPools[FilterTheSpire2Config.Character].ToList(), CardsPerReward).ToList();
 

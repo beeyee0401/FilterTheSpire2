@@ -6,6 +6,7 @@ public enum NeowOptions
     ArcaneScroll,
     BoomingConch,
     CursedPearl,
+    DowsingRod,
     FishingRod,
     GoldenPearl,
     HeftyTablet,
@@ -17,6 +18,7 @@ public enum NeowOptions
     LostCoffer,
     // MassiveScroll, multiplayer only
     NeowsBones,
+    NeowsSacrifice,
     NeowsTalisman,
     NeowsTorment,
     NewLeaf,

@@ -11,7 +11,7 @@ public class Nonupeipe : AbstractAncient
         Id = "NONUPEIPE";
     }
 
-    public override bool CheckOptions(uint seed, Enum? relicOption)
+    public override bool CheckOptions(ulong seed, Enum? relicOption)
     {
         if (relicOption is not NonupeipeOptions relic)
         {

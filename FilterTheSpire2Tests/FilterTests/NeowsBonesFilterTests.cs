@@ -10,18 +10,18 @@ namespace FilterTheSpire2Tests.FilterTests;
 [TestClass]
 public class NeowsBonesFilterTests
 {
-    private const string SeedBonesNewLeafKaleidoscopeRegret = "79U2UR9CSX";
+    private const string SeedBonesNewLeafKaleidoscopeRegret = "AU0RDDGRZ135";
     
     // Bones / slot offset scenarios.
-    private const string SeedBonesLeadPaperweightTarget = "G8PD31ML6X"; // Bones with Paperweight and Master of Strat
-    private const string SeedBonesKaleidoscopeSlot1LeafyPoulticeSlot2Target = "J8P5E8FXG3";
-    private const string SeedBonesLeafyPoulticeSlot1KaleidoscopeSlot2Target = "K3RBVYU86J";
+    private const string SeedBonesLeadPaperweightTarget = "L0YE2F8NDMK0"; // Bones with Paperweight and Master of Strat
+    private const string SeedBonesKaleidoscopeSlot1LeafyPoulticeSlot2Target = "F4A16TV9U6SH";
+    private const string SeedBonesLeafyPoulticeSlot1KaleidoscopeSlot2Target = "K3KEHWAE0G5Y";
     
     private const CardOptions LeadPaperweightTarget = CardOptions.MasterOfStrategy;
-    private const CardOptions KaleidoscopeTarget1 = CardOptions.Backstab;
-    private const CardOptions KaleidoscopeTarget2 = CardOptions.BallLightning;
-    private const CardOptions IroncladTarget1 = CardOptions.BattleTrance;
-    private const CardOptions IroncladTarget2 = CardOptions.ShrugItOff;
+    private const CardOptions KaleidoscopeTarget1 = CardOptions.Finisher;
+    private const CardOptions KaleidoscopeTarget2 = CardOptions.SpectrumShift;
+    private const CardOptions IroncladTarget1 = CardOptions.NotYet;
+    private const CardOptions IroncladTarget2 = CardOptions.HowlFromBeyond;
 
     #region General logic
 

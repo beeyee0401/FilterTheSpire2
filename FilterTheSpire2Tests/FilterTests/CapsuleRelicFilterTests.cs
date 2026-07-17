@@ -8,9 +8,9 @@ namespace FilterTheSpire2Tests.FilterTests;
 [DoNotParallelize]
 public class CapsuleRelicFilterTests
 {
-    private const string SmallCapsuleAnchorSeed = "SHFRFA087T";
-    private const string LargeCapsuleAnchorVajraSeed = "43U6DVB2VZ";
-    private const string BonesSmallAndLargeThreeRelicSeed = "KNXJMHDE6Q"; // AmethystAubergine, Anchor, BloodVial
+    private const string SmallCapsuleAnchorSeed = "4SAA1EW3F179";
+    private const string LargeCapsuleAnchorVajraSeed = "0DJUHBN7PSKH";
+    private const string BonesSmallAndLargeThreeRelicSeed = "TQ18ZA83KK95"; // Sturdy Clamp, Strike Dummy, Happy Flower
 
     [TestMethod]
     public void SmallCapsule_WhenRelicMatches_ReturnsTrue()
@@ -48,9 +48,9 @@ public class CapsuleRelicFilterTests
         var filter = new CapsuleRelicFilter(
             relicsToMatch:
             [
-                RelicOptions.AmethystAubergine,
-                RelicOptions.Anchor,
-                RelicOptions.BloodVial
+                RelicOptions.SturdyClamp,
+                RelicOptions.StrikeDummy,
+                RelicOptions.HappyFlower
             ],
             generatedRelicCount: 3,
             rngConsumption: new RngConsumptionSteps(
@@ -67,9 +67,9 @@ public class CapsuleRelicFilterTests
         var filter = new CapsuleRelicFilter(
             relicsToMatch:
             [
-                RelicOptions.Anchor,
-                RelicOptions.BloodVial,
-                RelicOptions.AmethystAubergine
+                RelicOptions.HappyFlower,
+                RelicOptions.SturdyClamp,
+                RelicOptions.StrikeDummy
             ],
             generatedRelicCount: 3,
             rngConsumption: new RngConsumptionSteps(

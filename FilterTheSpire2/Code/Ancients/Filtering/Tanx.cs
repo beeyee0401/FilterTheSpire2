@@ -11,7 +11,7 @@ public class Tanx : AbstractAncient
         Id = "TANX";
     }
 
-    public override bool CheckOptions(uint seed, Enum? relicOption)
+    public override bool CheckOptions(ulong seed, Enum? relicOption)
     {
         if (relicOption is not TanxOptions relic)
         {

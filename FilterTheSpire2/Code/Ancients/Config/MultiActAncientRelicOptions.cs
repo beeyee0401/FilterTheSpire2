@@ -13,6 +13,6 @@ public enum DarvOptions
     SneckoEye,
     EctoplasmAct2,
     SozuAct2,
-    PhilosophersStoneAct3,
-    VelvetChokerAct3
+    PhilosophersStone,
+    VelvetChoker
 }

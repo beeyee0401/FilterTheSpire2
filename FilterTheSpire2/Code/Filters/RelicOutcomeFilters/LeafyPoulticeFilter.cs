@@ -12,7 +12,7 @@ public class LeafyPoulticeFilter(List<CardOptions> cardOptions, RngConsumptionSt
 {
     public override RngConsumptionSteps RngConsumptionSteps => new(0, 2, 0); // 2 Transformations calls
 
-    protected override Rng GetTransformRng(uint seed) =>
+    protected override Rng GetTransformRng(ulong seed) =>
         RngHelper.GetPlayerRngType(seed, PlayerRngType.Transformations);
 
     protected override ImmutableArray<CardOptions> GetCardPool() =>

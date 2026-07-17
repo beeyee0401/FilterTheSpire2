@@ -38,19 +38,22 @@ public static class AncientRules
         {
             {2, [DarvOptions.Any, DarvOptions.Astrolabe, DarvOptions.BlackStar, DarvOptions.CallingBell, 
                 DarvOptions.DustyTome, DarvOptions.EmptyCage, DarvOptions.PandorasBox, DarvOptions.RunicPyramid, 
-                DarvOptions.SneckoEye, DarvOptions.EctoplasmAct2, DarvOptions.SozuAct2]},
+                DarvOptions.SneckoEye, DarvOptions.EctoplasmAct2, DarvOptions.SozuAct2, 
+                DarvOptions.PhilosophersStone, DarvOptions.VelvetChoker]},
             {3, [DarvOptions.Any, DarvOptions.Astrolabe, DarvOptions.BlackStar, DarvOptions.CallingBell, 
                 DarvOptions.DustyTome, DarvOptions.EmptyCage, DarvOptions.PandorasBox, DarvOptions.RunicPyramid, 
-                DarvOptions.SneckoEye, DarvOptions.PhilosophersStoneAct3, DarvOptions.VelvetChokerAct3 ]}
+                DarvOptions.SneckoEye, DarvOptions.PhilosophersStone, DarvOptions.VelvetChoker ]}
         }  },
     };
 
     public static ImmutableArray<NeowOptions> NeowsBonesOptions =
     [
         NeowOptions.CursedPearl,
+        NeowOptions.DowsingRod,
         NeowOptions.HeftyTablet,
         NeowOptions.LargeCapsule,
         NeowOptions.LeafyPoultice,
+        NeowOptions.NeowsSacrifice,
         NeowOptions.PrecariousShears,
         NeowOptions.SilkenTress,
         NeowOptions.SilverCrucible,

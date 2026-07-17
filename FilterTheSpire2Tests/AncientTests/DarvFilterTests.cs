@@ -17,8 +17,8 @@ public class DarvFilterTests
     private const DarvOptions Act2NonMatchingRelic = DarvOptions.EctoplasmAct2;
 
     private const string SeedAct3KnownOutcome = "REPLACE_WITH_SEED";
-    private const DarvOptions Act3MatchingRelic = DarvOptions.PhilosophersStoneAct3;
-    private const DarvOptions Act3NonMatchingRelic = DarvOptions.VelvetChokerAct3;
+    private const DarvOptions Act3MatchingRelic = DarvOptions.PhilosophersStone;
+    private const DarvOptions Act3NonMatchingRelic = DarvOptions.VelvetChoker;
 
     [TestMethod]
     public void CheckOptions_WhenRelicOptionIsNull_ReturnsTrue()
@@ -75,6 +75,6 @@ public class DarvFilterTests
         // (e.g. PhilosophersStoneAct3) should never be reachable when constructed for act 2.
         var darv = new Darv(2);
 
-        Assert.IsFalse(darv.CheckOptions(AncientTestHelpers.ToNumericSeed(SeedAct2KnownOutcome), DarvOptions.PhilosophersStoneAct3));
+        Assert.IsFalse(darv.CheckOptions(AncientTestHelpers.ToNumericSeed(SeedAct2KnownOutcome), DarvOptions.PhilosophersStone));
     }
 }

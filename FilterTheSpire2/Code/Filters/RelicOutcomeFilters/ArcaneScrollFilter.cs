@@ -12,7 +12,7 @@ public class ArcaneScrollFilter(List<CardOptions> cardOptions, RngConsumptionSte
 {
     public override RngConsumptionSteps RngConsumptionSteps => new(1, 0, 0); // 1 Rewards call
 
-    protected override Rng GetTransformRng(uint seed) =>
+    protected override Rng GetTransformRng(ulong seed) =>
         RngHelper.GetPlayerRngType(seed, PlayerRngType.Rewards);
 
     protected override ImmutableArray<CardOptions> GetCardPool() =>

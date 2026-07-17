@@ -8,6 +8,6 @@ public class LostCofferPotionSource(int priorConsumptionSteps = 0) : PotionSourc
 {
     public override int Count => 1;
 
-    protected override Rng GetBaseRng(uint seed) =>
+    protected override Rng GetBaseRng(ulong seed) =>
         RngHelper.GetPlayerRngType(seed, PlayerRngType.Rewards);
 }

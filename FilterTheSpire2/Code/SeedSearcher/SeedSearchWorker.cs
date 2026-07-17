@@ -9,51 +9,40 @@ public sealed class SeedSearchWorker(
     SeedSearchRunner runner,
     SeedSearchRequest request,
     ulong startSeed,
-    ulong endExclusive,
     CancellationToken token)
 {
-    private ulong _current;
-    
+    private ulong _current = startSeed;
+
     public void Run()
     {
-        _current = startSeed;
-
-        while (!token.IsCancellationRequested && _current < endExclusive)
+        while (!token.IsCancellationRequested)
         {
             runner.IncrementSeedsExamined();
 
-            var candidate = unchecked((uint)_current);
-            var result = TryRandomSeed(candidate);
+            var result = TryRandomSeed(_current);
 
             if (result != null && runner.TrySetWinner(result))
             {
-                break;
+                return;
             }
 
-            _current += (ulong)request.ThreadCount;
+            _current = unchecked(
+                _current + (ulong)request.ThreadCount);
         }
     }
 
-    private SeedSearchResult? TryRandomSeed(uint candidate)
+    private SeedSearchResult? TryRandomSeed(ulong candidate)
     {
         var stringSeed = RngHelper.GetRandomSeed(candidate);
-        // var stringSeed = "H8G58Z3P8H";
 
-        var seed =
-            RngHelper.GetSeedHash(stringSeed) +
-            RngHelper.GetSeedHash(StringHelper.SnakeCase(nameof(RunRngType.UpFront)));
-
-        var passed = FilterManager.ValidateFilters(request, stringSeed);
-
-        if (!passed)
+        if (!FilterManager.ValidateFilters(request, stringSeed))
         {
             return null;
         }
 
         return new SeedSearchResult
         {
-            StringSeed = stringSeed,
-            Seed = seed,
+            StringSeed = stringSeed
         };
     }
 }

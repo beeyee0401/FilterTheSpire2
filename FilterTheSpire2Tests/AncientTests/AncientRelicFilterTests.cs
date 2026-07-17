@@ -34,7 +34,7 @@ public class AncientRelicFilterTests
     private const DarvOptions Act2DarvMatchingRelic = DarvOptions.SneckoEye;
 
     private const string SeedAct3RollsDarv = "REPLACE_WITH_SEED";
-    private const DarvOptions Act3DarvMatchingRelic = DarvOptions.PhilosophersStoneAct3;
+    private const DarvOptions Act3DarvMatchingRelic = DarvOptions.PhilosophersStone;
 
     [TestInitialize]
     public void Setup()

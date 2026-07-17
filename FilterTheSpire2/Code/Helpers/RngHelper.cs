@@ -40,39 +40,28 @@ public static class RngHelper
         return result;
     }
     
-    public static Rng GetEventRng(uint seed, string eventId)
+    public static Rng GetEventRng(ulong seed, string eventId)
     {
-        return new Rng((uint) (seed + 0UL + GetSeedHash(eventId)));
+        return new Rng(seed + 0UL + GetSeedHash(eventId));
     }
 
-    public static Rng GetPlayerRngType(uint seed, PlayerRngType playerRngType)
+    public static Rng GetPlayerRngType(ulong seed, PlayerRngType playerRngType)
     {
         return new Rng(seed, StringHelper.SnakeCase(playerRngType.ToString()));
     }
     
-    public static Rng GetRunRngType(uint seed, RunRngType runRngType)
+    public static Rng GetRunRngType(ulong seed, RunRngType runRngType)
     {
         return new Rng(seed, StringHelper.SnakeCase(runRngType.ToString()));
     }
 
-    public static string GetRandomSeed(uint candidate, int length = 10)
+    public static string GetRandomSeed(ulong candidate, int length = 12)
     {
         var rng = new Rng(candidate);
-        string text;
-        do
-        {
-            StringBuilder stringBuilder = new StringBuilder();
-            for (var index = 0; index < length; ++index)
-            {
-                stringBuilder.Append(rng.NextItem("0123456789ABCDEFGHJKLMNPQRSTUVWXYZ"));
-            }
-            text = stringBuilder.ToString();
-        }
-        while (BadWordChecker.ContainsBadWord(text));
-        return text;
+        return SeedHelper.GetRandomSeed(rng, length);
     }
     
-    public static uint GetSeedHash(string seed) => (uint)StringHelper.GetDeterministicHashCode(seed);
+    public static ulong GetSeedHash(string seed) => StringHelper.GetDeterministicHashCode(seed);
 
     public static Rng GetBaseRng(string seed) => new(GetSeedHash(seed));
 }

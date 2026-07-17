@@ -14,13 +14,13 @@ namespace FilterTheSpire2Tests.FilterTests;
 [DoNotParallelize]
 public class FilterManagerTests
 {
-    private const string SeedBonesNewLeafKaleidoscope = "79U2UR9CSX";
+    private const string SeedBonesNewLeafKaleidoscope = "15P9SBV7MFZA";
     
-    // Block/Attack from Holster, Blood from Coffer
-    private const string SeedBonesLostCofferPhialHolster = "ZWKXKNE31X";
+    // Block/Attack from Holster, Colorless from Coffer
+    private const string SeedBonesLostCofferPhialHolster = "1H13GMKSMYHM";
     
     // Attack and block pots from Phial, attack pot from Coffer
-    private const string SeedBonesPhialCofferDupePotions = "0A9LUUWQTU";
+    private const string SeedBonesPhialCofferDupePotions = "X0Y73RTVGBQ6";
     
     [TestInitialize]
     public void Setup()
@@ -316,7 +316,7 @@ public class FilterManagerTests
         FilterTheSpire2Config.PhialHolsterPotionOption2 =
             PotionOptions.BlockPotion;
         FilterTheSpire2Config.LostCofferPotionOption =
-            PotionOptions.BloodPotion;
+            PotionOptions.ColorlessPotion;
 
         var filters = FilterManager.CreateFiltersFromSettings();
         var request = FilterTestHelpers.Request(filters: filters);
@@ -340,7 +340,7 @@ public class FilterManagerTests
         FilterTheSpire2Config.PhialHolsterPotionOption2 =
             PotionOptions.AttackPotion;
         FilterTheSpire2Config.LostCofferPotionOption =
-            PotionOptions.BloodPotion;
+            PotionOptions.ColorlessPotion;
 
         var filters = FilterManager.CreateFiltersFromSettings();
         var request = FilterTestHelpers.Request(filters: filters);

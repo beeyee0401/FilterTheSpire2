@@ -12,7 +12,7 @@ public class NewLeafFilter(CardOptions cardOptions, RngConsumptionSteps? slot1Co
 {
     public override RngConsumptionSteps RngConsumptionSteps => new(0, 0, 1); // 1 Niche call
     
-    protected override Rng GetTransformRng(uint seed) => 
+    protected override Rng GetTransformRng(ulong seed) => 
         RngHelper.GetRunRngType(seed, RunRngType.Niche); 
     
     protected override ImmutableArray<CardOptions> GetCardPool() => 

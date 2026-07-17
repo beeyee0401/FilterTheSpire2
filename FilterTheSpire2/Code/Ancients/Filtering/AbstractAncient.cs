@@ -4,5 +4,5 @@ public abstract class AbstractAncient
 {
     protected string? Id;
 
-    public abstract bool CheckOptions(uint seed, Enum? relic);
+    public abstract bool CheckOptions(ulong seed, Enum? relic);
 }

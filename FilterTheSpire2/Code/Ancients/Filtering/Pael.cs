@@ -10,7 +10,7 @@ public class Pael : AbstractAncient
         Id = "PAEL";
     }
 
-    public override bool CheckOptions(uint seed, Enum? relicOption)
+    public override bool CheckOptions(ulong seed, Enum? relicOption)
     {
         if (relicOption is not PaelOptions relic)
         {

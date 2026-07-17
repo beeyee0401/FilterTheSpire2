@@ -15,8 +15,8 @@ public class LeadPaperweightFilter(List<CardOptions> cardOptions, RngConsumption
     // 1 reward × 2 cards × 3 = 6 Rewards calls
     public override RngConsumptionSteps RngConsumptionSteps => new(6, 0, 0);
     protected override bool IsCharacterRequired => false;
-    protected override Rng GetRewardRng(uint seed) => RngHelper.GetPlayerRngType(seed, PlayerRngType.Rewards);
-    protected override Rng? GetCardPoolRng(uint seed) => null;
+    protected override Rng GetRewardRng(ulong seed) => RngHelper.GetPlayerRngType(seed, PlayerRngType.Rewards);
+    protected override Rng? GetCardPoolRng(ulong seed) => null;
     protected override List<List<CardDefinition>> GetRewardPools(Rng rng)
     {
         var pool = CardRules.EntireCardPools[CharacterOptions.Any]

@@ -8,6 +8,6 @@ public class PhialHolsterPotionSource(int priorConsumptionSteps = 0) : PotionSou
 {
     public override int Count => 2;
 
-    protected override Rng GetBaseRng(uint seed) =>
+    protected override Rng GetBaseRng(ulong seed) =>
         RngHelper.GetRunRngType(seed, RunRngType.CombatPotionGeneration);
 }

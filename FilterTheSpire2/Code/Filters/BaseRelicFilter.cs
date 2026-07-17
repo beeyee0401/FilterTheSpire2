@@ -1,8 +1,8 @@
+using FilterTheSpire2.Code.Helpers;
 using FilterTheSpire2.Code.Relics;
 using FilterTheSpire2.Code.SeedSearcher;
 using MegaCrit.Sts2.Core.Entities.Relics;
 using MegaCrit.Sts2.Core.Extensions;
-using MegaCrit.Sts2.Core.Random;
 using MegaCrit.Sts2.Core.Runs;
 
 namespace FilterTheSpire2.Code.Filters;
@@ -15,13 +15,19 @@ public abstract class BaseRelicFilter(RelicOptions relicOption) : IFilter
     public bool IsSeedValid(SeedSearchRequest request, string seed)
     {
         var runRng = new RunRngSet(seed);
-        var upfrontRng = new Rng(runRng.UpFront.Seed, RelicCounter);
+        var upfrontRng = runRng.UpFront;
+
+        upfrontRng.FastForwardCounter(RelicCounter);
 
         var list = RelicRules.GetRelicPool(RelicRarity).ToList();
 
         list.UnstableShuffle(upfrontRng);
-        // Shop relics pull from the end of the list
-        var option = RelicRarity == RelicRarity.Shop ? list.Last() : list.First();
+
+        // Shop relics pull from the end of the list.
+        var option = RelicRarity == RelicRarity.Shop
+            ? list.Last()
+            : list.First();
+
         return option == relicOption;
     }
 }

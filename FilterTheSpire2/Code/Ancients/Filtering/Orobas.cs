@@ -12,7 +12,7 @@ public class Orobas : AbstractAncient
         Id = "OROBAS";
     }
 
-    public override bool CheckOptions(uint seed, Enum? relicOption)
+    public override bool CheckOptions(ulong seed, Enum? relicOption)
     {
         if (relicOption is not OrobasOptions relic)
         {
@@ -38,7 +38,6 @@ public class Orobas : AbstractAncient
         {
             OrobasOptions.ElectricShrymp,
             OrobasOptions.GlassEye,
-            OrobasOptions.SandCastle,
             rng.NextFloat() < 0.3333333134651184 ? OrobasOptions.PrismaticGem : OrobasOptions.SeaGlass
         };
 
@@ -46,7 +45,8 @@ public class Orobas : AbstractAncient
         {
             OrobasOptions.AlchemicalCoffer,
             OrobasOptions.Driftwood,
-            OrobasOptions.RadiantPearl
+            OrobasOptions.RadiantPearl,
+            OrobasOptions.SandCastle
         };
 
         var list3 = new List<OrobasOptions>()

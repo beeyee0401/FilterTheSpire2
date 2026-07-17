@@ -11,7 +11,7 @@ public class Neow : AbstractAncient
         Id = "NEOW";
     }
     
-    public override bool CheckOptions(uint seed, Enum? relicOption)
+    public override bool CheckOptions(ulong seed, Enum? relicOption)
     {
         if (relicOption is not NeowOptions relic)
         {
@@ -23,10 +23,12 @@ public class Neow : AbstractAncient
         var cursedOptions = new List<NeowOptions>()
         {
             NeowOptions.CursedPearl,
+            NeowOptions.DowsingRod,
             NeowOptions.HeftyTablet,
             NeowOptions.LargeCapsule,
             NeowOptions.LeafyPoultice,
             NeowOptions.NeowsBones,
+            NeowOptions.NeowsSacrifice,
             NeowOptions.PrecariousShears,
             NeowOptions.SilkenTress,
             NeowOptions.SilverCrucible,
@@ -64,6 +66,10 @@ public class Neow : AbstractAncient
                 break;
             case NeowOptions.PrecariousShears:
                 positiveOptions.Remove(NeowOptions.PreciseScissors);
+                break;
+            case NeowOptions.NeowsSacrifice:
+                positiveOptions.Remove(NeowOptions.PhialHolster);
+                positiveOptions.Remove(NeowOptions.LostCoffer);
                 break;
         }
 

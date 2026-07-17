@@ -8,10 +8,10 @@ namespace FilterTheSpire2Tests.FilterTests;
 [DoNotParallelize]
 public class RelicFilterTests
 {
-    private const string SeedCommonRelicTarget = "FBHQ4E6JJ4";
-    private const string SeedUncommonRelicTarget = "EXEGYHCM0T";
-    private const string SeedRareRelicTarget = "RLKAU60YWS";
-    private const string SeedShopRelicTarget = "XSWBZ6TKZ3";
+    private const string SeedCommonRelicTarget = "4C60TQRCPWCS";
+    private const string SeedUncommonRelicTarget = "H455G3QTGMLF";
+    private const string SeedRareRelicTarget = "1P4ZMV156RML";
+    private const string SeedShopRelicTarget = "G3BVT9NR7BME";
 
     private const RelicOptions CommonTarget = RelicOptions.Anchor;
     private const RelicOptions UncommonTarget = RelicOptions.HornCleat;
