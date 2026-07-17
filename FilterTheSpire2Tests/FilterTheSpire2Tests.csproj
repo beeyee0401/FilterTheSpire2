@@ -23,7 +23,7 @@
     </ItemGroup>
     
     <ItemGroup>
-        <PackageReference Include="Alchyr.Sts2.BaseLib" Version="3.3.4" />
+        <PackageReference Include="Alchyr.Sts2.BaseLib" Version="3.3.6" />
         <PackageReference Include="coverlet.collector" Version="10.0.1">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
