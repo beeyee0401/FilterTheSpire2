@@ -3,6 +3,7 @@ using FilterTheSpire2.Code.Ancients.Config;
 using FilterTheSpire2.Code.Cards;
 using FilterTheSpire2.Code.Filters.PotionFilters;
 using FilterTheSpire2.Code.Filters.RelicOutcomeFilters;
+using FilterTheSpire2.Code.Helpers;
 using FilterTheSpire2.Code.Potions;
 
 namespace FilterTheSpire2Tests.FilterTests;
@@ -229,10 +230,7 @@ public class NeowsBonesFilterTests
     [TestMethod]
         public void LeadPaperweight_WithBonesBaseRewardOffset_ReturnsTrue()
         {
-            var bonesBaseConsumption = new RngConsumptionSteps(
-                RewardsRngSteps: AncientRules.NeowsBonesOptions.Length - 1,
-                TransformationsRngSteps: 0,
-                NicheRngSteps: 0);
+            var bonesBaseConsumption = RngHelper.GetNeowsBonesBaseConsumption();
     
             var filter = new LeadPaperweightFilter(
                 [LeadPaperweightTarget],
@@ -246,10 +244,10 @@ public class NeowsBonesFilterTests
         [TestMethod]
         public void LeafyPoultice_AsSlot2AfterKaleidoscope_IgnoresKaleidoscopeRewardAndNicheConsumption()
         {
-            var bonesBasePlusKaleidoscope = new RngConsumptionSteps(
-                RewardsRngSteps: AncientRules.NeowsBonesOptions.Length - 1 + 18,
-                TransformationsRngSteps: 0,
-                NicheRngSteps: 6);
+            var bonesBasePlusKaleidoscope = RngHelper.GetNeowsBonesBaseConsumption(
+                extraRewardsRngSteps: 18, 
+                extraNicheRngSteps: 6
+            );
     
             var filter = new LeafyPoulticeFilter(
                 [IroncladTarget1, IroncladTarget2],
@@ -263,10 +261,7 @@ public class NeowsBonesFilterTests
         [TestMethod]
         public void Kaleidoscope_AsSlot2AfterLeafyPoultice_IgnoresLeafyPoulticeTransformationConsumption()
         {
-            var bonesBasePlusLeafyPoultice = new RngConsumptionSteps(
-                RewardsRngSteps: AncientRules.NeowsBonesOptions.Length - 1,
-                TransformationsRngSteps: 2,
-                NicheRngSteps: 0);
+            var bonesBasePlusLeafyPoultice = RngHelper.GetNeowsBonesBaseConsumption(extraTransformationRngSteps: 2);
     
             var filter = new KaleidoscopeFilter(
                 [KaleidoscopeTarget1, KaleidoscopeTarget2],

@@ -4,6 +4,7 @@ using FilterTheSpire2.Code.Cards;
 using FilterTheSpire2.Code.Config;
 using FilterTheSpire2.Code.Filters.PotionFilters;
 using FilterTheSpire2.Code.Filters.RelicOutcomeFilters;
+using FilterTheSpire2.Code.Helpers;
 using FilterTheSpire2.Code.Potions;
 using FilterTheSpire2.Code.Relics;
 using FilterTheSpire2.Code.SeedSearcher;
@@ -221,7 +222,7 @@ public static class FilterManager
                 ? FilterTheSpire2Config.NeowsBonesCurseOption
                 : null;
 
-            var bonesBaseConsumption = GetNeowsBonesBaseConsumption();
+            var bonesBaseConsumption = RngHelper.GetNeowsBonesBaseConsumption();
             var option1Consumption = GetDeterministicConsumption(orderedOption1);
 
             var requireSequence =
@@ -493,12 +494,12 @@ public static class FilterManager
         {
             filters.Add(new PhialHolsterFilter(
                 selectedPotions,
-                GetNeowsBonesBaseConsumption().CombatPotionGenerationRngSteps));
+                RngHelper.GetNeowsBonesBaseConsumption().CombatPotionGenerationRngSteps));
         }
         else if (option2 == NeowOptions.PhialHolster)
         {
             var priorConsumption = AddConsumption(
-                GetNeowsBonesBaseConsumption(),
+                RngHelper.GetNeowsBonesBaseConsumption(),
                 GetDeterministicConsumption(option1));
 
             filters.Add(new PhialHolsterFilter(
@@ -521,7 +522,7 @@ public static class FilterManager
             configuredOption1,
             configuredOption2);
 
-        var bonesBaseConsumption = GetNeowsBonesBaseConsumption();
+        var bonesBaseConsumption = RngHelper.GetNeowsBonesBaseConsumption();
 
         if (GetCapsuleRelicCount(orderedOption1) > 0)
         {
@@ -533,13 +534,7 @@ public static class FilterManager
             GetDeterministicConsumption(orderedOption1));
     }
 
-    private static RngConsumptionSteps GetNeowsBonesBaseConsumption()
-    {
-        return new RngConsumptionSteps(
-            RewardsRngSteps: AncientRules.NeowsBonesOptions.Length - 1,
-            TransformationsRngSteps: 0,
-            NicheRngSteps: 0);
-    }
+    
 
     private static (NeowOptions Option1, NeowOptions Option2) GetRequiredNeowOrder(
         NeowOptions option1,

@@ -2,7 +2,6 @@ using FilterTheSpire2.Code.Helpers;
 using FilterTheSpire2.Code.Relics;
 using FilterTheSpire2.Code.SeedSearcher;
 using MegaCrit.Sts2.Core.Entities.Rngs;
-using MegaCrit.Sts2.Core.Runs;
 
 namespace FilterTheSpire2.Code.Filters.RelicOutcomeFilters;
 
@@ -17,15 +16,15 @@ public class CapsuleRelicFilter(
     {
         _rngConsumption ??= RngConsumptionSteps.None;
 
-        var runRng = new RunRngSet(seed);
+        var seedLong = RngHelper.GetSeedHash(seed);
 
         var rewardsRng = RngHelper.GetPlayerRngType(
-            runRng.Seed,
+            seedLong,
             PlayerRngType.Rewards);
 
         rewardsRng.FastForwardCounter(_rngConsumption.RewardsRngSteps);
 
-        var relicPools = RelicRewardSimulator.BuildFrontPullPools(runRng);
+        var relicPools = RelicRewardSimulator.BuildFrontPullPools(seedLong);
 
         var generatedRelics = new List<RelicOptions>();
         for (var i = 0; i < generatedRelicCount; i++)

@@ -1,6 +1,9 @@
 using FilterTheSpire2.Code.Ancients.Config;
 using FilterTheSpire2.Code.Filters.RelicOutcomeFilters;
+using FilterTheSpire2.Code.Helpers;
 using FilterTheSpire2.Code.Relics;
+using MegaCrit.Sts2.Core.Entities.Rngs;
+using MegaCrit.Sts2.Core.Runs;
 
 namespace FilterTheSpire2Tests.FilterTests;
 
@@ -53,10 +56,7 @@ public class CapsuleRelicFilterTests
                 RelicOptions.HappyFlower
             ],
             generatedRelicCount: 3,
-            rngConsumption: new RngConsumptionSteps(
-                RewardsRngSteps: AncientRules.NeowsBonesOptions.Length - 1,
-                TransformationsRngSteps: 0,
-                NicheRngSteps: 0));
+            rngConsumption: RngHelper.GetNeowsBonesBaseConsumption());
 
         Assert.IsTrue(filter.IsSeedValid(FilterTestHelpers.Request(), BonesSmallAndLargeThreeRelicSeed));
     }
@@ -72,10 +72,7 @@ public class CapsuleRelicFilterTests
                 RelicOptions.StrikeDummy
             ],
             generatedRelicCount: 3,
-            rngConsumption: new RngConsumptionSteps(
-                RewardsRngSteps: AncientRules.NeowsBonesOptions.Length - 1,
-                TransformationsRngSteps: 0,
-                NicheRngSteps: 0));
+            rngConsumption: RngHelper.GetNeowsBonesBaseConsumption());
 
         Assert.IsTrue(filter.IsSeedValid(FilterTestHelpers.Request(), BonesSmallAndLargeThreeRelicSeed));
     }

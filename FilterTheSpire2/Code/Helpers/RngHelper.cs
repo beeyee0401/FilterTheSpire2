@@ -1,5 +1,7 @@
 using System.Text;
 using FilterTheSpire2.Code.Acts;
+using FilterTheSpire2.Code.Ancients.Config;
+using FilterTheSpire2.Code.Filters.RelicOutcomeFilters;
 using MegaCrit.Sts2.Core.Entities.Rngs;
 using MegaCrit.Sts2.Core.Helpers;
 using MegaCrit.Sts2.Core.Random;
@@ -64,4 +66,15 @@ public static class RngHelper
     public static ulong GetSeedHash(string seed) => StringHelper.GetDeterministicHashCode(seed);
 
     public static Rng GetBaseRng(string seed) => new(GetSeedHash(seed));
+    
+    public static RngConsumptionSteps GetNeowsBonesBaseConsumption(
+        int extraRewardsRngSteps = 0, 
+        int extraTransformationRngSteps = 0,
+        int extraNicheRngSteps = 0)
+    {
+        return new RngConsumptionSteps(
+            RewardsRngSteps: AncientRules.NeowsBonesOptions.Length - 1 + extraRewardsRngSteps,
+            TransformationsRngSteps: 0 + extraTransformationRngSteps,
+            NicheRngSteps: 0 + extraNicheRngSteps);
+    }
 }
