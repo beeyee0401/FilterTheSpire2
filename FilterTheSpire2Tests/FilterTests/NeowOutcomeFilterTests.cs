@@ -44,14 +44,6 @@ public class NeowOutcomeFilterTests
     }
 
     [TestMethod]
-    public void LeadPaperweight_RngConsumption_IsSixRewardSteps()
-    {
-        var filter = new LeadPaperweightFilter([LeadPaperweightTarget]);
-
-        Assert.AreEqual(new RngConsumptionSteps(6, 0, 0), filter.RngConsumptionSteps);
-    }
-
-    [TestMethod]
     public void LeadPaperweight_WhenRequestedCardAppears_ReturnsTrue()
     {
         var filter = new LeadPaperweightFilter([LeadPaperweightTarget]);
@@ -87,14 +79,6 @@ public class NeowOutcomeFilterTests
     }
 
     [TestMethod]
-    public void NewLeaf_RngConsumption_IsOneNicheStep()
-    {
-        var filter = new NewLeafFilter(IroncladTarget1);
-
-        Assert.AreEqual(new RngConsumptionSteps(0, 0, 1), filter.RngConsumptionSteps);
-    }
-
-    [TestMethod]
     public void NewLeaf_WhenCharacterIsAny_ReturnsTrueBecauseFilterIsIgnored()
     {
         FilterTheSpire2Config.Character = CharacterOptions.Any;
@@ -114,14 +98,6 @@ public class NeowOutcomeFilterTests
         Assert.IsTrue(filter.IsSeedValid(
             FilterTestHelpers.Request(),
             SeedNewLeafTarget));
-    }
-
-    [TestMethod]
-    public void LeafyPoultice_RngConsumption_IsTwoTransformationSteps()
-    {
-        var filter = new LeafyPoulticeFilter([IroncladTarget1]);
-
-        Assert.AreEqual(new RngConsumptionSteps(0, 2, 0), filter.RngConsumptionSteps);
     }
 
     [TestMethod]
@@ -146,14 +122,6 @@ public class NeowOutcomeFilterTests
     }
 
     #region Lost Coffer
-    
-    [TestMethod]
-    public void LostCoffer_RngConsumption_IsNineRewardSteps()
-    {
-        var filter = new LostCofferFilter([IroncladTarget1], PotionOptions.Any);
-
-        Assert.AreEqual(new RngConsumptionSteps(11, 0, 0), filter.RngConsumptionSteps);
-    }
 
     [TestMethod]
     public void LostCoffer_WhenCharacterIsAny_ReturnsTrueBecauseFilterIsIgnored()
@@ -246,16 +214,6 @@ public class NeowOutcomeFilterTests
     #endregion
     
     #region Kaleidoscope
-    
-    [TestMethod]
-    public void Kaleidoscope_RngConsumption_UsesRewardsAndNiche()
-    {
-        var filter = new KaleidoscopeFilter([KaleidoscopeTarget1]);
-
-        Assert.AreEqual(18, filter.RngConsumptionSteps.RewardsRngSteps);
-        Assert.AreEqual(0, filter.RngConsumptionSteps.TransformationsRngSteps);
-        Assert.AreEqual(6, filter.RngConsumptionSteps.NicheRngSteps);
-    }
 
     [TestMethod]
     public void Kaleidoscope_WhenTargetsAppearInSeparateRewards_ReturnsTrue()
@@ -270,14 +228,6 @@ public class NeowOutcomeFilterTests
     #endregion
 
     #region Arcane Scroll
-
-    [TestMethod]
-    public void ArcaneScroll_RngConsumption_IsOneRewardStep()
-    {
-        var filter = new ArcaneScrollFilter([IroncladRareTarget]);
-
-        Assert.AreEqual(new RngConsumptionSteps(1, 0, 0), filter.RngConsumptionSteps);
-    }
 
     [TestMethod]
     public void ArcaneScroll_WhenRequestedRareTransformMatches_ReturnsTrue()

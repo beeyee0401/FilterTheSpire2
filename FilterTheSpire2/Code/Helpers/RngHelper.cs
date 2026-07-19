@@ -67,12 +67,12 @@ public static class RngHelper
 
     public static Rng GetBaseRng(string seed) => new(GetSeedHash(seed));
     
-    public static RngConsumptionSteps GetNeowsBonesBaseConsumption(
+    public static PriorRngConsumption GetNeowsBonesBaseConsumption(
         int extraRewardsRngSteps = 0, 
         int extraTransformationRngSteps = 0,
         int extraNicheRngSteps = 0)
     {
-        return new RngConsumptionSteps(
+        return new PriorRngConsumption(
             RewardsRngSteps: AncientRules.NeowsBonesOptions.Length - 1 + extraRewardsRngSteps,
             TransformationsRngSteps: 0 + extraTransformationRngSteps,
             NicheRngSteps: 0 + extraNicheRngSteps);

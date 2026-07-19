@@ -13,11 +13,7 @@ public class KaleidoscopeFilter : BaseCardRewardFilter
 {
     private readonly List<CharacterOptions> _charListFiltered;
 
-    // 2 rewards × 3 cards × 3 = 18 Rewards calls
-    // 2 GetRewardPools calls, each shuffles 4 chars = 6 (N-1)*2 Niche calls
-    public override RngConsumptionSteps RngConsumptionSteps { get; }
-
-    public KaleidoscopeFilter(List<CardOptions> cardOptions, RngConsumptionSteps? slot1Consumption = null)
+    public KaleidoscopeFilter(List<CardOptions> cardOptions, PriorRngConsumption? slot1Consumption = null)
         : base(CardRarityOddsType.RegularEncounter, cardOptions, 2,
             slot1Consumption: slot1Consumption)
     {
@@ -30,17 +26,11 @@ public class KaleidoscopeFilter : BaseCardRewardFilter
             CharacterOptions.Silent
         };
         _charListFiltered = charListSorted.Except([FilterTheSpire2Config.Character]).ToList();
-        
-        // 3 per card in each card reward
-        var rewardsSteps = CardsPerReward * 3 * 2;
-        // (N-1) Niche calls per shuffle × 2 rewards
-        var nicheSteps = (_charListFiltered.Count - 1) * 2;
-        RngConsumptionSteps = new RngConsumptionSteps(rewardsSteps, 0, nicheSteps);
     }
 
     protected override bool IsCharacterRequired => true;
     protected override Rng GetRewardRng(ulong seed) => RngHelper.GetPlayerRngType(seed, PlayerRngType.Rewards);
-    protected override Rng? GetCardPoolRng(ulong seed) => RngHelper.GetRunRngType(seed, RunRngType.Niche);
+    protected override Rng GetCardPoolRng(ulong seed) => RngHelper.GetRunRngType(seed, RunRngType.Niche);
     protected override List<List<CardDefinition>> GetRewardPools(Rng rng)
     {
         var charList = _charListFiltered.ToList();

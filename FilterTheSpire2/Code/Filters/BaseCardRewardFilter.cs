@@ -17,14 +17,13 @@ public abstract class BaseCardRewardFilter(
     List<CardOptions> requestedCards,
     int cardRewardCount,
     int cardsPerReward = 3,
-    RngConsumptionSteps? slot1Consumption = null) : INeowOutcomeFilter
+    PriorRngConsumption? slot1Consumption = null) : IFilter
 {
     protected int CardsPerReward => cardsPerReward;
     protected abstract bool IsCharacterRequired { get; }
     protected abstract Rng GetRewardRng(ulong seed);
     protected abstract Rng? GetCardPoolRng(ulong seed);
     protected abstract List<List<CardDefinition>> GetRewardPools(Rng rng);
-    public abstract RngConsumptionSteps RngConsumptionSteps { get; }
     public virtual bool IsSeedValid(SeedSearchRequest request, string seed)
     {
         var requestedCardList = requestedCards

@@ -5,7 +5,6 @@ using FilterTheSpire2.Code.Config;
 using FilterTheSpire2.Code.Filters.RelicOutcomeFilters;
 using FilterTheSpire2.Code.Helpers;
 using FilterTheSpire2.Code.SeedSearcher;
-using MegaCrit.Sts2.Core.Helpers;
 using MegaCrit.Sts2.Core.Random;
 
 namespace FilterTheSpire2.Code.Filters;
@@ -13,11 +12,10 @@ namespace FilterTheSpire2.Code.Filters;
 public abstract class BaseCardTransformFilter(
     List<CardOptions> cardOptions,
     int transformCount,
-    RngConsumptionSteps? slot1Consumption = null) : INeowOutcomeFilter
+    PriorRngConsumption? slot1Consumption = null) : IFilter
 {
     protected abstract Rng GetTransformRng(ulong seed);
     protected abstract ImmutableArray<CardOptions> GetCardPool();
-    public abstract RngConsumptionSteps RngConsumptionSteps { get; }
 
     public bool IsSeedValid(SeedSearchRequest request, string seed)
     {
@@ -56,7 +54,7 @@ public abstract class BaseCardTransformFilter(
         return remaining.Count == 0;
     }
 
-    protected virtual void FastForward(Rng rng, RngConsumptionSteps consumptionSteps)
+    protected virtual void FastForward(Rng rng, PriorRngConsumption consumption)
     {
         // Subclasses override to fast-forward the specific stream this filter uses.
         // Default: no-op (streams that this filter doesn't need fast forwarding).

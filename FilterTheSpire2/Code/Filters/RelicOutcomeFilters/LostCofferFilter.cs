@@ -13,14 +13,11 @@ namespace FilterTheSpire2.Code.Filters.RelicOutcomeFilters;
 public class LostCofferFilter(
     List<CardOptions> cardOptions,
     PotionOptions potionOption,
-    RngConsumptionSteps? slot1Consumption = null)
+    PriorRngConsumption? slot1Consumption = null)
     : BaseCardRewardFilter(CardRarityOddsType.RegularEncounter, cardOptions, 1,
         slot1Consumption: slot1Consumption)
 {
-    private readonly RngConsumptionSteps? _slot1Consumption = slot1Consumption;
-
-    // The card reward consumes 9 Rewards calls. The potion then consumes 2 more.
-    public override RngConsumptionSteps RngConsumptionSteps => new(11, 0, 0);
+    private readonly PriorRngConsumption? _slot1Consumption = slot1Consumption;
     protected override bool IsCharacterRequired => true;
     protected override Rng GetRewardRng(ulong seed) => RngHelper.GetPlayerRngType(seed, PlayerRngType.Rewards);
     protected override Rng? GetCardPoolRng(ulong seed) => null;
@@ -39,7 +36,7 @@ public class LostCofferFilter(
             return true;
         }
 
-        var priorRewardsConsumption = (_slot1Consumption ?? RngConsumptionSteps.None).RewardsRngSteps;
+        var priorRewardsConsumption = (_slot1Consumption ?? PriorRngConsumption.None).RewardsRngSteps;
         var generated = PotionRewardSimulator.Generate(
             seed,
             new LostCofferPotionSource(priorRewardsConsumption));

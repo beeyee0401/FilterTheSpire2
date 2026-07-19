@@ -8,13 +8,13 @@ namespace FilterTheSpire2.Code.Filters.RelicOutcomeFilters;
 public class CapsuleRelicFilter(
     IReadOnlyList<RelicOptions> relicsToMatch,
     int generatedRelicCount,
-    RngConsumptionSteps? rngConsumption = null) : IFilter
+    PriorRngConsumption? rngConsumption = null) : IFilter
 {
-    private RngConsumptionSteps? _rngConsumption = rngConsumption;
+    private PriorRngConsumption? _rngConsumption = rngConsumption;
 
     public bool IsSeedValid(SeedSearchRequest request, string seed)
     {
-        _rngConsumption ??= RngConsumptionSteps.None;
+        _rngConsumption ??= PriorRngConsumption.None;
 
         var seedLong = RngHelper.GetSeedHash(seed);
 

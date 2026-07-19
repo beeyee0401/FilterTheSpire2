@@ -286,9 +286,9 @@ public static class FilterManager
         }
     }
 
-    private static INeowOutcomeFilter? BuildNeowOutcomeFilter(
+    private static IFilter? BuildNeowOutcomeFilter(
         NeowOptions option,
-        RngConsumptionSteps? slot1Consumption)
+        PriorRngConsumption? slot1Consumption)
     {
         return option switch
         {
@@ -317,7 +317,7 @@ public static class FilterManager
         };
     }
 
-    private static INeowOutcomeFilter? BuildLeafyPoulticeFilter(RngConsumptionSteps? slot1Consumption)
+    private static IFilter? BuildLeafyPoulticeFilter(PriorRngConsumption? slot1Consumption)
     {
         var cardOptions = new List<CardOptions>();
         if (FilterTheSpire2Config.LeafyPoulticeOption1 != CardOptions.Any)
@@ -335,7 +335,7 @@ public static class FilterManager
             : null;
     }
 
-    private static INeowOutcomeFilter? BuildKaleidoscopeFilter(RngConsumptionSteps? slot1Consumption)
+    private static IFilter? BuildKaleidoscopeFilter(PriorRngConsumption? slot1Consumption)
     {
         var cardOptions = new List<CardOptions>();
         if (FilterTheSpire2Config.KaleidoscopeOption1 != CardOptions.Any)
@@ -464,23 +464,23 @@ public static class FilterManager
         return (a & b) != RngStreams.None;
     }
 
-    private static RngConsumptionSteps GetDeterministicConsumption(NeowOptions option)
+    private static PriorRngConsumption GetDeterministicConsumption(NeowOptions option)
     {
         return option switch
         {
-            NeowOptions.SmallCapsule => new RngConsumptionSteps(1, 0, 0),
-            NeowOptions.LargeCapsule => new RngConsumptionSteps(2, 0, 0),
-            NeowOptions.LeadPaperweight => new RngConsumptionSteps(6, 0, 0),
+            NeowOptions.SmallCapsule => new PriorRngConsumption(1, 0, 0),
+            NeowOptions.LargeCapsule => new PriorRngConsumption(2, 0, 0),
+            NeowOptions.LeadPaperweight => new PriorRngConsumption(6, 0, 0),
             // 9 for card reward, 2 for potion
-            NeowOptions.LostCoffer => new RngConsumptionSteps(11, 0, 0),
-            NeowOptions.Kaleidoscope => new RngConsumptionSteps(18, 0, 6),
-            NeowOptions.ArcaneScroll => new RngConsumptionSteps(1, 0, 0),
-            NeowOptions.LeafyPoultice => new RngConsumptionSteps(0, 2, 0),
-            NeowOptions.NewLeaf => new RngConsumptionSteps(0, 0, 1),
-            NeowOptions.PhialHolster => new RngConsumptionSteps(0, 0, 0, 4),
+            NeowOptions.LostCoffer => new PriorRngConsumption(11, 0, 0),
+            NeowOptions.Kaleidoscope => new PriorRngConsumption(18, 0, 6),
+            NeowOptions.ArcaneScroll => new PriorRngConsumption(1, 0, 0),
+            NeowOptions.LeafyPoultice => new PriorRngConsumption(0, 2, 0),
+            NeowOptions.NewLeaf => new PriorRngConsumption(0, 0, 1),
+            NeowOptions.PhialHolster => new PriorRngConsumption(0, 0, 0, 4),
 
-            NeowOptions.ScrollBoxes => RngConsumptionSteps.None,
-            _ => RngConsumptionSteps.None
+            NeowOptions.ScrollBoxes => PriorRngConsumption.None,
+            _ => PriorRngConsumption.None
         };
     }
     
@@ -532,11 +532,11 @@ public static class FilterManager
         }
     }
 
-    private static RngConsumptionSteps GetCapsulePriorConsumption()
+    private static PriorRngConsumption GetCapsulePriorConsumption()
     {
         if (FilterTheSpire2Config.NeowOptions != NeowOptions.NeowsBones)
         {
-            return RngConsumptionSteps.None;
+            return PriorRngConsumption.None;
         }
 
         var configuredOption1 = FilterTheSpire2Config.NeowsBonesRelicOption1;
@@ -594,11 +594,11 @@ public static class FilterManager
         };
     }
 
-    private static RngConsumptionSteps AddConsumption(
-        RngConsumptionSteps a,
-        RngConsumptionSteps b)
+    private static PriorRngConsumption AddConsumption(
+        PriorRngConsumption a,
+        PriorRngConsumption b)
     {
-        return new RngConsumptionSteps(
+        return new PriorRngConsumption(
             RewardsRngSteps: a.RewardsRngSteps + b.RewardsRngSteps,
             TransformationsRngSteps: a.TransformationsRngSteps + b.TransformationsRngSteps,
             NicheRngSteps: a.NicheRngSteps + b.NicheRngSteps,
