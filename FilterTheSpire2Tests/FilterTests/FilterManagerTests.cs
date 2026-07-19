@@ -483,7 +483,7 @@ public class FilterManagerTests
     {
         FilterTheSpire2Config.Act1Boss = BossOptions.Vantom;
         FilterTheSpire2Config.Act2Boss = BossOptions.KaiserCrab;
-        FilterTheSpire2Config.Act3Boss = BossOptions.Queen;
+        FilterTheSpire2Config.Act3FirstBoss = BossOptions.Queen;
 
         var filters = FilterManager.CreateFiltersFromSettings();
 
@@ -496,6 +496,16 @@ public class FilterManagerTests
         var filters = FilterManager.CreateFiltersFromSettings();
 
         Assert.IsFalse(filters.OfType<BossFilter>().Any());
+    }
+    
+    [TestMethod]
+    public void CreateFiltersFromSettings_WhenAct3SecondBossConfigured_AddsSecondBossFilter()
+    {
+        FilterTheSpire2Config.Act3SecondBoss = BossOptions.Queen;
+
+        var filters = FilterManager.CreateFiltersFromSettings();
+
+        Assert.AreEqual(1, filters.OfType<BossFilter>().Count());
     }
 
     #endregion

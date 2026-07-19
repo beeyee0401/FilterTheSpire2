@@ -68,7 +68,8 @@ internal static class FilterTestHelpers
         
         FilterTheSpire2Config.Act1Boss = BossOptions.Any;
         FilterTheSpire2Config.Act2Boss = BossOptions.Any;
-        FilterTheSpire2Config.Act3Boss = BossOptions.Any;
+        FilterTheSpire2Config.Act3FirstBoss = BossOptions.Any;
+        FilterTheSpire2Config.Act3SecondBoss = BossOptions.Any;
     }
     
     private static readonly Dictionary<

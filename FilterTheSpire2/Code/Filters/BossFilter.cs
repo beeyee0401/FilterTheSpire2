@@ -1,13 +1,28 @@
 using FilterTheSpire2.Code.Acts;
 using FilterTheSpire2.Code.SeedSearcher;
+using MegaCrit.Sts2.Core.Entities.Ascension;
 
 namespace FilterTheSpire2.Code.Filters;
 
-public class BossFilter(BossOptions bossOption, int actNum) : IFilter
+/// <param name="bossOption">The boss to match.</param>
+/// <param name="actNum">The act to check. Ignored when <paramref name="isSecondBoss"/> is true, since only
+/// the last act (currently always Act 3) can roll a second boss.</param>
+/// <param name="isSecondBoss">If true, checks the Double Boss ascension's second-boss roll instead of the
+/// act's normal (first) boss.</param>
+public class BossFilter(BossOptions bossOption, int actNum, bool isSecondBoss = false) : IFilter
 {
     public bool IsSeedValid(SeedSearchRequest request, string seed)
     {
-        var rollResult = ActGenerator.GetActRollResult(seed);
-        return rollResult.Bosses[actNum - 1] == bossOption;
+        // The second boss only exists at A10
+        if (isSecondBoss && request.AscensionLevel < AscensionLevel.DoubleBoss)
+        {
+            return true;
+        }
+
+        var rollResult = ActGenerator.GetActRollResult(seed, request.AscensionLevel);
+
+        return isSecondBoss
+            ? rollResult.SecondBoss == bossOption
+            : rollResult.Bosses[actNum - 1] == bossOption;
     }
 }

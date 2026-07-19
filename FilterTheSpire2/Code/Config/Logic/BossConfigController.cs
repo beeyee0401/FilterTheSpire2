@@ -9,33 +9,47 @@ namespace FilterTheSpire2.Code.Config.Logic;
 
 public static class BossConfigController
 {
-    private static readonly Dictionary<int, List<NConfigDropdownItem.ItemData>> MasterItems = new();
-    private static readonly Dictionary<int, NConfigDropdown> BossDropdowns = new();
+    private static readonly Dictionary<string, List<NConfigDropdownItem.ItemData>> MasterItems = new();
+    private static readonly Dictionary<string, NConfigDropdown> BossDropdowns = new();
+    private static readonly Dictionary<int, NConfigDropdown> LocationDropdowns = new();
+
+    // Every boss dropdown, the act it belongs to, and (if any) the sibling property it can't share
+    // a value with. Add new slots here to extend the pattern (e.g. a future Act2SecondBoss).
+    private static readonly (string PropName, int Act, string? SiblingPropName)[] BossSlots =
+    [
+        (nameof(FilterTheSpire2Config.Act1Boss), 1, null),
+        (nameof(FilterTheSpire2Config.Act2Boss), 2, null),
+        (nameof(FilterTheSpire2Config.Act3FirstBoss), 3, nameof(FilterTheSpire2Config.Act3SecondBoss)),
+        (nameof(FilterTheSpire2Config.Act3SecondBoss), 3, nameof(FilterTheSpire2Config.Act3FirstBoss)),
+    ];
 
     public static void SetupBossDropdownConfig(Control optionContainer)
     {
         MasterItems.Clear();
         BossDropdowns.Clear();
+        LocationDropdowns.Clear();
 
         for (var act = 1; act <= 3; act++)
         {
-            RegisterBossDropdown(optionContainer, act);
-            WrapLocationDropdown(optionContainer, act);
-            RefreshBossDropdown(act);
+            SetupLocationDropdown(optionContainer, act);
+        }
+
+        foreach (var (propName, _, _) in BossSlots)
+        {
+            RegisterBossDropdown(optionContainer, propName);
+        }
+
+        foreach (var (propName, act, siblingPropName) in BossSlots)
+        {
+            RefreshBossDropdown(propName, act, siblingPropName);
         }
     }
 
-    private static void RegisterBossDropdown(Control optionContainer, int act)
-    {
-        var (dropdown, items) = ConfigDropdownUtilities.GetDropdownListItems(optionContainer, $"Act{act}Boss");
-
-        BossDropdowns[act] = dropdown;
-        MasterItems[act] = items.ToList();
-    }
-
-    private static void WrapLocationDropdown(Control optionContainer, int act)
+    private static void SetupLocationDropdown(Control optionContainer, int act)
     {
         var (dropdown, items) = ConfigDropdownUtilities.GetDropdownListItems(optionContainer, $"Act{act}Locations");
+
+        LocationDropdowns[act] = dropdown;
 
         var rebuilt = new List<NConfigDropdownItem.ItemData>();
         foreach (var item in items)
@@ -44,35 +58,108 @@ public static class BossConfigController
             rebuilt.Add(new NConfigDropdownItem.ItemData(item.Text, item.Value, () =>
             {
                 originalOnSet.Invoke();
-                RefreshBossDropdown(act);
+                RefreshAllBossDropdownsForAct(act);
             }));
         }
 
         ConfigDropdownUtilities.RefreshDropdownItems(dropdown, rebuilt);
     }
 
-    private static void RefreshBossDropdown(int act)
+    private static void RegisterBossDropdown(Control optionContainer, string propName)
     {
-        if (!BossDropdowns.TryGetValue(act, out var dropdown) || !MasterItems.TryGetValue(act, out var source))
+        var (dropdown, items) = ConfigDropdownUtilities.GetDropdownListItems(optionContainer, propName);
+
+        BossDropdowns[propName] = dropdown;
+        MasterItems[propName] = items.ToList();
+    }
+
+    private static void RefreshAllBossDropdownsForAct(int act)
+    {
+        foreach (var (propName, slotAct, siblingPropName) in BossSlots)
+        {
+            if (slotAct == act)
+            {
+                RefreshBossDropdown(propName, slotAct, siblingPropName);
+            }
+        }
+    }
+
+    private static void RefreshBossDropdown(string propName, int act, string? siblingPropName)
+    {
+        if (!BossDropdowns.TryGetValue(propName, out var dropdown) || !MasterItems.TryGetValue(propName, out var source))
         {
             return;
         }
 
         var currentLocation = GetLocationForAct(act);
         var validBosses = BossRules.GetValidBosses(act, currentLocation).ToHashSet();
+        var siblingValue = siblingPropName != null ? GetBossValue(siblingPropName) : BossOptions.Any;
 
-        var filtered = source.Where(item =>
-        {
-            var value = (BossOptions)item.Value!;
-            return value == BossOptions.Any || validBosses.Contains(value);
-        }).ToList();
+        var filtered = source
+            .Where(item =>
+            {
+                var value = (BossOptions)item.Value!;
+                if (value == BossOptions.Any) return true;
+                if (!validBosses.Contains(value)) return false;
+                if (siblingValue != BossOptions.Any && value == siblingValue) return false;
+                return true;
+            })
+            .Select(item => WrapBossItem(item, propName, act, siblingPropName))
+            .ToList();
 
-        if (IsCurrentSelectionInvalid(act, filtered))
+        if (IsCurrentSelectionInvalid(propName, filtered))
         {
-            ResetBossOption(act, dropdown, filtered);
+            ResetBossOption(propName, dropdown, filtered);
         }
 
         ConfigDropdownUtilities.RefreshDropdownItems(dropdown, filtered);
+    }
+
+    private static NConfigDropdownItem.ItemData WrapBossItem(
+        NConfigDropdownItem.ItemData item,
+        string propName,
+        int act,
+        string? siblingPropName)
+    {
+        var originalOnSet = item.OnSet;
+        return new NConfigDropdownItem.ItemData(item.Text, item.Value, () =>
+        {
+            originalOnSet.Invoke();
+
+            var selected = (BossOptions)item.Value!;
+            SyncLocationToBoss(act, selected);
+
+            // Re-filter the sibling slot so it can no longer target the same boss (e.g. Act 3
+            // first/second boss can't both be set to the same value).
+            if (siblingPropName != null)
+            {
+                RefreshBossDropdown(siblingPropName, act, propName);
+            }
+        });
+    }
+
+    private static void SyncLocationToBoss(int act, BossOptions selectedBoss)
+    {
+        if (selectedBoss == BossOptions.Any)
+        {
+            return;
+        }
+
+        var requiredLocation = BossRules.GetLocationForBoss(selectedBoss);
+        if (requiredLocation == ActLocations.Any || GetLocationForAct(act) == requiredLocation)
+        {
+            return;
+        }
+
+        SetLocationForAct(act, requiredLocation);
+
+        if (LocationDropdowns.TryGetValue(act, out var locationDropdown))
+        {
+            locationDropdown.SetFromProperty();
+        }
+
+        RefreshAllBossDropdownsForAct(act);
+        ModConfig.SaveDebounced<FilterTheSpire2Config>();
     }
 
     private static ActLocations GetLocationForAct(int act) => act switch
@@ -83,33 +170,37 @@ public static class BossConfigController
         _ => ActLocations.Any
     };
 
-    private static BossOptions GetBossForAct(int act) => act switch
-    {
-        1 => FilterTheSpire2Config.Act1Boss,
-        2 => FilterTheSpire2Config.Act2Boss,
-        3 => FilterTheSpire2Config.Act3Boss,
-        _ => BossOptions.Any
-    };
-
-    private static void SetBossForAct(int act, BossOptions value)
+    private static void SetLocationForAct(int act, ActLocations value)
     {
         switch (act)
         {
-            case 1: FilterTheSpire2Config.Act1Boss = value; break;
-            case 2: FilterTheSpire2Config.Act2Boss = value; break;
-            case 3: FilterTheSpire2Config.Act3Boss = value; break;
+            case 1: FilterTheSpire2Config.Act1Locations = value; break;
+            case 2: FilterTheSpire2Config.Act2Locations = value; break;
+            case 3: FilterTheSpire2Config.Act3Locations = value; break;
         }
     }
 
-    private static bool IsCurrentSelectionInvalid(int act, List<NConfigDropdownItem.ItemData> validItems)
+    private static BossOptions GetBossValue(string propName)
     {
-        var currentValue = GetBossForAct(act);
+        var property = typeof(FilterTheSpire2Config).GetCachedProperty(propName, BindingFlags.Public | BindingFlags.Static);
+        return (BossOptions)property!.GetValue(null)!;
+    }
+
+    private static void SetBossValue(string propName, BossOptions value)
+    {
+        var property = typeof(FilterTheSpire2Config).GetCachedProperty(propName, BindingFlags.Public | BindingFlags.Static);
+        property?.SetValue(null, value);
+    }
+
+    private static bool IsCurrentSelectionInvalid(string propName, List<NConfigDropdownItem.ItemData> validItems)
+    {
+        var currentValue = GetBossValue(propName);
         return currentValue != BossOptions.Any && validItems.All(i => !Equals(i.Value, currentValue));
     }
 
-    private static void ResetBossOption(int act, NConfigDropdown dropdown, List<NConfigDropdownItem.ItemData> filteredItems)
+    private static void ResetBossOption(string propName, NConfigDropdown dropdown, List<NConfigDropdownItem.ItemData> filteredItems)
     {
-        SetBossForAct(act, BossOptions.Any);
+        SetBossValue(propName, BossOptions.Any);
 
         var labelField = dropdown.GetType()
             .GetCachedField("_currentOptionLabel", BindingFlags.NonPublic | BindingFlags.Instance);

@@ -118,7 +118,11 @@ public class FilterTheSpire2Config : SimpleModConfig
     public static ActLocations Act3Locations { get; set; } = ActLocations.Any;
     
     [ConfigDropdownOverrideLocalization("BOSS_OPTIONS")]
-    public static BossOptions Act3Boss { get; set; } = BossOptions.Any;
+    public static BossOptions Act3FirstBoss { get; set; } = BossOptions.Any;
+    
+    [ConfigHoverTip]
+    [ConfigDropdownOverrideLocalization("BOSS_OPTIONS")]
+    public static BossOptions Act3SecondBoss { get; set; } = BossOptions.Any;
     
     public static Ancient Act3Ancient { get; set; } = Ancient.Any;
     

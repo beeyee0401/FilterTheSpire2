@@ -561,9 +561,10 @@
 
   "FILTERTHESPIRE2-ACT1_BOSS.title": "Act 1 boss",
   "FILTERTHESPIRE2-ACT2_BOSS.title": "Act 2 boss",
-  "FILTERTHESPIRE2-ACT3_BOSS.title": "Act 3 boss",
+  "FILTERTHESPIRE2-ACT3_FIRST_BOSS.title": "Act 3 boss #1",
+  "FILTERTHESPIRE2-ACT3_SECOND_BOSS.title": "Act 3 boss #2",
+  "FILTERTHESPIRE2-ACT3_SECOND_BOSS.hover.desc": "Only checked at Ascension 10",
 
-  "FILTERTHESPIRE2-BOSS_OPTIONS.title": "Boss options",
   "FILTERTHESPIRE2-BOSS_OPTIONS.Vantom": "Vantom",
   "FILTERTHESPIRE2-BOSS_OPTIONS.CeremonialBeast": "Ceremonial Beast",
   "FILTERTHESPIRE2-BOSS_OPTIONS.TheKin": "The Kin",

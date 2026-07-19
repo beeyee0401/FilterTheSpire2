@@ -36,4 +36,17 @@ public static class BossRules
             ? GetPossibleBosses(actNum)
             : GetBossesForLocation(selectedLocation);
     }
+    
+    public static ActLocations GetLocationForBoss(BossOptions boss)
+    {
+        foreach (var (location, bosses) in BossOrderByLocation)
+        {
+            if (bosses.Contains(boss))
+            {
+                return location;
+            }
+        }
+
+        return ActLocations.Any;
+    }
 }

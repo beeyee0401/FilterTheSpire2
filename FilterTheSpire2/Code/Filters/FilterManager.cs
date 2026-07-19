@@ -383,9 +383,14 @@ public static class FilterManager
             filters.Add(new BossFilter(FilterTheSpire2Config.Act2Boss, 2));
         }
 
-        if (FilterTheSpire2Config.Act3Boss != BossOptions.Any)
+        if (FilterTheSpire2Config.Act3FirstBoss != BossOptions.Any)
         {
-            filters.Add(new BossFilter(FilterTheSpire2Config.Act3Boss, 3));
+            filters.Add(new BossFilter(FilterTheSpire2Config.Act3FirstBoss, 3));
+        }
+
+        if (FilterTheSpire2Config.Act3SecondBoss != BossOptions.Any)
+        {
+            filters.Add(new BossFilter(FilterTheSpire2Config.Act3SecondBoss, 3, isSecondBoss: true));
         }
     }
 
