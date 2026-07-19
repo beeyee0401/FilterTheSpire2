@@ -65,6 +65,10 @@ internal static class FilterTestHelpers
         FilterTheSpire2Config.Act1Locations = ActLocations.Any;
         FilterTheSpire2Config.Act2Locations = ActLocations.Any;
         FilterTheSpire2Config.Act3Locations = ActLocations.Any;
+        
+        FilterTheSpire2Config.Act1Boss = BossOptions.Any;
+        FilterTheSpire2Config.Act2Boss = BossOptions.Any;
+        FilterTheSpire2Config.Act3Boss = BossOptions.Any;
     }
     
     private static readonly Dictionary<

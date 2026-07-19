@@ -24,6 +24,7 @@ public static class FilterManager
         var filters = new List<IFilter>();
 
         HandleAncientFilters(filters);
+        AddBossFilters(filters);
         AddNeowRelicOutcomeFilters(filters);
         AddCapsuleRelicOutcomeFilter(filters);
         AddPhialHolsterPotionFilter(filters);
@@ -367,6 +368,24 @@ public static class FilterManager
         if (FilterTheSpire2Config.Act3Locations != ActLocations.Any)
         {
             filters.Add(new ActLocationFilter(FilterTheSpire2Config.Act3Locations, 3));
+        }
+    }
+    
+    private static void AddBossFilters(List<IFilter> filters)
+    {
+        if (FilterTheSpire2Config.Act1Boss != BossOptions.Any)
+        {
+            filters.Add(new BossFilter(FilterTheSpire2Config.Act1Boss, 1));
+        }
+
+        if (FilterTheSpire2Config.Act2Boss != BossOptions.Any)
+        {
+            filters.Add(new BossFilter(FilterTheSpire2Config.Act2Boss, 2));
+        }
+
+        if (FilterTheSpire2Config.Act3Boss != BossOptions.Any)
+        {
+            filters.Add(new BossFilter(FilterTheSpire2Config.Act3Boss, 3));
         }
     }
 

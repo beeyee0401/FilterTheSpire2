@@ -2,7 +2,7 @@
   "FILTERTHESPIRE2.mod_title": "Filter the Spire 2",
   "FILTERTHESPIRE2-CHARACTER.hover.desc": "Only needed if you want to set filters for character specific relics or cards",
   
-  "FILTERTHESPIRE2-NEOW_SECTION.title": "Neow filters",
+  "FILTERTHESPIRE2-ACT1_SECTION.title": "Act 1 filters",
   "FILTERTHESPIRE2-ACT2_SECTION.title": "Act 2 filters",
   "FILTERTHESPIRE2-ACT3_SECTION.title": "Act 3 filters",
   "FILTERTHESPIRE2-RELICS_SECTION.title": "General relic filters",
@@ -557,5 +557,23 @@
   
   "FILTERTHESPIRE2-ACT1_LOCATIONS.title": "Act 1 location",
   "FILTERTHESPIRE2-ACT2_LOCATIONS.title": "Act 2 location",
-  "FILTERTHESPIRE2-ACT3_LOCATIONS.title": "Act 3 location"
+  "FILTERTHESPIRE2-ACT3_LOCATIONS.title": "Act 3 location",
+
+  "FILTERTHESPIRE2-ACT1_BOSS.title": "Act 1 boss",
+  "FILTERTHESPIRE2-ACT2_BOSS.title": "Act 2 boss",
+  "FILTERTHESPIRE2-ACT3_BOSS.title": "Act 3 boss",
+
+  "FILTERTHESPIRE2-BOSS_OPTIONS.title": "Boss options",
+  "FILTERTHESPIRE2-BOSS_OPTIONS.Vantom": "Vantom",
+  "FILTERTHESPIRE2-BOSS_OPTIONS.CeremonialBeast": "Ceremonial Beast",
+  "FILTERTHESPIRE2-BOSS_OPTIONS.TheKin": "The Kin",
+  "FILTERTHESPIRE2-BOSS_OPTIONS.WaterfallGiant": "Waterfall Giant",
+  "FILTERTHESPIRE2-BOSS_OPTIONS.SoulFysh": "Soul Fysh",
+  "FILTERTHESPIRE2-BOSS_OPTIONS.LagavulinMatriarch": "Lagavulin Matriarch",
+  "FILTERTHESPIRE2-BOSS_OPTIONS.KaiserCrab": "Kaiser Crab",
+  "FILTERTHESPIRE2-BOSS_OPTIONS.KnowledgeDemon": "Knowledge Demon",
+  "FILTERTHESPIRE2-BOSS_OPTIONS.TheInsatiable": "The Insatiable",
+  "FILTERTHESPIRE2-BOSS_OPTIONS.Queen": "Queen",
+  "FILTERTHESPIRE2-BOSS_OPTIONS.TestSubject": "Test Subject",
+  "FILTERTHESPIRE2-BOSS_OPTIONS.Aeonglass": "Aeonglass"
 }

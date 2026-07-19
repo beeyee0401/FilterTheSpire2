@@ -17,7 +17,12 @@ public class FilterTheSpire2Config : SimpleModConfig
     [ConfigHoverTip]
     public static CharacterOptions Character { get; set; } = CharacterOptions.Any;
     
-    [ConfigSection("NeowSection")] 
+    [ConfigSection("Act1Section")] 
+    public static ActLocations Act1Locations { get; set; } = ActLocations.Any;
+    
+    [ConfigDropdownOverrideLocalization("BOSS_OPTIONS")]
+    public static BossOptions Act1Boss { get; set; } = BossOptions.Any;
+    
     public static NeowOptions NeowOptions { get; set; } = NeowOptions.Any;
     
     [ConfigHideInUI]
@@ -90,6 +95,11 @@ public class FilterTheSpire2Config : SimpleModConfig
     public static PotionOptions PhialHolsterPotionOption2 { get; set; } = PotionOptions.Any;
     
     [ConfigSection("Act2Section")]
+    public static ActLocations Act2Locations { get; set; } = ActLocations.Any;
+    
+    [ConfigDropdownOverrideLocalization("BOSS_OPTIONS")]
+    public static BossOptions Act2Boss { get; set; } = BossOptions.Any;
+    
     public static Ancient Act2Ancient { get; set; } = Ancient.Any;
     
     [ConfigVisibleIf(nameof(Act2Ancient), Ancient.Orobas)]
@@ -105,6 +115,11 @@ public class FilterTheSpire2Config : SimpleModConfig
     public static TezcataraOptions TezcataraOptions { get; set; } = TezcataraOptions.Any;
     
     [ConfigSection("Act3Section")]
+    public static ActLocations Act3Locations { get; set; } = ActLocations.Any;
+    
+    [ConfigDropdownOverrideLocalization("BOSS_OPTIONS")]
+    public static BossOptions Act3Boss { get; set; } = BossOptions.Any;
+    
     public static Ancient Act3Ancient { get; set; } = Ancient.Any;
     
     [ConfigVisibleIf(nameof(Act3Ancient), Ancient.Nonupeipe)]
@@ -134,13 +149,6 @@ public class FilterTheSpire2Config : SimpleModConfig
     
     [ConfigDropdownOverrideLocalization("RELIC_OPTIONS")]
     public static RelicOptions ShopRelic { get; set; } = RelicOptions.Any;
-
-    [ConfigSection("ActLocationsSection")]
-    public static ActLocations Act1Locations { get; set; } = ActLocations.Any;
-
-    public static ActLocations Act2Locations { get; set; } = ActLocations.Any;
-
-    public static ActLocations Act3Locations { get; set; } = ActLocations.Any;
     
     public static ColorRect CreateCardDivider() => CreateDividerControl();
 
@@ -161,7 +169,7 @@ public class FilterTheSpire2Config : SimpleModConfig
         {
             var (dropdown, items) = ConfigDropdownUtilities.GetDropdownListItems(optionContainer, $"%Act{i}Locations");
             var allActLocations = items.ToList();
-            
+
             var newItems = new List<NConfigDropdownItem.ItemData>();
             foreach (var actLocationItem in allActLocations)
             {
@@ -171,7 +179,7 @@ public class FilterTheSpire2Config : SimpleModConfig
                     newItems.Add(actLocationItem);
                     continue;
                 }
-                
+
                 if (ActLocationRules.IsValidForAct(i, actLocation))
                 {
                     newItems.Add(actLocationItem);
@@ -192,6 +200,7 @@ public class FilterTheSpire2Config : SimpleModConfig
         MultiActAncientController.SetupMultiActAncientConfig(optionContainer);
         CharacterConfigController.SetupCharacterDropdownConfig(optionContainer);
         NeowConfigController.SetupNeowDropdownConfig(optionContainer);
+        BossConfigController.SetupBossDropdownConfig(optionContainer);
     }
     
     public static bool ShouldShowNeowOutcomeOption(NeowOptions option)

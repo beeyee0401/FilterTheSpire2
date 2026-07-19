@@ -1,3 +1,4 @@
+using FilterTheSpire2.Code.Acts;
 using FilterTheSpire2.Code.Ancients.Config;
 using FilterTheSpire2.Code.Cards;
 using FilterTheSpire2.Code.Characters;
@@ -471,6 +472,30 @@ public class FilterManagerTests
         var filters = FilterManager.CreateFiltersFromSettings();
 
         Assert.AreEqual(1, filters.OfType<CapsuleRelicFilter>().Count());
+    }
+
+    #endregion
+
+    #region Act boss tests
+
+    [TestMethod]
+    public void CreateFiltersFromSettings_WhenBossesConfigured_AddsBossFilterPerAct()
+    {
+        FilterTheSpire2Config.Act1Boss = BossOptions.Vantom;
+        FilterTheSpire2Config.Act2Boss = BossOptions.KaiserCrab;
+        FilterTheSpire2Config.Act3Boss = BossOptions.Queen;
+
+        var filters = FilterManager.CreateFiltersFromSettings();
+
+        Assert.AreEqual(3, filters.OfType<BossFilter>().Count());
+    }
+
+    [TestMethod]
+    public void CreateFiltersFromSettings_WhenBossesAreAny_DoesNotAddBossFilter()
+    {
+        var filters = FilterManager.CreateFiltersFromSettings();
+
+        Assert.IsFalse(filters.OfType<BossFilter>().Any());
     }
 
     #endregion

@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using FilterTheSpire2.Code.Ancients.Config;
 using FilterTheSpire2.Code.Helpers;
 using MegaCrit.Sts2.Core.Entities.Encounters;
@@ -14,6 +15,8 @@ public class ActDefinition
 
     public required SimpleEncounterDef[] EliteEncounters { get; init; }
 
+    public required ImmutableArray<BossOptions> Bosses { get; init; }
+    
     public required int EventCount { get; init; }
 
     public required int WeakEncounterCount { get; init; }
@@ -68,7 +71,9 @@ public class ActDefinition
             new SimpleEncounterDef(), // BygoneEffigyElite
             new SimpleEncounterDef(), // ByrdonisElite
             new SimpleEncounterDef(), // PhrogParasiteElite
-        ]
+        ],
+        
+        Bosses = [BossOptions.CeremonialBeast, BossOptions.TheKin, BossOptions.Vantom]
     };
     
      public static readonly ActDefinition Underdocks = new()
@@ -109,7 +114,9 @@ public class ActDefinition
             new SimpleEncounterDef(), // PhantasmalGardenersElite
             new SimpleEncounterDef(), // SkulkingColonyElite
             new SimpleEncounterDef(), // TerrorEelElite
-        ]
+        ],
+        
+        Bosses = [BossOptions.LagavulinMatriarch, BossOptions.SoulFysh, BossOptions.WaterfallGiant]
     };
 
     public static readonly ActDefinition Hive = new()
@@ -152,7 +159,9 @@ public class ActDefinition
             new SimpleEncounterDef(), // DecimillipedeElite
             new SimpleEncounterDef(), // EntomancerElite
             new SimpleEncounterDef(), // InfestedPrismsElite
-        ]
+        ],
+        
+        Bosses = [BossOptions.KaiserCrab, BossOptions.KnowledgeDemon, BossOptions.TheInsatiable]
     };
 
     public static readonly ActDefinition Glory = new()
@@ -193,7 +202,9 @@ public class ActDefinition
             new SimpleEncounterDef(EncounterTag.Knights), // KnightsElite
             new SimpleEncounterDef(),                     // MechaKnightElite
             new SimpleEncounterDef(),                     // SoulNexusElite
-        ]
+        ],
+        
+        Bosses = [BossOptions.Aeonglass, BossOptions.Queen, BossOptions.TestSubject]
     };
     
     public ActDefinition Clone()
@@ -204,6 +215,7 @@ public class ActDefinition
             WeakEncounters = WeakEncounters,
             RegularEncounters = RegularEncounters,
             EliteEncounters = EliteEncounters,
+            Bosses = Bosses,
             EventCount = EventCount,
             WeakEncounterCount = WeakEncounterCount,
             RoomCount = RoomCount
