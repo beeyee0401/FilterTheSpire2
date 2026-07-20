@@ -207,7 +207,7 @@ public class FilterTheSpire2Config : SimpleModConfig
         BossConfigController.SetupBossDropdownConfig(optionContainer);
     }
     
-    public static bool ShouldShowNeowOutcomeOption(NeowOptions option)
+    public static bool IsCharacterDependentNeowOutcomeActive(NeowOptions option)
     {
         return Character != CharacterOptions.Any && 
                (NeowOptions == option ||
@@ -220,15 +220,5 @@ public class FilterTheSpire2Config : SimpleModConfig
         return Character != CharacterOptions.Any && 
                Act2Ancient == Ancient.Orobas && 
                OrobasOptions == OrobasOptions.SeaGlass;
-    }
-    
-    public static bool IsCapsuleSelected()
-    {
-        return NeowOptions is NeowOptions.SmallCapsule or NeowOptions.LargeCapsule;
-    }
-
-    public static bool ShouldShowCapsuleRelicOption2()
-    {
-        return NeowOptions == NeowOptions.LargeCapsule;
     }
 }

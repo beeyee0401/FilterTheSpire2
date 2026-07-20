@@ -14,7 +14,7 @@ public static class BossConfigController
     private static readonly Dictionary<int, NConfigDropdown> LocationDropdowns = new();
 
     // Every boss dropdown, the act it belongs to, and (if any) the sibling property it can't share
-    // a value with. Add new slots here to extend the pattern (e.g. a future Act2SecondBoss).
+    // a value with.
     private static readonly (string PropName, int Act, string? SiblingPropName)[] BossSlots =
     [
         (nameof(FilterTheSpire2Config.Act1Boss), 1, null),
@@ -174,9 +174,21 @@ public static class BossConfigController
     {
         switch (act)
         {
-            case 1: FilterTheSpire2Config.Act1Locations = value; break;
-            case 2: FilterTheSpire2Config.Act2Locations = value; break;
-            case 3: FilterTheSpire2Config.Act3Locations = value; break;
+            case 1:
+            {
+                FilterTheSpire2Config.Act1Locations = value;
+                break;
+            }
+            case 2:
+            {
+                FilterTheSpire2Config.Act2Locations = value;
+                break;
+            }
+            case 3:
+            {
+                FilterTheSpire2Config.Act3Locations = value;
+                break;
+            }
         }
     }
 

@@ -161,38 +161,6 @@ public static class FilterManager
                );
     }
 
-    // private static void AddCapsuleRelicOutcomeFilter(List<IFilter> filters)
-    // {
-    //     var generatedRelicCount = GetTotalCapsuleRelicCount();
-    //
-    //     if (generatedRelicCount == 0)
-    //     {
-    //         return;
-    //     }
-    //
-    //     var selectedRelics = new List<RelicOptions>
-    //     {
-    //         FilterTheSpire2Config.CapsuleRelicOption1,
-    //         FilterTheSpire2Config.CapsuleRelicOption2,
-    //         FilterTheSpire2Config.CapsuleRelicOption3,
-    //     };
-    //
-    //     selectedRelics = selectedRelics
-    //         .Take(generatedRelicCount)
-    //         .Where(relic => relic != RelicOptions.Any)
-    //         .Distinct()
-    //         .ToList();
-    //
-    //     if (selectedRelics.Count == 0)
-    //     {
-    //         return;
-    //     }
-    //
-    //     filters.Add(new CapsuleRelicFilter(
-    //         selectedRelics,
-    //         generatedRelicCount));
-    // }
-
     /// <summary>
     ///     For specifically the outcome of what Neow relic is chosen. Such as card transforms or specific relics
     /// </summary>

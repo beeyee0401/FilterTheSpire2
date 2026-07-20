@@ -7,12 +7,12 @@ namespace FilterTheSpire2.Code.Cards;
 
 public class CardRarityOdds(Rng rng, float initialOffset = -0.05f)
 {
-    private const float regularUncommonOdds = 0.37f;
-    private const float eliteUncommonOdds = 0.4f;
-    private const float bossCommonOdds = 0.0f;
-    private const float bossUncommonOdds = 0.0f;
-    private const float bossRareOdds = 1f;
-    private const float shopUncommonOdds = 0.37f;
+    private const float RegularUncommonOdds = 0.37f;
+    private const float EliteUncommonOdds = 0.4f;
+    private const float BossCommonOdds = 0.0f;
+    private const float BossUncommonOdds = 0.0f;
+    private const float BossRareOdds = 1f;
+    private const float ShopUncommonOdds = 0.37f;
     private const float _baseRarityOffset = -0.05f;
     private const float _maxRarityOffset = 0.4f;
 
@@ -81,28 +81,28 @@ public class CardRarityOdds(Rng rng, float initialOffset = -0.05f)
             CardRarityOddsType.RegularEncounter => rarity switch
             {
                 CardRarity.Common => GetRegularCommonOdds(ascensionLevel),
-                CardRarity.Uncommon => regularUncommonOdds,
+                CardRarity.Uncommon => RegularUncommonOdds,
                 CardRarity.Rare => GetRegularRareOdds(ascensionLevel),
                 _ => throw new ArgumentOutOfRangeException(nameof(rarity))
             },
             CardRarityOddsType.EliteEncounter => rarity switch
             {
                 CardRarity.Common => GetEliteCommonOdds(ascensionLevel),
-                CardRarity.Uncommon => eliteUncommonOdds,
+                CardRarity.Uncommon => EliteUncommonOdds,
                 CardRarity.Rare => GetEliteRareOdds(ascensionLevel),
                 _ => throw new ArgumentOutOfRangeException(nameof(rarity))
             },
             CardRarityOddsType.BossEncounter => rarity switch
             {
-                CardRarity.Common => bossCommonOdds,
-                CardRarity.Uncommon => bossUncommonOdds,
-                CardRarity.Rare => bossRareOdds,
+                CardRarity.Common => BossCommonOdds,
+                CardRarity.Uncommon => BossUncommonOdds,
+                CardRarity.Rare => BossRareOdds,
                 _ => throw new ArgumentOutOfRangeException(nameof(rarity))
             },
             CardRarityOddsType.Shop => rarity switch
             {
                 CardRarity.Common => GetShopCommonOdds(ascensionLevel),
-                CardRarity.Uncommon => shopUncommonOdds,
+                CardRarity.Uncommon => ShopUncommonOdds,
                 CardRarity.Rare => GetShopRareOdds(ascensionLevel),
                 _ => throw new ArgumentOutOfRangeException(nameof(rarity))
             },

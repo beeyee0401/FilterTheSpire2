@@ -56,19 +56,36 @@ public static class NeowConfigController
         EnsureSubOptionRows(optionContainer);
     }
  
+    private static void OnNeowOptionChanged(Control optionContainer)
+    {
+        EnsureSubOptionRows(optionContainer);
+        CharacterConfigController.RefreshRelicRows(optionContainer);
+        CharacterConfigController.RefreshCardRows(optionContainer);
+    }
+    
     private static void WrapNeowOptionsDropdown(Control optionContainer)
     {
-        var (dropdown, items) = ConfigDropdownUtilities.GetDropdownListItems(optionContainer, nameof(FilterTheSpire2Config.NeowOptions));
+        var (dropdown, items) =
+            ConfigDropdownUtilities.GetDropdownListItems(
+                optionContainer,
+                nameof(FilterTheSpire2Config.NeowOptions));
+
         var rebuilt = new List<NConfigDropdownItem.ItemData>();
+
         foreach (var item in items)
         {
             var originalOnSet = item.OnSet;
-            rebuilt.Add(new NConfigDropdownItem.ItemData(item.Text, item.Value, () =>
-            {
-                originalOnSet.Invoke();
-                EnsureSubOptionRows(optionContainer);
-            }));
+
+            rebuilt.Add(new NConfigDropdownItem.ItemData(
+                item.Text,
+                item.Value,
+                () =>
+                {
+                    originalOnSet.Invoke();
+                    OnNeowOptionChanged(optionContainer);
+                }));
         }
+
         ConfigDropdownUtilities.RefreshDropdownItems(dropdown, rebuilt);
     }
  
@@ -149,12 +166,12 @@ public static class NeowConfigController
         if (propName == nameof(FilterTheSpire2Config.PhialHolsterPotionOption1) ||
             propName == nameof(FilterTheSpire2Config.PhialHolsterPotionOption2))
         {
-            return IsNeowOutcomeSelected(NeowOptions.PhialHolster);
+            return IsNeowOutcomeActive(NeowOptions.PhialHolster);
         }
 
         if (propName == nameof(FilterTheSpire2Config.LostCofferPotionOption))
         {
-            return IsNeowOutcomeSelected(NeowOptions.LostCoffer);
+            return IsNeowOutcomeActive(NeowOptions.LostCoffer);
         }
 
         if (currentNeow == requiredOption)
@@ -172,7 +189,7 @@ public static class NeowConfigController
         return false;
     }
 
-    private static bool IsNeowOutcomeSelected(NeowOptions option)
+    private static bool IsNeowOutcomeActive(NeowOptions option)
     {
         return FilterTheSpire2Config.NeowOptions == option ||
                (FilterTheSpire2Config.NeowOptions == NeowOptions.NeowsBones &&

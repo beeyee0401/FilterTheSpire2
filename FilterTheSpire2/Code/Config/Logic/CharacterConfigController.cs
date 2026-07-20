@@ -62,7 +62,6 @@ public static class CharacterConfigController
         
         _currentCharacterSelection = FilterTheSpire2Config.Character;
         RebuildCharacterDropdown(optionContainer);
-        WrapNeowOptionsDropdown(optionContainer);
 
         SetRelicDropdownsFromCharacter(optionContainer, RelicRarity.Common, nameof(FilterTheSpire2Config.CommonRelic));
         SetRelicDropdownsFromCharacter(optionContainer, RelicRarity.Uncommon, nameof(FilterTheSpire2Config.UncommonRelic));
@@ -194,22 +193,6 @@ public static class CharacterConfigController
     #endregion
     
     #region Dependency dropdowns
-    private static void WrapNeowOptionsDropdown(Control optionContainer)
-    {
-        var (dropdown, items) = ConfigDropdownUtilities.GetDropdownListItems(optionContainer, nameof(FilterTheSpire2Config.NeowOptions));
-        var rebuilt = new List<NConfigDropdownItem.ItemData>();
-        foreach (var item in items)
-        {
-            var originalOnSet = item.OnSet;
-            rebuilt.Add(new NConfigDropdownItem.ItemData(item.Text, item.Value, () =>
-            {
-                originalOnSet.Invoke();
-                SyncRelicRowVisibility();
-                EnsureCardRows(optionContainer, characterChanged: false);
-            }));
-        }
-        ConfigDropdownUtilities.RefreshDropdownItems(dropdown, rebuilt);
-    }
     
     private static void RebuildCharacterDropdown(Control optionContainer)
     {
@@ -293,7 +276,7 @@ public static class CharacterConfigController
 
         foreach (var (propName, option) in CardSlots)
         {
-            var isRelevant = FilterTheSpire2Config.ShouldShowNeowOutcomeOption(option);
+            var isRelevant = FilterTheSpire2Config.IsCharacterDependentNeowOutcomeActive(option);
             var wasRelevant = CardRowVisibility.GetValueOrDefault(propName);
             CardRowVisibility[propName] = isRelevant;
 
