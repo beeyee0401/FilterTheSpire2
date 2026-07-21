@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FilterTheSpire2", "FilterTh
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FilterTheSpire2Tests", "FilterTheSpire2Tests\FilterTheSpire2Tests.csproj", "{0D8AB363-9318-4CEF-A327-90DFC32CA65F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SeedFinder", "SeedFinder\SeedFinder.csproj", "{2D432215-DFF2-4E0A-8B39-4B3FD28D70E2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,5 +25,11 @@ Global
 		{0D8AB363-9318-4CEF-A327-90DFC32CA65F}.ExportDebug|Any CPU.Build.0 = Debug|Any CPU
 		{0D8AB363-9318-4CEF-A327-90DFC32CA65F}.ExportRelease|Any CPU.ActiveCfg = Debug|Any CPU
 		{0D8AB363-9318-4CEF-A327-90DFC32CA65F}.ExportRelease|Any CPU.Build.0 = Debug|Any CPU
+		{2D432215-DFF2-4E0A-8B39-4B3FD28D70E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2D432215-DFF2-4E0A-8B39-4B3FD28D70E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2D432215-DFF2-4E0A-8B39-4B3FD28D70E2}.ExportDebug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2D432215-DFF2-4E0A-8B39-4B3FD28D70E2}.ExportDebug|Any CPU.Build.0 = Debug|Any CPU
+		{2D432215-DFF2-4E0A-8B39-4B3FD28D70E2}.ExportRelease|Any CPU.ActiveCfg = Debug|Any CPU
+		{2D432215-DFF2-4E0A-8B39-4B3FD28D70E2}.ExportRelease|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 EndGlobal

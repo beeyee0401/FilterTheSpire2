@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <Import Project="..\Sts2PathDiscovery.props" />
+    
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\FilterTheSpire2\FilterTheSpire2.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Reference Include="sts2">
+        <HintPath>..\..\..\program files (x86)\steam\steamapps\common\Slay the Spire 2\data_sts2_windows_x86_64\sts2.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Alchyr.Sts2.BaseLib" Version="3.3.6" />
+    </ItemGroup>
+    
+</Project>
