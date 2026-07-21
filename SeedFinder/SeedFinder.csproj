@@ -1,26 +1,31 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
-    <Import Project="..\Sts2PathDiscovery.props" />
+    <Import Project="..\Sts2PathDiscovery.props"/>
     
     <PropertyGroup>
         <OutputType>Exe</OutputType>
         <TargetFramework>net9.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+
+        <!-- sts2.dll is x64, so the executable must also target x64. -->
+        <PlatformTarget>x64</PlatformTarget>
+
+        <!-- Required by Godot's source generators inherited through the mod project. -->
+        <GodotProjectDir>$(MSBuildThisFileDirectory)..\FilterTheSpire2</GodotProjectDir>
+
+        <!-- SeedFinder is not a mod project and does not own localization files. -->
+        <NoWarn>$(NoWarn);STS002;CS8785</NoWarn>
     </PropertyGroup>
 
+    <ItemGroup Condition="Exists('$(Sts2DataDir)')">
+        <Reference Include="sts2">
+            <HintPath>$(Sts2DataDir)/sts2.dll</HintPath>
+            <Private>true</Private>
+        </Reference>
+    </ItemGroup>
+    
     <ItemGroup>
         <ProjectReference Include="..\FilterTheSpire2\FilterTheSpire2.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Reference Include="sts2">
-        <HintPath>..\..\..\program files (x86)\steam\steamapps\common\Slay the Spire 2\data_sts2_windows_x86_64\sts2.dll</HintPath>
-      </Reference>
-    </ItemGroup>
-
-    <ItemGroup>
-      <PackageReference Include="Alchyr.Sts2.BaseLib" Version="3.3.6" />
-    </ItemGroup>
-    
 </Project>
