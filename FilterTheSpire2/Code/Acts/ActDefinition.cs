@@ -1,5 +1,6 @@
 using System.Collections.Immutable;
 using FilterTheSpire2.Code.Ancients.Config;
+using FilterTheSpire2.Code.Events;
 using FilterTheSpire2.Code.Helpers;
 using MegaCrit.Sts2.Core.Entities.Encounters;
 
@@ -16,8 +17,12 @@ public class ActDefinition
     public required SimpleEncounterDef[] EliteEncounters { get; init; }
 
     public required ImmutableArray<BossOptions> Bosses { get; init; }
-    
-    public required int EventCount { get; init; }
+
+    /// <summary>
+    /// This act's own events, in the same order as ActModel.AllEvents. Does not include the shared
+    /// event pool — see EventRules.GetEventPool for the combined pool used at generation time.
+    /// </summary>
+    public required ImmutableArray<EventOptions> ActEvents { get; init; }
 
     public required int WeakEncounterCount { get; init; }
 
@@ -38,9 +43,25 @@ public class ActDefinition
             Ancient.Neow
         ],
 
-        EventCount = 31, // 13 act + 18 shared
         WeakEncounterCount = 3,
         RoomCount = 15,
+
+        ActEvents =
+        [
+            EventOptions.AromaOfChaos,
+            EventOptions.ByrdonisNest,
+            EventOptions.DenseVegetation,
+            EventOptions.JungleMazeAdventure,
+            EventOptions.LuminousChoir,
+            EventOptions.MorphicGrove,
+            EventOptions.SapphireSeed,
+            EventOptions.SunkenStatue,
+            EventOptions.TabletOfTruth,
+            EventOptions.UnrestSite,
+            EventOptions.Wellspring,
+            EventOptions.WhisperingHollow,
+            EventOptions.WoodCarvings,
+        ],
 
         WeakEncounters =
         [
@@ -83,9 +104,22 @@ public class ActDefinition
             Ancient.Neow
         ],
 
-        EventCount = 28, // 10 act + 18 shared
         WeakEncounterCount = 3,
         RoomCount = 15,
+
+        ActEvents =
+        [
+            EventOptions.AbyssalBaths,
+            EventOptions.DrowningBeacon,
+            EventOptions.EndlessConveyor,
+            EventOptions.PunchOff,
+            EventOptions.SpiralingWhirlpool,
+            EventOptions.SunkenStatue,
+            EventOptions.SunkenTreasury,
+            EventOptions.DoorsOfLightAndDark,
+            EventOptions.TrashHeap,
+            EventOptions.WaterloggedScriptorium,
+        ],
 
         WeakEncounters =
         [
@@ -128,9 +162,22 @@ public class ActDefinition
             Ancient.Tezcatara
         ],
 
-        EventCount = 28, // 10 act + 18 shared
         WeakEncounterCount = 2,
         RoomCount = 14,
+
+        ActEvents =
+        [
+            EventOptions.Amalgamator,
+            EventOptions.Bugslayer,
+            EventOptions.ColorfulPhilosophers,
+            EventOptions.ColossalFlower,
+            EventOptions.FieldOfManSizedHoles,
+            EventOptions.InfestedAutomaton,
+            EventOptions.LostWisp,
+            EventOptions.SpiritGrafter,
+            EventOptions.TheLanternKey,
+            EventOptions.ZenWeaver,
+        ],
 
         WeakEncounters =
         [
@@ -173,9 +220,19 @@ public class ActDefinition
             Ancient.Vakuu
         ],
 
-        EventCount = 25, // 7 act + 18 shared
         WeakEncounterCount = 2,
         RoomCount = 13,
+
+        ActEvents =
+        [
+            EventOptions.BattlewornDummy,
+            EventOptions.GraveOfTheForgotten,
+            EventOptions.HungryForMushrooms,
+            EventOptions.Reflections,
+            EventOptions.RoundTeaParty,
+            EventOptions.Trial,
+            EventOptions.TinkerTime,
+        ],
 
         WeakEncounters =
         [
@@ -216,7 +273,7 @@ public class ActDefinition
             RegularEncounters = RegularEncounters,
             EliteEncounters = EliteEncounters,
             Bosses = Bosses,
-            EventCount = EventCount,
+            ActEvents = ActEvents,
             WeakEncounterCount = WeakEncounterCount,
             RoomCount = RoomCount
         };

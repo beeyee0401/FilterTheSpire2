@@ -3,6 +3,7 @@ using FilterTheSpire2.Code.Ancients.Config;
 using FilterTheSpire2.Code.Cards;
 using FilterTheSpire2.Code.Characters;
 using FilterTheSpire2.Code.Config;
+using FilterTheSpire2.Code.Events;
 using FilterTheSpire2.Code.Filters;
 using FilterTheSpire2.Code.Helpers;
 using FilterTheSpire2.Code.Potions;
@@ -70,10 +71,13 @@ internal static class FilterTestHelpers
         FilterTheSpire2Config.Act2Boss = BossOptions.Any;
         FilterTheSpire2Config.Act3FirstBoss = BossOptions.Any;
         FilterTheSpire2Config.Act3SecondBoss = BossOptions.Any;
+
+        FilterTheSpire2Config.Act1FirstEvent = EventOptions.Any;
+        FilterTheSpire2Config.Act2FirstEvent = EventOptions.Any;
+        FilterTheSpire2Config.Act3FirstEvent = EventOptions.Any;
     }
     
-    private static readonly Dictionary<
-        (NeowOptions Option1, NeowOptions Option2),
+    private static readonly Dictionary<(NeowOptions Option1, NeowOptions Option2),
         string> BonesSeedCache = [];
     
     public static string FindSeedWithBonesOptions(

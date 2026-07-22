@@ -2,6 +2,7 @@ using FilterTheSpire2.Code.Acts;
 using FilterTheSpire2.Code.Ancients.Config;
 using FilterTheSpire2.Code.Cards;
 using FilterTheSpire2.Code.Config;
+using FilterTheSpire2.Code.Events;
 using FilterTheSpire2.Code.Filters.PotionFilters;
 using FilterTheSpire2.Code.Filters.RelicOutcomeFilters;
 using FilterTheSpire2.Code.Helpers;
@@ -25,6 +26,7 @@ public static class FilterManager
 
         HandleAncientFilters(filters);
         AddBossFilters(filters);
+        AddFirstEventFilters(filters);
         AddNeowRelicOutcomeFilters(filters);
         AddCapsuleRelicOutcomeFilter(filters);
         AddPhialHolsterPotionFilter(filters);
@@ -359,6 +361,24 @@ public static class FilterManager
         if (FilterTheSpire2Config.Act3SecondBoss != BossOptions.Any)
         {
             filters.Add(new BossFilter(FilterTheSpire2Config.Act3SecondBoss, 3, isSecondBoss: true));
+        }
+    }
+
+    private static void AddFirstEventFilters(List<IFilter> filters)
+    {
+        if (FilterTheSpire2Config.Act1FirstEvent != EventOptions.Any)
+        {
+            filters.Add(new FirstEventFilter(FilterTheSpire2Config.Act1FirstEvent, 1));
+        }
+
+        if (FilterTheSpire2Config.Act2FirstEvent != EventOptions.Any)
+        {
+            filters.Add(new FirstEventFilter(FilterTheSpire2Config.Act2FirstEvent, 2));
+        }
+
+        if (FilterTheSpire2Config.Act3FirstEvent != EventOptions.Any)
+        {
+            filters.Add(new FirstEventFilter(FilterTheSpire2Config.Act3FirstEvent, 3));
         }
     }
 

@@ -52,6 +52,12 @@ public static class RngHelper
         return new Rng(seed, StringHelper.SnakeCase(playerRngType.ToString()));
     }
     
+    public static Rng GetRunRngType(string seed, RunRngType runRngType)
+    {
+        var seedHash = GetSeedHash(seed);
+        return new Rng(seedHash, StringHelper.SnakeCase(runRngType.ToString()));
+    }
+    
     public static Rng GetRunRngType(ulong seed, RunRngType runRngType)
     {
         return new Rng(seed, StringHelper.SnakeCase(runRngType.ToString()));

@@ -1,5 +1,6 @@
 using System.Collections.Immutable;
 using FilterTheSpire2.Code.Ancients.Config;
+using FilterTheSpire2.Code.Events;
 using FilterTheSpire2.Code.Helpers;
 using MegaCrit.Sts2.Core.Entities.Ascension;
 using MegaCrit.Sts2.Core.Extensions;
@@ -10,14 +11,15 @@ using MegaCrit.Sts2.Core.Runs;
 namespace FilterTheSpire2.Code.Acts;
 
 /// <summary>
-/// Result of rolling all 3 acts for a seed: which ancient and which boss lands in each, plus the
-/// Act 3 second boss (only non-null when the ascension used to roll it was Double Boss or higher).
-/// Index 0 = Act 1, index 1 = Act 2, index 2 = Act 3.
+/// Result of rolling all 3 acts for a seed: which ancient, boss, and first event lands in each,
+/// plus the Act 3 second boss (only non-null when the ascension used to roll it was Double Boss
+/// or higher). Index 0 = Act 1, index 1 = Act 2, index 2 = Act 3.
 /// </summary>
 public sealed record ActRollResult(
     IReadOnlyList<Ancient> Ancients,
     IReadOnlyList<BossOptions> Bosses,
-    BossOptions? SecondBoss);
+    BossOptions? SecondBoss,
+    IReadOnlyList<EventOptions> FirstEvents);
 
 public static class ActGenerator
 {
@@ -72,7 +74,7 @@ public static class ActGenerator
         }
 
         var rolled = actList
-            .Select(act => Generate(act, upfrontRng))
+            .Select((act) => Generate(act, upfrontRng))
             .ToList();
 
         // Double Boss ascension rolls one additional boss, but only for the LAST act, and only
@@ -96,7 +98,8 @@ public static class ActGenerator
         return new ActRollResult(
             rolled.Select(r => r.Ancient).ToImmutableArray(),
             rolled.Select(r => r.Boss).ToImmutableArray(),
-            secondBoss);
+            secondBoss,
+            rolled.Select(r => r.FirstEvent).ToImmutableArray());
     }
 
     private static List<ActDefinition> GetRandomActDefinitions(Rng actSelectionRng)
@@ -112,9 +115,12 @@ public static class ActGenerator
         ];
     }
 
-    public static (Ancient Ancient, BossOptions Boss) Generate(ActDefinition act, Rng rng)
+    public static (Ancient Ancient, BossOptions Boss, EventOptions FirstEvent) Generate(
+        ActDefinition act, Rng rng)
     {
-        ConsumeShuffle(rng, act.EventCount);
+        var events = act.ActEvents.AddRange(EventRules.SharedEvents).ToList();
+        events.UnstableShuffle(rng);
+        var firstEvent = events[1]; // event 0 is the Ancient! What a weird caveat!
 
         var normalEncounters = new List<SimpleEncounterDef>();
 
@@ -141,7 +147,7 @@ public static class ActGenerator
 
         var ancient = rng.NextItem(act.NativeAncients.Concat(act.SharedAncients));
 
-        return (ancient, boss);
+        return (ancient, boss, firstEvent);
     }
 
     private static void GenerateEncounterPool(
@@ -163,15 +169,6 @@ public static class ActGenerator
             }
 
             AddWithoutRepeatingTags(chosen, bag, rng);
-        }
-    }
-
-    private static void ConsumeShuffle(Rng rng, int count)
-    {
-        while (count > 1)
-        {
-            count--;
-            rng.NextInt(count + 1);
         }
     }
 

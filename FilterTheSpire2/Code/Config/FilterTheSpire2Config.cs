@@ -6,6 +6,7 @@ using FilterTheSpire2.Code.Ancients.Config;
 using FilterTheSpire2.Code.Cards;
 using FilterTheSpire2.Code.Characters;
 using FilterTheSpire2.Code.Config.Logic;
+using FilterTheSpire2.Code.Events;
 using FilterTheSpire2.Code.Potions;
 using FilterTheSpire2.Code.Relics;
 using Godot;
@@ -22,6 +23,9 @@ public class FilterTheSpire2Config : SimpleModConfig
     
     [ConfigDropdownOverrideLocalization("BOSS_OPTIONS")]
     public static BossOptions Act1Boss { get; set; } = BossOptions.Any;
+
+    [ConfigDropdownOverrideLocalization("EVENT_OPTIONS")]
+    public static EventOptions Act1FirstEvent { get; set; } = EventOptions.Any;
     
     public static NeowOptions NeowOptions { get; set; } = NeowOptions.Any;
     
@@ -99,6 +103,9 @@ public class FilterTheSpire2Config : SimpleModConfig
     
     [ConfigDropdownOverrideLocalization("BOSS_OPTIONS")]
     public static BossOptions Act2Boss { get; set; } = BossOptions.Any;
+
+    [ConfigDropdownOverrideLocalization("EVENT_OPTIONS")]
+    public static EventOptions Act2FirstEvent { get; set; } = EventOptions.Any;
     
     public static Ancient Act2Ancient { get; set; } = Ancient.Any;
     
@@ -123,6 +130,9 @@ public class FilterTheSpire2Config : SimpleModConfig
     [ConfigHoverTip]
     [ConfigDropdownOverrideLocalization("BOSS_OPTIONS")]
     public static BossOptions Act3SecondBoss { get; set; } = BossOptions.Any;
+
+    [ConfigDropdownOverrideLocalization("EVENT_OPTIONS")]
+    public static EventOptions Act3FirstEvent { get; set; } = EventOptions.Any;
     
     public static Ancient Act3Ancient { get; set; } = Ancient.Any;
     
@@ -205,6 +215,7 @@ public class FilterTheSpire2Config : SimpleModConfig
         CharacterConfigController.SetupCharacterDropdownConfig(optionContainer);
         NeowConfigController.SetupNeowDropdownConfig(optionContainer);
         BossConfigController.SetupBossDropdownConfig(optionContainer);
+        EventConfigController.SetupEventDropdownConfig(optionContainer);
     }
     
     public static bool IsCharacterDependentNeowOutcomeActive(NeowOptions option)
