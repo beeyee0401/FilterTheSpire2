@@ -63,9 +63,9 @@ internal static class FilterTestHelpers
         FilterTheSpire2Config.RareRelic = RelicOptions.Any;
         FilterTheSpire2Config.ShopRelic = RelicOptions.Any;
 
-        FilterTheSpire2Config.Act1Locations = ActLocations.Any;
-        FilterTheSpire2Config.Act2Locations = ActLocations.Any;
-        FilterTheSpire2Config.Act3Locations = ActLocations.Any;
+        FilterTheSpire2Config.Act1Location = ActLocations.Any;
+        FilterTheSpire2Config.Act2Location = ActLocations.Any;
+        FilterTheSpire2Config.Act3Location = ActLocations.Any;
         
         FilterTheSpire2Config.Act1Boss = BossOptions.Any;
         FilterTheSpire2Config.Act2Boss = BossOptions.Any;

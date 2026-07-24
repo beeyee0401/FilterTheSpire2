@@ -25,9 +25,10 @@ public static class EventConfigController
         MasterItems.Clear();
         EventDropdowns.Clear();
 
-        // Must run AFTER BossConfigController.SetupBossDropdownConfig. This re-wraps each act's
-        // location dropdown items on top of Boss's existing wrap (calling its onSet first), so
-        // changing location refreshes both boss and event dropdowns.
+        // This must run after BossConfigController.SetupBossDropdownConfig.
+        // BossConfigController has already wrapped each location item's callback
+        // so location changes refresh boss dropdowns. This wraps that callback
+        // again so the same location change also refreshes event dropdowns.
         for (var act = 1; act <= 3; act++)
         {
             WrapLocationDropdownForEvents(optionContainer, act);
@@ -44,25 +45,33 @@ public static class EventConfigController
         }
     }
 
-    private static void WrapLocationDropdownForEvents(Control optionContainer, int act)
+    private static void WrapLocationDropdownForEvents(
+        Control optionContainer,
+        int act)
     {
-        var (dropdown, items) = ConfigDropdownUtilities.GetDropdownListItems(optionContainer, $"Act{act}Locations");
-
+        var (dropdown, items) = ConfigDropdownUtilities.GetDropdownListItems(
+            optionContainer, 
+            $"Act{act}Location"
+        );
         var rebuilt = new List<NConfigDropdownItem.ItemData>();
+
         foreach (var item in items)
         {
-            var originalOnSet = item.OnSet; // already boss-wrapped by BossConfigController
-            rebuilt.Add(new NConfigDropdownItem.ItemData(item.Text, item.Value, () =>
-            {
-                originalOnSet.Invoke();
-                RefreshAllEventDropdownsForAct(act);
-            }));
+            var originalOnSet = item.OnSet;
+            rebuilt.Add(
+                new NConfigDropdownItem.ItemData(item.Text, item.Value, () =>
+                    {
+                        originalOnSet.Invoke();
+                        RefreshAllEventDropdownsForAct(act);
+                    }));
         }
 
         ConfigDropdownUtilities.RefreshDropdownItems(dropdown, rebuilt);
     }
 
-    private static void RegisterEventDropdown(Control optionContainer, string propName)
+    private static void RegisterEventDropdown(
+        Control optionContainer,
+        string propName)
     {
         var (dropdown, items) = ConfigDropdownUtilities.GetDropdownListItems(optionContainer, propName);
 
@@ -81,66 +90,93 @@ public static class EventConfigController
         }
     }
 
-    private static void RefreshEventDropdown(string propName, int act)
+    private static void RefreshEventDropdown(
+        string propName,
+        int act)
     {
-        if (!EventDropdowns.TryGetValue(propName, out var dropdown) || !MasterItems.TryGetValue(propName, out var source))
+        if (!EventDropdowns.TryGetValue(propName, out var dropdown) ||
+            !MasterItems.TryGetValue(propName, out var source))
         {
             return;
         }
 
         var currentLocation = GetLocationForAct(act);
-        var validEvents = EventRules.GetValidEvents(act, currentLocation).ToHashSet();
+        var validEvents = currentLocation == ActLocations.Any
+            ? []
+            : EventRules.GetValidEvents(act, currentLocation).ToHashSet();
 
         var filtered = source
             .Where(item =>
             {
                 var value = (EventOptions)item.Value!;
-                return value == EventOptions.Any || validEvents.Contains(value);
+
+                return value == EventOptions.Any ||
+                       validEvents.Contains(value);
             }).OrderBy(item => (EventOptions)item.Value! == EventOptions.Any ? 0 : 1)
-            .ThenBy(item => ((EventOptions)item.Value!).ToString()).ToList();
+            .ThenBy(item => ((EventOptions)item.Value!).ToString())
+            .ToList();
 
         if (IsCurrentSelectionInvalid(propName, filtered))
         {
             ResetEventOption(propName, dropdown, filtered);
         }
 
-        ConfigDropdownUtilities.RefreshDropdownItems(dropdown, filtered);
+        ConfigDropdownUtilities.RefreshDropdownItems(
+            dropdown,
+            filtered);
     }
 
     private static ActLocations GetLocationForAct(int act) => act switch
     {
-        1 => FilterTheSpire2Config.Act1Locations,
-        2 => FilterTheSpire2Config.Act2Locations,
-        3 => FilterTheSpire2Config.Act3Locations,
+        1 => FilterTheSpire2Config.Act1Location,
+        2 => FilterTheSpire2Config.Act2Location,
+        3 => FilterTheSpire2Config.Act3Location,
         _ => ActLocations.Any
     };
 
     private static EventOptions GetEventValue(string propName)
     {
-        var property = typeof(FilterTheSpire2Config).GetCachedProperty(propName, BindingFlags.Public | BindingFlags.Static);
+        var property = typeof(FilterTheSpire2Config)
+            .GetCachedProperty(
+                propName,
+                BindingFlags.Public | BindingFlags.Static);
+
         return (EventOptions)property!.GetValue(null)!;
     }
 
-    private static void SetEventValue(string propName, EventOptions value)
+    private static void SetEventValue(
+        string propName,
+        EventOptions value)
     {
-        var property = typeof(FilterTheSpire2Config).GetCachedProperty(propName, BindingFlags.Public | BindingFlags.Static);
+        var property = typeof(FilterTheSpire2Config)
+            .GetCachedProperty(propName, BindingFlags.Public | BindingFlags.Static);
+
         property?.SetValue(null, value);
     }
 
-    private static bool IsCurrentSelectionInvalid(string propName, List<NConfigDropdownItem.ItemData> validItems)
+    private static bool IsCurrentSelectionInvalid(
+        string propName,
+        List<NConfigDropdownItem.ItemData> validItems)
     {
         var currentValue = GetEventValue(propName);
-        return currentValue != EventOptions.Any && validItems.All(i => !Equals(i.Value, currentValue));
+
+        return currentValue != EventOptions.Any && validItems.All(item => !Equals(item.Value, currentValue));
     }
 
-    private static void ResetEventOption(string propName, NConfigDropdown dropdown, List<NConfigDropdownItem.ItemData> filteredItems)
+    private static void ResetEventOption(
+        string propName,
+        NConfigDropdown dropdown,
+        List<NConfigDropdownItem.ItemData> filteredItems)
     {
         SetEventValue(propName, EventOptions.Any);
 
         var labelField = dropdown.GetType()
             .GetCachedField("_currentOptionLabel", BindingFlags.NonPublic | BindingFlags.Instance);
+
         var label = (MegaLabel?)labelField?.GetValue(dropdown);
-        var anyItem = filteredItems.FirstOrDefault(i => Equals(i.Value, EventOptions.Any));
+
+        var anyItem = filteredItems.FirstOrDefault(item => Equals(item.Value, EventOptions.Any));
+
         label?.SetTextAutoSize(anyItem?.Text ?? "Any");
 
         ModConfig.SaveDebounced<FilterTheSpire2Config>();

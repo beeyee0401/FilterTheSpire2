@@ -325,19 +325,19 @@ public static class FilterManager
 
     private static void AddActLocationFilters(List<IFilter> filters)
     {
-        if (FilterTheSpire2Config.Act1Locations != ActLocations.Any)
+        if (FilterTheSpire2Config.Act1Location != ActLocations.Any)
         {
-            filters.Add(new ActLocationFilter(FilterTheSpire2Config.Act1Locations, 1));
+            filters.Add(new ActLocationFilter(FilterTheSpire2Config.Act1Location, 1));
         }
 
-        if (FilterTheSpire2Config.Act2Locations != ActLocations.Any)
+        if (FilterTheSpire2Config.Act2Location != ActLocations.Any)
         {
-            filters.Add(new ActLocationFilter(FilterTheSpire2Config.Act2Locations, 2));
+            filters.Add(new ActLocationFilter(FilterTheSpire2Config.Act2Location, 2));
         }
 
-        if (FilterTheSpire2Config.Act3Locations != ActLocations.Any)
+        if (FilterTheSpire2Config.Act3Location != ActLocations.Any)
         {
-            filters.Add(new ActLocationFilter(FilterTheSpire2Config.Act3Locations, 3));
+            filters.Add(new ActLocationFilter(FilterTheSpire2Config.Act3Location, 3));
         }
     }
     

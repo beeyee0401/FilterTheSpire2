@@ -19,11 +19,13 @@ public class FilterTheSpire2Config : SimpleModConfig
     public static CharacterOptions Character { get; set; } = CharacterOptions.Any;
     
     [ConfigSection("Act1Section")] 
-    public static ActLocations Act1Locations { get; set; } = ActLocations.Any;
+    public static ActLocations Act1Location { get; set; } = ActLocations.Any;
     
+    [ConfigVisibleIf(nameof(ShouldShowAct1LocationFilters))]
     [ConfigDropdownOverrideLocalization("BOSS_OPTIONS")]
     public static BossOptions Act1Boss { get; set; } = BossOptions.Any;
 
+    [ConfigVisibleIf(nameof(ShouldShowAct1LocationFilters))]
     [ConfigDropdownOverrideLocalization("EVENT_OPTIONS")]
     public static EventOptions Act1FirstEvent { get; set; } = EventOptions.Any;
     
@@ -99,11 +101,13 @@ public class FilterTheSpire2Config : SimpleModConfig
     public static PotionOptions PhialHolsterPotionOption2 { get; set; } = PotionOptions.Any;
     
     [ConfigSection("Act2Section")]
-    public static ActLocations Act2Locations { get; set; } = ActLocations.Any;
+    public static ActLocations Act2Location { get; set; } = ActLocations.Any;
     
+    [ConfigVisibleIf(nameof(ShouldShowAct2LocationFilters))]
     [ConfigDropdownOverrideLocalization("BOSS_OPTIONS")]
     public static BossOptions Act2Boss { get; set; } = BossOptions.Any;
 
+    [ConfigVisibleIf(nameof(ShouldShowAct2LocationFilters))]
     [ConfigDropdownOverrideLocalization("EVENT_OPTIONS")]
     public static EventOptions Act2FirstEvent { get; set; } = EventOptions.Any;
     
@@ -122,15 +126,18 @@ public class FilterTheSpire2Config : SimpleModConfig
     public static TezcataraOptions TezcataraOptions { get; set; } = TezcataraOptions.Any;
     
     [ConfigSection("Act3Section")]
-    public static ActLocations Act3Locations { get; set; } = ActLocations.Any;
+    public static ActLocations Act3Location { get; set; } = ActLocations.Any;
     
+    [ConfigVisibleIf(nameof(ShouldShowAct3LocationFilters))]
     [ConfigDropdownOverrideLocalization("BOSS_OPTIONS")]
     public static BossOptions Act3FirstBoss { get; set; } = BossOptions.Any;
     
+    [ConfigVisibleIf(nameof(ShouldShowAct3LocationFilters))]
     [ConfigHoverTip]
     [ConfigDropdownOverrideLocalization("BOSS_OPTIONS")]
     public static BossOptions Act3SecondBoss { get; set; } = BossOptions.Any;
 
+    [ConfigVisibleIf(nameof(ShouldShowAct3LocationFilters))]
     [ConfigDropdownOverrideLocalization("EVENT_OPTIONS")]
     public static EventOptions Act3FirstEvent { get; set; } = EventOptions.Any;
     
@@ -181,24 +188,19 @@ public class FilterTheSpire2Config : SimpleModConfig
 
         for (var i = 1; i <= 3; i++)
         {
-            var (dropdown, items) = ConfigDropdownUtilities.GetDropdownListItems(optionContainer, $"%Act{i}Locations");
-            var allActLocations = items.ToList();
+            var (dropdown, items) =
+                ConfigDropdownUtilities.GetDropdownListItems(
+                    optionContainer,
+                    $"Act{i}Location");
 
-            var newItems = new List<NConfigDropdownItem.ItemData>();
-            foreach (var actLocationItem in allActLocations)
-            {
-                var actLocation = (ActLocations)actLocationItem.Value!;
-                if (actLocation == ActLocations.Any)
+            var newItems = items
+                .Where(item =>
                 {
-                    newItems.Add(actLocationItem);
-                    continue;
-                }
+                    var location = (ActLocations)item.Value!;
+                    return location == ActLocations.Any ||
+                           ActLocationRules.IsValidForAct(i, location);
+                }).ToList();
 
-                if (ActLocationRules.IsValidForAct(i, actLocation))
-                {
-                    newItems.Add(actLocationItem);
-                }
-            }
             ConfigDropdownUtilities.RefreshDropdownItems(dropdown, newItems);
         }
 
@@ -231,5 +233,20 @@ public class FilterTheSpire2Config : SimpleModConfig
         return Character != CharacterOptions.Any && 
                Act2Ancient == Ancient.Orobas && 
                OrobasOptions == OrobasOptions.SeaGlass;
+    }
+    
+    private static bool ShouldShowAct1LocationFilters()
+    {
+        return Act1Location != ActLocations.Any;
+    }
+
+    private static bool ShouldShowAct2LocationFilters()
+    {
+        return Act2Location != ActLocations.Any;
+    }
+
+    private static bool ShouldShowAct3LocationFilters()
+    {
+        return Act3Location != ActLocations.Any;
     }
 }
