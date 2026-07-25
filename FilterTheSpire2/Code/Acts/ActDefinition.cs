@@ -36,6 +36,11 @@ public class ActDefinition
     /// </summary>
     public List<Ancient> SharedAncients { get; } = [];
     
+    public Ancient? RolledAncient { get; set; }
+    public BossOptions? RolledBoss { get; set; }
+    public BossOptions? RolledSecondBoss { get; set; } // only ever set on the last act, at Double Boss+
+    public EventOptions? RolledFirstEvent { get; set; }
+    
     public static readonly ActDefinition Overgrowth = new()
     {
         NativeAncients =

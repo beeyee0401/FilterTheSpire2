@@ -13,7 +13,7 @@ public class FirstEventFilter(EventOptions eventOption, int actNum) : IFilter
     public bool IsSeedValid(SeedSearchRequest request, string seed)
     {
         // We can only deterministically check if the first event in Act 1 is an actual event
-        // (vs combat, shop, or treasure room). Acts 2 and 3 uses the same RNG counter so we can't determine it
+        // (vs combat, shop, or treasure room). Acts 2 and 3 use the same RNG counter so we can't determine it
         if (actNum == 1)
         {
             var rng = RngHelper.GetRunRngType(seed, RunRngType.UnknownMapPoint);
@@ -22,7 +22,8 @@ public class FirstEventFilter(EventOptions eventOption, int actNum) : IFilter
                 return false;
             }
         }
-        var rollResult = ActGenerator.GetActRollResult(seed, request.AscensionLevel);
-        return rollResult.FirstEvents[actNum - 1] == eventOption;
+
+        var rolledActs = ActGenerator.GetRolledActs(seed, request.AscensionLevel);
+        return rolledActs[actNum - 1].RolledFirstEvent == eventOption;
     }
 }

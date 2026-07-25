@@ -20,9 +20,9 @@ public class AncientRelicFilter(Ancient selectedAncient, Enum? relicOption, int 
 
         if (actNum > 1)
         {
-            var rollResult = ActGenerator.GetActRollResult(seed, request.AscensionLevel);
+            var rolledActs = ActGenerator.GetRolledActs(seed, request.AscensionLevel);
 
-            if (rollResult.Ancients[actNum - 1] != selectedAncient)
+            if (rolledActs[actNum - 1].RolledAncient != selectedAncient)
             {
                 return false;
             }

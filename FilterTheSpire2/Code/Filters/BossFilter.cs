@@ -19,10 +19,11 @@ public class BossFilter(BossOptions bossOption, int actNum, bool isSecondBoss = 
             return true;
         }
 
-        var rollResult = ActGenerator.GetActRollResult(seed, request.AscensionLevel);
+        var rolledActs = ActGenerator.GetRolledActs(seed, request.AscensionLevel);
+        var act = rolledActs[actNum - 1];
 
         return isSecondBoss
-            ? rollResult.SecondBoss == bossOption
-            : rollResult.Bosses[actNum - 1] == bossOption;
+            ? act.RolledSecondBoss == bossOption
+            : act.RolledBoss == bossOption;
     }
 }
