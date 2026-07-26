@@ -218,6 +218,14 @@ public class FilterTheSpire2Config : SimpleModConfig
         NeowConfigController.SetupNeowDropdownConfig(optionContainer);
         BossConfigController.SetupBossDropdownConfig(optionContainer);
         EventConfigController.SetupEventDropdownConfig(optionContainer);
+        
+        var bottomSpacer = new Control
+        {
+            Name = "BottomScrollSpacer",
+            CustomMinimumSize = new Vector2(0, 400),
+            MouseFilter = Control.MouseFilterEnum.Ignore
+        };
+        optionContainer.AddChild(bottomSpacer);
     }
     
     public static bool IsCharacterDependentNeowOutcomeActive(NeowOptions option)
