@@ -24,8 +24,8 @@ internal class BeginRunForAllPlayersPatch
     {
         public bool LeftArrowWasVisible { get; init; }
         public bool RightArrowWasVisible { get; init; }
-        public bool LeftTriggerWasVisible { get; init; }
-        public bool RightTriggerWasVisible { get; init; }
+        public bool LeftTabIconWasVisible { get; init; }
+        public bool RightTabIconWasVisible { get; init; }
 
         public Action? CancelAction { get; set; }
     }
@@ -182,15 +182,15 @@ internal class BeginRunForAllPlayersPatch
 
         var leftArrow = ascensionTraverse.Field("_leftArrow").GetValue<NButton>();
         var rightArrow = ascensionTraverse.Field("_rightArrow").GetValue<NButton>();
-        var leftTriggerIcon = ascensionTraverse.Field("_leftTriggerIcon").GetValue<TextureRect>();
-        var rightTriggerIcon = ascensionTraverse.Field("_rightTriggerIcon").GetValue<TextureRect>();
+        var leftTriggerIcon = ascensionTraverse.Field("_leftTabIcon").GetValue<NHotkeyIcon>();
+        var rightTriggerIcon = ascensionTraverse.Field("_rightTabIcon").GetValue<NHotkeyIcon>();
 
         var state = new SearchUiState
         {
             LeftArrowWasVisible = leftArrow.Visible,
             RightArrowWasVisible = rightArrow.Visible,
-            LeftTriggerWasVisible = leftTriggerIcon.Visible,
-            RightTriggerWasVisible = rightTriggerIcon.Visible
+            LeftTabIconWasVisible = leftTriggerIcon.Visible,
+            RightTabIconWasVisible = rightTriggerIcon.Visible
         };
 
         leftArrow.Visible = false;
@@ -288,8 +288,8 @@ internal class BeginRunForAllPlayersPatch
 
         ascensionTraverse.Field("_leftArrow").GetValue<NButton>().Visible = state.LeftArrowWasVisible;
         ascensionTraverse.Field("_rightArrow").GetValue<NButton>().Visible = state.RightArrowWasVisible;
-        ascensionTraverse.Field("_leftTriggerIcon").GetValue<TextureRect>().Visible = state.LeftTriggerWasVisible;
-        ascensionTraverse.Field("_rightTriggerIcon").GetValue<TextureRect>().Visible = state.RightTriggerWasVisible;
+        ascensionTraverse.Field("_leftTabIcon").GetValue<NHotkeyIcon>().Visible = state.LeftTabIconWasVisible;
+        ascensionTraverse.Field("_rightTabIcon").GetValue<NHotkeyIcon>().Visible = state.RightTabIconWasVisible;
         
         RestoreCharacterFocus(screen);
     }

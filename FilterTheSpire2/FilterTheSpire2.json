@@ -3,9 +3,9 @@
   "name": "FilterTheSpire2",
   "author": "BeeYee",
   "description": "Filter to find vanilla seeds based on criteria set in config",
-  "version": "v0.0.9",
+  "version": "v0.0.10",
   "has_pck": true,
   "has_dll": true,
-  "dependencies": [{"id": "BaseLib", "min_version":  "v3.3.6"}],
+  "dependencies": [{"id": "BaseLib", "min_version":  "v3.4.0"}],
   "affects_gameplay": false
 }

@@ -132,7 +132,7 @@ public enum CardOptions
       // Flanking, multiplayer only
       Flechettes,
       FlickFlack,
-      Scare,
+      Sidestep,
       Footwork,
       GrandFinale,
       HandTrick,
