@@ -61,15 +61,20 @@ public class CardRarityOdds(Rng rng, float initialOffset = -0.05f)
     //     : CardRarity.Common;
     // }
 
-    public CardRarity RollWithBaseOdds(AscensionLevel ascensionLevel, CardRarityOddsType type)
+    public CardRarity RollWithBaseOdds(
+        AscensionLevel ascensionLevel,
+        CardRarityOddsType type)
     {
-        var num = rng.NextFloat();
-        if ((double)num < GetBaseOdds(ascensionLevel, type, CardRarity.Rare))
+        var rareOdds = GetBaseOdds(ascensionLevel, type, CardRarity.Rare);
+        var uncommonOdds = GetBaseOdds(ascensionLevel, type, CardRarity.Uncommon);
+        var roll = rng.NextFloat();
+
+        if (roll < rareOdds)
         {
             return CardRarity.Rare;
         }
 
-        return (double)num < GetBaseOdds(ascensionLevel, type, CardRarity.Uncommon)
+        return roll < rareOdds + uncommonOdds
             ? CardRarity.Uncommon
             : CardRarity.Common;
     }
