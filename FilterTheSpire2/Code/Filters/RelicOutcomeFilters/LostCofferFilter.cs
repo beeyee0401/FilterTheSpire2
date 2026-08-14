@@ -21,9 +21,20 @@ public class LostCofferFilter(
     protected override bool IsCharacterRequired => true;
     protected override Rng GetRewardRng(ulong seed) => RngHelper.GetPlayerRngType(seed, PlayerRngType.Rewards);
     protected override Rng? GetCardPoolRng(ulong seed) => null;
-    protected override List<List<CardDefinition>> GetRewardPools(Rng rng) =>
-        Enumerable.Repeat(CardRules.EntireCardPools[FilterTheSpire2Config.Character].ToList(), CardsPerReward).ToList();
+    
+    protected override List<RewardPool> GetRewardPools(Rng rng)
+    {
+        var character = FilterTheSpire2Config.Character;
+        var pool = new RewardPool(CardRules.EntireCardPools[character], CardRules.EntireCardPoolRarities[character]);
 
+        var pools = new List<RewardPool>(CardsPerReward);
+        for (var i = 0; i < CardsPerReward; i++)
+        {
+            pools.Add(pool);
+        }
+        return pools;
+    }
+    
     public override bool IsSeedValid(SeedSearchRequest request, string seed)
     {
         if (!base.IsSeedValid(request, seed))

@@ -31,12 +31,18 @@ public class KaleidoscopeFilter : BaseCardRewardFilter
     protected override bool IsCharacterRequired => true;
     protected override Rng GetRewardRng(ulong seed) => RngHelper.GetPlayerRngType(seed, PlayerRngType.Rewards);
     protected override Rng GetCardPoolRng(ulong seed) => RngHelper.GetRunRngType(seed, RunRngType.Niche);
-    protected override List<List<CardDefinition>> GetRewardPools(Rng rng)
+    
+    protected override List<RewardPool> GetRewardPools(Rng rng)
     {
-        var charList = _charListFiltered.ToList();
+        var charList = _charListFiltered.ToList(); // small (4 chars) shuffle-target copy
         charList.UnstableShuffle(rng);
-        return charList.Take(CardsPerReward)
-            .Select(character => CardRules.EntireCardPools[character].ToList())
-            .ToList();
+
+        var pools = new List<RewardPool>(CardsPerReward);
+        for (var i = 0; i < CardsPerReward; i++)
+        {
+            var character = charList[i];
+            pools.Add(new RewardPool(CardRules.EntireCardPools[character], CardRules.EntireCardPoolRarities[character]));
+        }
+        return pools;
     }
 }

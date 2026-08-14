@@ -12,6 +12,8 @@ using CardRarityOdds = FilterTheSpire2.Code.Cards.CardRarityOdds;
 
 namespace FilterTheSpire2.Code.Filters;
 
+public readonly record struct RewardPool(IReadOnlyList<CardDefinition> Cards, HashSet<CardRarity> Rarities);
+
 public abstract class BaseCardRewardFilter(
     CardRarityOddsType cardRarityOddsType,
     List<CardOptions> requestedCards,
@@ -23,7 +25,8 @@ public abstract class BaseCardRewardFilter(
     protected abstract bool IsCharacterRequired { get; }
     protected abstract Rng GetRewardRng(ulong seed);
     protected abstract Rng? GetCardPoolRng(ulong seed);
-    protected abstract List<List<CardDefinition>> GetRewardPools(Rng rng);
+    protected abstract List<RewardPool> GetRewardPools(Rng rng);
+
     public virtual bool IsSeedValid(SeedSearchRequest request, string seed)
     {
         var requestedCardList = requestedCards
@@ -43,7 +46,6 @@ public abstract class BaseCardRewardFilter(
         var rng = GetRewardRng(seedLong);
         var poolRng = GetCardPoolRng(seedLong);
 
-        // Fast-forward past slot 1's consumption if we are slot 2
         if (slot1Consumption != null)
         {
             rng.FastForwardCounter(slot1Consumption.RewardsRngSteps);
@@ -53,24 +55,38 @@ public abstract class BaseCardRewardFilter(
             }
         }
 
-        var remaining = requestedCardList
-            .GroupBy(c => c)
-            .ToDictionary(g => g.Key, g => g.Count());
+        var remaining = new Dictionary<CardOptions, int>();
+        foreach (var card in requestedCardList)
+        {
+            remaining[card] = remaining.GetValueOrDefault(card) + 1;
+        }
+
         var cardRarityOdds = new CardRarityOdds(rng);
         var matchedRewardIndices = new List<int>();
+        var blacklist = new HashSet<CardDefinition>();
+        var candidates = new List<CardDefinition>();
 
         for (var i = 0; i < cardRewardCount; i++)
         {
-            var blacklist = new List<CardDefinition>();
+            blacklist.Clear();
             var rewardPools = GetRewardPools(poolRng ?? rng);
+
             for (var j = 0; j < cardsPerReward; j++)
             {
-                var cardPool = rewardPools[j];
-                var cardPoolRarities = cardPool.Select(c => c.Rarity).ToHashSet();
+                var (cardPool, cardPoolRarities) = rewardPools[j];
                 var cardRarity = RollForRarity(cardRarityOdds, cardRarityOddsType, CardCreationSource.Other,
                     cardPoolRarities, false, request.AscensionLevel);
-                var cardsWithRarity = cardPool.Except(blacklist).Where(c => c.Rarity == cardRarity).ToList();
-                var card = rng.NextItem(cardsWithRarity)!;
+
+                candidates.Clear();
+                foreach (var c in cardPool)
+                {
+                    if (c.Rarity == cardRarity && !blacklist.Contains(c))
+                    {
+                        candidates.Add(c);
+                    }
+                }
+
+                var card = rng.NextItem(candidates)!;
 
                 if (remaining.TryGetValue(card.Card, out var count) && count > 0)
                 {

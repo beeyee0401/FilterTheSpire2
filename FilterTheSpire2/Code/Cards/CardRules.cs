@@ -546,6 +546,11 @@ public static class CardRules
                     g => g.Key,
                     g => g.Select(x => x).ToImmutableArray());
     
+    public static readonly ImmutableDictionary<CharacterOptions, HashSet<CardRarity>> EntireCardPoolRarities =
+        EntireCardPools.ToImmutableDictionary(
+            kvp => kvp.Key,
+            kvp => kvp.Value.Select(c => c.Rarity).ToHashSet());
+    
     // Cards that can actually be obtained via transforms or card rewards
     public static readonly ImmutableDictionary<CharacterOptions, ImmutableArray<CardOptions>>
         AvailableCardPools =

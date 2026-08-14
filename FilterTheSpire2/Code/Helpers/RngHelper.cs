@@ -10,6 +10,9 @@ namespace FilterTheSpire2.Code.Helpers;
 
 public static class RngHelper
 {
+    [ThreadStatic] private static string? _cachedSeedString;
+    [ThreadStatic] private static ulong _cachedSeedHash;
+    
     public static class RngCounters
     {
         public const int NewLeafNicheCounter = 1;
@@ -69,7 +72,18 @@ public static class RngHelper
         return SeedHelper.GetRandomSeed(rng, length);
     }
     
-    public static ulong GetSeedHash(string seed) => StringHelper.GetDeterministicHashCode(seed);
+    public static ulong GetSeedHash(string seed)
+    {
+        if (_cachedSeedString == seed)
+        {
+            return _cachedSeedHash;
+        }
+
+        var hash = StringHelper.GetDeterministicHashCode(seed);
+        _cachedSeedString = seed;
+        _cachedSeedHash = hash;
+        return hash;
+    }
 
     public static Rng GetBaseRng(string seed) => new(GetSeedHash(seed));
     

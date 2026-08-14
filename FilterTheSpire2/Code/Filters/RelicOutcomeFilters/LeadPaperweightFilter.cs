@@ -9,16 +9,28 @@ using MegaCrit.Sts2.Core.Runs;
 namespace FilterTheSpire2.Code.Filters.RelicOutcomeFilters;
 
 public class LeadPaperweightFilter(List<CardOptions> cardOptions, PriorRngConsumption? slot1Consumption = null)
-    : BaseCardRewardFilter(CardRarityOddsType.RegularEncounter, cardOptions, 1, 2,
-        slot1Consumption: slot1Consumption)
+    : BaseCardRewardFilter(CardRarityOddsType.RegularEncounter, cardOptions, 1, 2, slot1Consumption: slot1Consumption)
 {
+    private static readonly RewardPool ColorlessPool = BuildColorlessPool();
+
+    private static RewardPool BuildColorlessPool()
+    {
+        var cards = CardRules.EntireCardPools[CharacterOptions.Any]
+            .Where(c => c.Rarity.In(CardRarity.Uncommon, CardRarity.Rare))
+            .ToList();
+        return new RewardPool(cards, cards.Select(c => c.Rarity).ToHashSet());
+    }
+
     protected override bool IsCharacterRequired => false;
     protected override Rng GetRewardRng(ulong seed) => RngHelper.GetPlayerRngType(seed, PlayerRngType.Rewards);
     protected override Rng? GetCardPoolRng(ulong seed) => null;
-    protected override List<List<CardDefinition>> GetRewardPools(Rng rng)
+    protected override List<RewardPool> GetRewardPools(Rng rng)
     {
-        var pool = CardRules.EntireCardPools[CharacterOptions.Any]
-            .Where(c => c.Rarity.In(CardRarity.Uncommon, CardRarity.Rare)).ToList();
-        return Enumerable.Repeat(pool, CardsPerReward).ToList();
+        var pools = new List<RewardPool>(CardsPerReward);
+        for (var i = 0; i < CardsPerReward; i++)
+        {
+            pools.Add(ColorlessPool);
+        }
+        return pools;
     }
 }
