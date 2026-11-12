@@ -8,6 +8,7 @@ namespace FilterTheSpire2.Code.Relics;
 
 public static class RelicRewardSimulator
 {
+    // Logic in RelicGrabBag.Populate
     public static Dictionary<RelicRarity, List<RelicOptions>> BuildFrontPullPools(ulong seed)
     {
         return new Dictionary<RelicRarity, List<RelicOptions>>

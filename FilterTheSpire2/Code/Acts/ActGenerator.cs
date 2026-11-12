@@ -29,6 +29,7 @@ public static class ActGenerator
         return result;
     }
 
+    // This logic is in ActModel/RunManager.GenerateRooms
     private static List<ActDefinition> RollActs(string seed, AscensionLevel ascensionLevel)
     {
         var actSelectionRng = RngHelper.GetActSelectionRng(seed);

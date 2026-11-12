@@ -28,7 +28,7 @@ internal static class AncientSeedScenarios
             ancient: Ancient.Neow,
             option: NeowOptions.LostCoffer,
             actNumber: 1),
-
+        
         FilterOutcome(
             name: "Act 2 rolls Orobas with Touch of Orobas",
             constantName: "SeedAct2RollsOrobas",

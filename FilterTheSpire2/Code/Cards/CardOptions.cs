@@ -495,6 +495,7 @@ public enum CardOptions
       Mayhem,
       // Mimic,
       MindBlast,
+      MyShinies,
       Nostalgia,
       Omnislice,
       Panache,

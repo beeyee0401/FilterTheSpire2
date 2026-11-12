@@ -14,7 +14,7 @@ internal class StartNewSingleplayerRunPatch
     {
         if (IsFilteredSeedRun)
         {
-            gameMode = GameMode.Custom;
+            gameMode = GameMode.Standard;
             IsFilteredSeedRun = false;
         }
     }

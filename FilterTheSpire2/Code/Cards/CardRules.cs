@@ -496,6 +496,7 @@ public static class CardRules
         new(CardOptions.MasterOfStrategy, CharacterOptions.Any, CardRarity.Rare),
         new(CardOptions.Mayhem, CharacterOptions.Any, CardRarity.Rare),
         new(CardOptions.MindBlast, CharacterOptions.Any, CardRarity.Uncommon),
+        new(CardOptions.MyShinies, CharacterOptions.Any, CardRarity.Rare),
         new(CardOptions.Nostalgia, CharacterOptions.Any, CardRarity.Rare),
         new(CardOptions.Omnislice, CharacterOptions.Any, CardRarity.Uncommon),
         new(CardOptions.Panache, CharacterOptions.Any, CardRarity.Uncommon),

@@ -11,6 +11,7 @@ using FilterTheSpire2.Code.Relics;
 using FilterTheSpire2.Code.SeedSearcher;
 using MegaCrit.Sts2.Core.Entities.Ascension;
 using MegaCrit.Sts2.Core.Entities.Rngs;
+using MegaCrit.Sts2.Core.Extensions;
 
 namespace FilterTheSpire2Tests.FilterTests;
 
@@ -98,9 +99,9 @@ internal static class FilterTestHelpers
             var options = AncientRules.NeowsBonesOptions.ToList();
             var rng = RngHelper.GetPlayerRngType(
                 RngHelper.GetSeedHash(seed),
-                PlayerRngType.Rewards);
+                PlayerRngType.NonCombatGeneration);
 
-            rng.Shuffle(options);
+            options.UnstableShuffle(rng);
 
             if (options[0] != option1 || options[1] != option2)
             {

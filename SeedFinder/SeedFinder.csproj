@@ -27,5 +27,9 @@
     <ItemGroup>
         <ProjectReference Include="..\FilterTheSpire2\FilterTheSpire2.csproj" />
     </ItemGroup>
+    
+    <ItemGroup>
+      <PackageReference Include="Alchyr.Sts2.BaseLib" Version="3.4.8" />
+    </ItemGroup>
 
 </Project>

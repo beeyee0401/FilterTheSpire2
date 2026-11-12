@@ -123,7 +123,9 @@ public class ActDefinition
             EventOptions.SunkenTreasury,
             EventOptions.DoorsOfLightAndDark,
             EventOptions.TrashHeap,
+            EventOptions.WaterfallOfObviousSecrets,
             EventOptions.WaterloggedScriptorium,
+            EventOptions.WuppyInTrouble
         ],
 
         WeakEncounters =
@@ -235,8 +237,10 @@ public class ActDefinition
             EventOptions.HungryForMushrooms,
             EventOptions.Reflections,
             EventOptions.RoundTeaParty,
-            EventOptions.Trial,
+            EventOptions.ShrineOfTheWarlord,
+            EventOptions.ThermaeNonupeipe,
             EventOptions.TinkerTime,
+            EventOptions.Trial
         ],
 
         WeakEncounters =

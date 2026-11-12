@@ -9,6 +9,7 @@ public enum EventOptions
     CrystalSphere,
     DollRoom,
     FakeMerchant,
+    MuseumOfTorture,
     PotionCourier,
     RanwidTheElder,
     RelicTrader,
@@ -50,7 +51,9 @@ public enum EventOptions
     SunkenTreasury,
     DoorsOfLightAndDark,
     TrashHeap,
+    WaterfallOfObviousSecrets,
     WaterloggedScriptorium,
+    WuppyInTrouble,
     #endregion
 
     #region Hive
@@ -72,7 +75,9 @@ public enum EventOptions
     HungryForMushrooms,
     Reflections,
     RoundTeaParty,
-    Trial,
+    ShrineOfTheWarlord,
+    ThermaeNonupeipe,
     TinkerTime,
+    Trial,
     #endregion
 }

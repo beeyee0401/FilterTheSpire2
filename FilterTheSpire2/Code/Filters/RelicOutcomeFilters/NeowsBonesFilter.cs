@@ -4,6 +4,7 @@ using FilterTheSpire2.Code.Cards;
 using FilterTheSpire2.Code.Helpers;
 using FilterTheSpire2.Code.SeedSearcher;
 using MegaCrit.Sts2.Core.Entities.Rngs;
+using MegaCrit.Sts2.Core.Extensions;
 
 namespace FilterTheSpire2.Code.Filters.RelicOutcomeFilters;
 
@@ -18,8 +19,8 @@ public class NeowsBonesFilter(
         var allPossibleOptions = AncientRules.NeowsBonesOptions.ToList();
 
         var numSeed = RngHelper.GetSeedHash(seed);
-        var rng = RngHelper.GetPlayerRngType(numSeed, PlayerRngType.Rewards);
-        rng.Shuffle(allPossibleOptions);
+        var rng = RngHelper.GetPlayerRngType(numSeed, PlayerRngType.NonCombatGeneration);
+        allPossibleOptions.UnstableShuffle(rng);
         var chosen = allPossibleOptions.Take(2).ToList();
         
         var availableCurses = CardRules.CursePool;

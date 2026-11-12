@@ -15,6 +15,7 @@ public static class EventRules
         EventOptions.CrystalSphere,
         EventOptions.DollRoom,
         EventOptions.FakeMerchant,
+        EventOptions.MuseumOfTorture,
         EventOptions.PotionCourier,
         EventOptions.RanwidTheElder,
         EventOptions.RelicTrader,
@@ -38,19 +39,21 @@ public static class EventRules
     /// </summary>
     private static readonly Dictionary<EventOptions, HashSet<int>> ActIndexRestrictions = new()
     {
-        { EventOptions.BrainLeech, [0, 1] },        // CurrentActIndex < 2
-        { EventOptions.CrystalSphere, [1, 2] },     // CurrentActIndex > 0
-        { EventOptions.DollRoom, [1] },              // CurrentActIndex == 1
-        { EventOptions.FakeMerchant, [1, 2] },      // CurrentActIndex >= 1
-        { EventOptions.PotionCourier, [1, 2] },     // CurrentActIndex > 0
-        { EventOptions.RanwidTheElder, [1, 2] },    // CurrentActIndex != 0
-        { EventOptions.RelicTrader, [1, 2] },       // CurrentActIndex != 0
-        { EventOptions.RoomFullOfCheese, [0, 1] },  // CurrentActIndex < 2
-        { EventOptions.StoneOfAllTime, [1] },        // CurrentActIndex == 1
-        { EventOptions.Symbiote, [1, 2] },          // CurrentActIndex > 0
-        { EventOptions.TeaMaster, [0, 1] },         // CurrentActIndex < 2
-        { EventOptions.TheLegendsWereTrue, [0] },    // CurrentActIndex == 0
-        { EventOptions.WelcomeToWongos, [1] },       // CurrentActIndex == 1
+        // Events and their allowed acts (zero-indexed obviously)
+        { EventOptions.BrainLeech, [0, 1] },       
+        { EventOptions.CrystalSphere, [1, 2] },    
+        { EventOptions.DollRoom, [1] },            
+        { EventOptions.FakeMerchant, [1, 2] },     
+        { EventOptions.MuseumOfTorture, [1] },
+        { EventOptions.PotionCourier, [1, 2] },    
+        { EventOptions.RanwidTheElder, [1, 2] },   
+        { EventOptions.RelicTrader, [1, 2] },      
+        { EventOptions.RoomFullOfCheese, [0, 1] }, 
+        { EventOptions.StoneOfAllTime, [1] },      
+        { EventOptions.Symbiote, [1, 2] },         
+        { EventOptions.TeaMaster, [0, 1] },        
+        { EventOptions.TheLegendsWereTrue, [0] },  
+        { EventOptions.WelcomeToWongos, [1] },     
         // SelfHelpBook, ThisOrThat, TheFutureOfPotions: no act gate to model (only non-act conditions,
         // or IsAllowed not yet provided) — treated as unrestricted until confirmed otherwise.
     };
