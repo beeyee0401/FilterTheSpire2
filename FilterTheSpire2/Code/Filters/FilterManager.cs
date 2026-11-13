@@ -464,7 +464,7 @@ public static class FilterManager
             NeowOptions.Kaleidoscope => new PriorRngConsumption(18, 0, 6),
             NeowOptions.ArcaneScroll => new PriorRngConsumption(1, 0, 0),
             NeowOptions.LeafyPoultice => new PriorRngConsumption(0, 2, 0),
-            NeowOptions.NewLeaf => new PriorRngConsumption(0, 0, 1),
+            NeowOptions.NewLeaf => new PriorRngConsumption(0, 1, 0),
             NeowOptions.PhialHolster => new PriorRngConsumption(0, 0, 0, 4),
 
             NeowOptions.ScrollBoxes => PriorRngConsumption.None,

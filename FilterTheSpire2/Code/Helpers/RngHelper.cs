@@ -16,8 +16,7 @@ public static class RngHelper
     // These can change at any time between patches
     public static class RngCounters
     {
-        public const int NewLeafNicheCounter = 1;
-        public const int KaleidoscopeNicheCounter = 6;
+        public const int KaleidoscopeNonCombatGenerationCounter = 6;
         public const int UncommonRelicPoolCounter = 6; // or 0
         public const int CommonRelicPoolCounter = 7; // or 1
         public const int RareRelicPoolCounter = 8; // or 2
@@ -98,8 +97,9 @@ public static class RngHelper
         int extraNicheRngSteps = 0)
     {
         return new PriorRngConsumption(
-            RewardsRngSteps: AncientRules.NeowsBonesOptions.Length - 1 + extraRewardsRngSteps,
+            RewardsRngSteps: 0 + extraRewardsRngSteps,
             TransformationsRngSteps: 0 + extraTransformationRngSteps,
-            NicheRngSteps: 0 + extraNicheRngSteps);
+            NicheRngSteps: 0 + extraNicheRngSteps,
+            NonCombatGenerationRngSteps: 2);
     }
 }

@@ -33,8 +33,8 @@ public sealed class SeedSearchWorker(
 
     private SeedSearchResult? TryRandomSeed(ulong candidate)
     {
-        var stringSeed = RngHelper.GetRandomSeed(candidate);
-        // var stringSeed = "MZFL909GUS5A";
+        // var stringSeed = RngHelper.GetRandomSeed(candidate);
+        var stringSeed = "5KQDRY6RR21T";
 
         if (!FilterManager.ValidateFilters(request, stringSeed))
         {

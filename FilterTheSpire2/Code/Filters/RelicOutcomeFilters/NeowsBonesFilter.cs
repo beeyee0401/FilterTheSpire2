@@ -24,20 +24,16 @@ public class NeowsBonesFilter(
         var chosen = allPossibleOptions.Take(2).ToList();
         
         var availableCurses = CardRules.CursePool;
-        var nicheRng = RngHelper.GetRunRngType(numSeed, RunRngType.Niche);
+        var nonCombatGenerationRng = RngHelper.GetPlayerRngType(numSeed, PlayerRngType.NonCombatGeneration);
         var fastForwardCounter = 0;
         if (chosen.Contains(NeowOptions.Kaleidoscope))
         {
-            fastForwardCounter += RngHelper.RngCounters.KaleidoscopeNicheCounter;
+            fastForwardCounter += RngHelper.RngCounters.KaleidoscopeNonCombatGenerationCounter;
         }
         
-        if (chosen.Contains(NeowOptions.NewLeaf))
-        {
-            fastForwardCounter +=  RngHelper.RngCounters.NewLeafNicheCounter;
-        }
-        nicheRng.FastForwardCounter(fastForwardCounter);
+        nonCombatGenerationRng.FastForwardCounter(fastForwardCounter);
         
-        var chosenCurse = nicheRng.NextItem(availableCurses.ToArray());
+        var chosenCurse = nonCombatGenerationRng.NextItem(availableCurses.ToArray());
 
         var optionsMatch = requested.Length switch
         {

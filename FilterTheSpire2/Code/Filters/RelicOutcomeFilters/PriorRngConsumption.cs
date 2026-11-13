@@ -8,8 +8,9 @@ public record PriorRngConsumption(
     int RewardsRngSteps,
     int TransformationsRngSteps,
     int NicheRngSteps,
-    int CombatPotionGenerationRngSteps = 0
+    int CombatPotionGenerationRngSteps = 0,
+    int NonCombatGenerationRngSteps = 0
 )
 {
-    public static readonly PriorRngConsumption None = new(0, 0, 0, 0);
+    public static readonly PriorRngConsumption None = new(0, 0, 0, 0, 0);
 }

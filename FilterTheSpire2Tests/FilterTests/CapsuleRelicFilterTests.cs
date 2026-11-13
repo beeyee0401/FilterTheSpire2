@@ -10,7 +10,7 @@ public class CapsuleRelicFilterTests
 {
     private const string SmallCapsuleAnchorSeed = "LCVY5YC9ZQ3Q";
     private const string LargeCapsuleAnchorVajraSeed = "3CRJ4Q0P9J4F";
-    private const string BonesSmallAndLargeThreeRelicSeed = "TQ18ZA83KK95"; // Sturdy Clamp, Strike Dummy, Happy Flower
+    private const string BonesSmallAndLargeThreeRelicSeed = "5KQDRY6RR21T"; // Sturdy Clamp, Strike Dummy, Pen nib 
 
     [TestMethod]
     public void SmallCapsule_WhenRelicMatches_ReturnsTrue()
@@ -50,7 +50,7 @@ public class CapsuleRelicFilterTests
             [
                 RelicOptions.SturdyClamp,
                 RelicOptions.StrikeDummy,
-                RelicOptions.HappyFlower
+                RelicOptions.PenNib
             ],
             generatedRelicCount: 3,
             rngConsumption: RngHelper.GetNeowsBonesBaseConsumption());
@@ -64,7 +64,7 @@ public class CapsuleRelicFilterTests
         var filter = new CapsuleRelicFilter(
             relicsToMatch:
             [
-                RelicOptions.HappyFlower,
+                RelicOptions.PenNib,
                 RelicOptions.SturdyClamp,
                 RelicOptions.StrikeDummy
             ],

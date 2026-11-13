@@ -11,11 +11,11 @@ public class NewLeafFilter(CardOptions cardOptions, PriorRngConsumption? slot1Co
     BaseCardTransformFilter([cardOptions], 1, slot1Consumption)
 {
     protected override Rng GetTransformRng(ulong seed) => 
-        RngHelper.GetRunRngType(seed, RunRngType.Niche); 
+        RngHelper.GetPlayerRngType(seed, PlayerRngType.Transformations); 
     
     protected override ImmutableArray<CardOptions> GetCardPool() => 
         CardRules.AvailableCardPools[FilterTheSpire2Config.Character];
     
     protected override void FastForward(Rng rng, PriorRngConsumption consumption) =>
-        rng.FastForwardCounter(consumption.NicheRngSteps);
+        rng.FastForwardCounter(consumption.TransformationsRngSteps);
 }
