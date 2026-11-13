@@ -10,6 +10,7 @@ public static class CharacterMapping
         CharacterOptions.Silent,
         CharacterOptions.Regent,
         CharacterOptions.Necrobinder,
-        CharacterOptions.Defect
+        CharacterOptions.Defect,
+        CharacterOptions.Fool
     ];
 }

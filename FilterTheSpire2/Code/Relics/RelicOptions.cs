@@ -15,6 +15,7 @@ public enum RelicOptions
     BronzeScales,
     CentennialPuzzle,
     DataDisk,
+    ExerciseMat,
     FencingManual,
     FestivePopper,
     Gorget,
@@ -55,6 +56,7 @@ public enum RelicOptions
     MercuryHourglass,
     MiniatureCannon,
     Nunchaku,
+    Ocarina,
     Orichalcum,
     OrnamentalFan,
     Pantograph,
@@ -77,6 +79,7 @@ public enum RelicOptions
     TuningFork,
     TwistedFunnel,
     Vambrace,
+    WhittlingKnife,
     
     // Rare relics
     ArtOfWar,
@@ -88,8 +91,10 @@ public enum RelicOptions
     Chandelier,
     CharonsAshes,
     CloakClasp,
+    ConductorsBaton,
     DemonTongue,
     EmotionChip,
+    Fertilizer,
     FrozenEgg,
     GamblingChip,
     GamePiece,
@@ -124,6 +129,7 @@ public enum RelicOptions
     ToughBandages,
     ToxicEgg,
     TungstenRod,
+    Twine,
     UnceasingTop,
     UnsettlingLamp,
     VexingPuzzlebox,
@@ -132,6 +138,7 @@ public enum RelicOptions
     
     // Shop relics
     BeltBuckle,
+    BizarreLamp,
     Bread,
     Brimstone,
     BurningSticks,

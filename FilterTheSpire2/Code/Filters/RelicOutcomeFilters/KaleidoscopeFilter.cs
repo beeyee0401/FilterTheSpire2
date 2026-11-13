@@ -17,24 +17,26 @@ public class KaleidoscopeFilter : BaseCardRewardFilter
         : base(CardRarityOddsType.RegularEncounter, cardOptions, 2,
             slot1Consumption: slot1Consumption)
     {
+        // Sorted because Kaleidoscope does Stable shuffle, which sorts then calls UnstableShuffle
         var charListSorted = new List<CharacterOptions>
         {
             CharacterOptions.Defect,
+            CharacterOptions.Fool,
             CharacterOptions.Ironclad,
             CharacterOptions.Necrobinder,
             CharacterOptions.Regent,
-            CharacterOptions.Silent
+            CharacterOptions.Silent,
         };
         _charListFiltered = charListSorted.Except([FilterTheSpire2Config.Character]).ToList();
     }
 
     protected override bool IsCharacterRequired => true;
     protected override Rng GetRewardRng(ulong seed) => RngHelper.GetPlayerRngType(seed, PlayerRngType.Rewards);
-    protected override Rng GetCardPoolRng(ulong seed) => RngHelper.GetRunRngType(seed, RunRngType.Niche);
+    protected override Rng GetCardPoolRng(ulong seed) => RngHelper.GetPlayerRngType(seed, PlayerRngType.NonCombatGeneration);
     
     protected override List<RewardPool> GetRewardPools(Rng rng)
     {
-        var charList = _charListFiltered.ToList(); // small (4 chars) shuffle-target copy
+        var charList = _charListFiltered.ToList(); // small (5 chars) shuffle-target copy
         charList.UnstableShuffle(rng);
 
         var pools = new List<RewardPool>(CardsPerReward);

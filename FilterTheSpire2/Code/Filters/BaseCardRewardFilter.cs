@@ -49,10 +49,7 @@ public abstract class BaseCardRewardFilter(
         if (slot1Consumption != null)
         {
             rng.FastForwardCounter(slot1Consumption.RewardsRngSteps);
-            if (poolRng != null)
-            {
-                poolRng.FastForwardCounter(slot1Consumption.NicheRngSteps);
-            }
+            poolRng?.FastForwardCounter(slot1Consumption.NonCombatGenerationRngSteps);
         }
 
         var remaining = new Dictionary<CardOptions, int>();

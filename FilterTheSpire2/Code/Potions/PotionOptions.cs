@@ -81,4 +81,10 @@ public enum PotionOptions
     EssenceOfDarkness,
     PotionOfCapacity,
     #endregion
+
+    #region  Fool pool
+    PrecisionPotion,
+    BottledSong,
+    CrystallineEuphoria,
+    #endregion
 }

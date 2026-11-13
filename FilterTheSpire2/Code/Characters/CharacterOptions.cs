@@ -7,5 +7,6 @@ public enum CharacterOptions
     Silent,
     Regent,
     Necrobinder,
-    Defect
+    Defect,
+    Fool
 }

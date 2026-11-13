@@ -72,7 +72,7 @@ internal class BeginRunForAllPlayersPatch
         {
             AscensionLevel = (AscensionLevel)instance.Ascension,
             Filters = filters,
-            ThreadCount = 6
+            ThreadCount = 1
         };
 
         var runner = new SeedSearchRunner(request);

@@ -175,7 +175,15 @@ public static class RelicRules
             { RelicRarity.Uncommon, [RelicOptions.GoldPlatedCables, RelicOptions.SymbioticVirus] },
             { RelicRarity.Rare, [RelicOptions.EmotionChip, RelicOptions.Metronome, RelicOptions.PowerCell] },
             { RelicRarity.Shop, [RelicOptions.RunicCapacitor] },
-        }}
+        }},
+        {CharacterOptions.Fool,  new Dictionary<RelicRarity, HashSet<RelicOptions>>()
+            {
+                { RelicRarity.Common, [RelicOptions.ExerciseMat] },
+                { RelicRarity.Uncommon, [RelicOptions.Ocarina, RelicOptions.WhittlingKnife] },
+                { RelicRarity.Rare, [RelicOptions.ConductorsBaton, RelicOptions.Fertilizer, RelicOptions.Twine] },
+                { RelicRarity.Shop, [RelicOptions.BizarreLamp] },
+            }
+        }
     };
 
     private static List<RelicOptions> CreateRelicPool(RelicRarity rarity, bool includeCharacterRelics)

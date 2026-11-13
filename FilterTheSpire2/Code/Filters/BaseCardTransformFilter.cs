@@ -36,7 +36,9 @@ public abstract class BaseCardTransformFilter(
 
         // Fast-forward past slot 1's consumption if we are slot 2
         if (slot1Consumption != null)
+        {
             FastForward(rng, slot1Consumption);
+        }
 
         var cardPool = GetCardPool();
         var remaining = requestedCards
@@ -47,8 +49,15 @@ public abstract class BaseCardTransformFilter(
         {
             var rolled = rng.NextItem(cardPool);
             if (!remaining.TryGetValue(rolled, out var count)) continue;
-            if (count == 1) { remaining.Remove(rolled); if (remaining.Count == 0) return true; }
-            else remaining[rolled] = count - 1;
+            if (count == 1)
+            {
+                remaining.Remove(rolled); 
+                if (remaining.Count == 0) return true;
+            }
+            else
+            {
+                remaining[rolled] = count - 1;
+            }
         }
 
         return remaining.Count == 0;

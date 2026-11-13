@@ -11,12 +11,12 @@ namespace FilterTheSpire2Tests.FilterTests;
 [TestClass]
 public class NeowsBonesFilterTests
 {
-    private const string SeedBonesNewLeafKaleidoscopeRegret = "AU0RDDGRZ135";
+    private const string SeedBonesNewLeafKaleidoscopeRegret = "KMPYESER93TU";
     
     // Bones / slot offset scenarios.
-    private const string SeedBonesLeadPaperweightTarget = "L0YE2F8NDMK0"; // Bones with Paperweight and Master of Strat
-    private const string SeedBonesKaleidoscopeSlot1LeafyPoulticeSlot2Target = "F4A16TV9U6SH";
-    private const string SeedBonesLeafyPoulticeSlot1KaleidoscopeSlot2Target = "K3KEHWAE0G5Y";
+    private const string SeedBonesLeadPaperweightTarget = "KQ1KUEYM3N8Q"; // Bones with Paperweight and Master of Strat
+    private const string SeedBonesKaleidoscopeSlot1LeafyPoulticeSlot2Target = "WAPEHPS6WHM1";
+    private const string SeedBonesLeafyPoulticeSlot1KaleidoscopeSlot2Target = "YLBAD16P2H7R";
     
     private const CardOptions LeadPaperweightTarget = CardOptions.MasterOfStrategy;
     private const CardOptions KaleidoscopeTarget1 = CardOptions.Finisher;
@@ -245,8 +245,7 @@ public class NeowsBonesFilterTests
         public void LeafyPoultice_AsSlot2AfterKaleidoscope_IgnoresKaleidoscopeRewardAndNicheConsumption()
         {
             var bonesBasePlusKaleidoscope = RngHelper.GetNeowsBonesBaseConsumption(
-                extraRewardsRngSteps: 18, 
-                extraNicheRngSteps: 6
+                extraRewardsRngSteps: 18
             );
     
             var filter = new LeafyPoulticeFilter(

@@ -452,20 +452,21 @@ public static class FilterManager
         return (a & b) != RngStreams.None;
     }
 
+    // This can be tested by debugging in the respective relic and finding all RNG counts at the end of the pickup
     private static PriorRngConsumption GetDeterministicConsumption(NeowOptions option)
     {
         return option switch
         {
-            NeowOptions.SmallCapsule => new PriorRngConsumption(1, 0, 0),
-            NeowOptions.LargeCapsule => new PriorRngConsumption(2, 0, 0),
-            NeowOptions.LeadPaperweight => new PriorRngConsumption(6, 0, 0),
+            NeowOptions.SmallCapsule => new PriorRngConsumption(1, 0),
+            NeowOptions.LargeCapsule => new PriorRngConsumption(2, 0),
+            NeowOptions.LeadPaperweight => new PriorRngConsumption(6, 0),
             // 9 for card reward, 2 for potion
-            NeowOptions.LostCoffer => new PriorRngConsumption(11, 0, 0),
-            NeowOptions.Kaleidoscope => new PriorRngConsumption(18, 0, 6),
-            NeowOptions.ArcaneScroll => new PriorRngConsumption(1, 0, 0),
-            NeowOptions.LeafyPoultice => new PriorRngConsumption(0, 2, 0),
-            NeowOptions.NewLeaf => new PriorRngConsumption(0, 1, 0),
-            NeowOptions.PhialHolster => new PriorRngConsumption(0, 0, 0, 4),
+            NeowOptions.LostCoffer => new PriorRngConsumption(11, 0),
+            NeowOptions.Kaleidoscope => new PriorRngConsumption(18, 0, NonCombatGenerationRngSteps: RngHelper.RngCounters.KaleidoscopeNonCombatGenerationCounter),
+            NeowOptions.ArcaneScroll => new PriorRngConsumption(1, 0),
+            NeowOptions.LeafyPoultice => new PriorRngConsumption(0, 2),
+            NeowOptions.NewLeaf => new PriorRngConsumption(0, 1),
+            NeowOptions.PhialHolster => new PriorRngConsumption(0, 0, 4),
 
             NeowOptions.ScrollBoxes => PriorRngConsumption.None,
             _ => PriorRngConsumption.None
@@ -589,8 +590,8 @@ public static class FilterManager
         return new PriorRngConsumption(
             RewardsRngSteps: a.RewardsRngSteps + b.RewardsRngSteps,
             TransformationsRngSteps: a.TransformationsRngSteps + b.TransformationsRngSteps,
-            NicheRngSteps: a.NicheRngSteps + b.NicheRngSteps,
-            CombatPotionGenerationRngSteps: a.CombatPotionGenerationRngSteps + b.CombatPotionGenerationRngSteps);
+            CombatPotionGenerationRngSteps: a.CombatPotionGenerationRngSteps + b.CombatPotionGenerationRngSteps,
+            NonCombatGenerationRngSteps: a.NonCombatGenerationRngSteps + b.NonCombatGenerationRngSteps);
     }
 
     #endregion
