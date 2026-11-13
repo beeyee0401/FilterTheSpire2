@@ -1,9 +1,6 @@
-using FilterTheSpire2.Code.Ancients.Config;
 using FilterTheSpire2.Code.Filters.RelicOutcomeFilters;
 using FilterTheSpire2.Code.Helpers;
 using FilterTheSpire2.Code.Relics;
-using MegaCrit.Sts2.Core.Entities.Rngs;
-using MegaCrit.Sts2.Core.Runs;
 
 namespace FilterTheSpire2Tests.FilterTests;
 
@@ -11,8 +8,8 @@ namespace FilterTheSpire2Tests.FilterTests;
 [DoNotParallelize]
 public class CapsuleRelicFilterTests
 {
-    private const string SmallCapsuleAnchorSeed = "4SAA1EW3F179";
-    private const string LargeCapsuleAnchorVajraSeed = "0DJUHBN7PSKH";
+    private const string SmallCapsuleAnchorSeed = "LCVY5YC9ZQ3Q";
+    private const string LargeCapsuleAnchorVajraSeed = "3CRJ4Q0P9J4F";
     private const string BonesSmallAndLargeThreeRelicSeed = "TQ18ZA83KK95"; // Sturdy Clamp, Strike Dummy, Happy Flower
 
     [TestMethod]

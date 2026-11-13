@@ -7,11 +7,11 @@ namespace FilterTheSpire2Tests.FilterTests;
 [TestClass]
 public class BossFilterTests
 {
-    private const string SeedAct1RollsVantom = "1A96AXBPJZ5L";
-    private const string SeedAct2RollsKaiserCrab = "1A96AXBPJZ5L";
-    private const string SeedAct3RollsQueen = "1A96AXBPJZ5L";
+    private const string SeedAct1RollsVantom = "MZFL909GUS5A";
+    private const string SeedAct2RollsKaiserCrab = "MZFL909GUS5A";
+    private const string SeedAct3RollsQueen = "MZFL909GUS5A";
 
-    private const string SeedAct3DoubleBoss = "1A96AXBPJZ5L";
+    private const string SeedAct3DoubleBoss = "MZFL909GUS5A";
     private const BossOptions Act3DoubleBossFirstBoss = BossOptions.Queen;
     private const BossOptions Act3DoubleBossSecondBoss = BossOptions.TestSubject;
     private const BossOptions Act3DoubleBossNonMatchingBoss = BossOptions.Aeonglass;

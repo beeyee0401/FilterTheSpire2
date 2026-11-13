@@ -35,6 +35,7 @@ internal class BeginRunForAllPlayersPatch
     {
         if (_searching ||
             __instance.GameMode != GameMode.Standard ||
+            __instance.IsCustom ||
             __instance.Players.Count > 1 ||
             __instance.Players[0].unlockState.UnlockedEpochs.Count != UnlockState.all.EpochUnlockCount())
         {

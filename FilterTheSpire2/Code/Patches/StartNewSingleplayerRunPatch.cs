@@ -10,11 +10,11 @@ internal class StartNewSingleplayerRunPatch
     public static bool IsFilteredSeedRun { get; set; }
 
     [HarmonyPrefix]
-    private static void Prefix(ref GameMode gameMode)
+    private static void Prefix(ref bool isCustomGame)
     {
         if (IsFilteredSeedRun)
         {
-            gameMode = GameMode.Standard;
+            isCustomGame = true;
             IsFilteredSeedRun = false;
         }
     }

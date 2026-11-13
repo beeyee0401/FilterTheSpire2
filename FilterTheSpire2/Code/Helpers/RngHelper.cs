@@ -13,16 +13,20 @@ public static class RngHelper
     [ThreadStatic] private static string? _cachedSeedString;
     [ThreadStatic] private static ulong _cachedSeedHash;
     
-    // These can change at any time
+    // These can change at any time between patches
     public static class RngCounters
     {
         public const int NewLeafNicheCounter = 1;
         public const int KaleidoscopeNicheCounter = 6;
-        public const int UncommonRelicPoolCounter = 0; // or 6
-        public const int CommonRelicPoolCounter = 1; // or 7
-        public const int RareRelicPoolCounter = 2; // or 8
-        public const int ShopRelicPoolCounter = 3; // or 9
-        public const int AncientCounter = 13;
+        public const int UncommonRelicPoolCounter = 6; // or 0
+        public const int CommonRelicPoolCounter = 7; // or 1
+        public const int RareRelicPoolCounter = 8; // or 2
+        public const int ShopRelicPoolCounter = 9; // or 3
+        
+        /// <summary>
+        /// Whatever Upfront RNG counter is at the START of RunManager.GenerateRooms
+        /// </summary>
+        public const int AncientCounter = 10;
     }
 
     public static Rng GetActSelectionRng(string seed) =>
