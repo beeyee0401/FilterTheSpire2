@@ -1,6 +1,4 @@
-using System.Text;
 using FilterTheSpire2.Code.Acts;
-using FilterTheSpire2.Code.Ancients.Config;
 using FilterTheSpire2.Code.Filters.RelicOutcomeFilters;
 using MegaCrit.Sts2.Core.Entities.Rngs;
 using MegaCrit.Sts2.Core.Helpers;
@@ -16,7 +14,10 @@ public static class RngHelper
     // These can change at any time between patches
     public static class RngCounters
     {
-        public const int KaleidoscopeNonCombatGenerationCounter = 3;
+        /// <summary>
+        /// One for each full card reward
+        /// </summary>
+        public const int KaleidoscopeNonCombatGenerationCounter = 2;
         public const int UncommonRelicPoolCounter = 6; // or 0
         public const int CommonRelicPoolCounter = 7; // or 1
         public const int RareRelicPoolCounter = 8; // or 2
@@ -95,9 +96,11 @@ public static class RngHelper
         int extraRewardsRngSteps = 0, 
         int extraTransformationRngSteps = 0)
     {
+        // There is one NonCombatGenerationRngSteps to roll the relics,
+        // and one to roll the curse. So use the correct number accordingly
         return new PriorRngConsumption(
             RewardsRngSteps: 0 + extraRewardsRngSteps,
             TransformationsRngSteps: 0 + extraTransformationRngSteps,
-            NonCombatGenerationRngSteps: 2);
+            NonCombatGenerationRngSteps: 1);
     }
 }

@@ -8,11 +8,8 @@ namespace FilterTheSpire2Tests.FilterTests;
 [DoNotParallelize]
 public class RelicFilterTests
 {
-    private const string SeedCommonRelicTarget = "4C60TQRCPWCS";
-    private const string SeedUncommonRelicTarget = "H455G3QTGMLF";
-    private const string SeedRareRelicTarget = "1P4ZMV156RML";
-    private const string SeedShopRelicTarget = "G3BVT9NR7BME";
-
+    private const string SeedAllRelicsTarget = "K4PVEJLR524H";
+   
     private const RelicOptions CommonTarget = RelicOptions.Anchor;
     private const RelicOptions UncommonTarget = RelicOptions.HornCleat;
     private const RelicOptions RareTarget = RelicOptions.CaptainsWheel;
@@ -29,7 +26,7 @@ public class RelicFilterTests
     {
         var filter = new CommonRelicFilter(CommonTarget);
 
-        Assert.IsTrue(filter.IsSeedValid(FilterTestHelpers.Request(), SeedCommonRelicTarget));
+        Assert.IsTrue(filter.IsSeedValid(FilterTestHelpers.Request(), SeedAllRelicsTarget));
     }
 
     [TestMethod]
@@ -37,7 +34,7 @@ public class RelicFilterTests
     {
         var filter = new UncommonRelicFilter(UncommonTarget);
 
-        Assert.IsTrue(filter.IsSeedValid(FilterTestHelpers.Request(), SeedUncommonRelicTarget));
+        Assert.IsTrue(filter.IsSeedValid(FilterTestHelpers.Request(), SeedAllRelicsTarget));
     }
 
     [TestMethod]
@@ -45,7 +42,7 @@ public class RelicFilterTests
     {
         var filter = new RareRelicFilter(RareTarget);
 
-        Assert.IsTrue(filter.IsSeedValid(FilterTestHelpers.Request(), SeedRareRelicTarget));
+        Assert.IsTrue(filter.IsSeedValid(FilterTestHelpers.Request(), SeedAllRelicsTarget));
     }
 
     [TestMethod]
@@ -53,6 +50,6 @@ public class RelicFilterTests
     {
         var filter = new ShopRelicFilter(ShopTarget);
 
-        Assert.IsTrue(filter.IsSeedValid(FilterTestHelpers.Request(), SeedShopRelicTarget));
+        Assert.IsTrue(filter.IsSeedValid(FilterTestHelpers.Request(), SeedAllRelicsTarget));
     }
 }

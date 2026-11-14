@@ -7,9 +7,8 @@ namespace FilterTheSpire2.Code.Filters.RelicOutcomeFilters;
 public record PriorRngConsumption(
     int RewardsRngSteps,
     int TransformationsRngSteps,
-    int CombatPotionGenerationRngSteps = 0,
     int NonCombatGenerationRngSteps = 0
 )
 {
-    public static readonly PriorRngConsumption None = new(0, 0, 0, 0);
+    public static readonly PriorRngConsumption None = new(0, 0, 0);
 }

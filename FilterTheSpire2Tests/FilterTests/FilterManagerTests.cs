@@ -15,13 +15,13 @@ namespace FilterTheSpire2Tests.FilterTests;
 [DoNotParallelize]
 public class FilterManagerTests
 {
-    private const string SeedBonesNewLeafKaleidoscope = "15P9SBV7MFZA";
+    private const string SeedBonesKaleidoscopeSlot1PhialHolsterSlot2 = "SD4CY6DQ2PF2";
     
     // Block/Attack from Holster, Colorless from Coffer
-    private const string SeedBonesLostCofferPhialHolster = "1H13GMKSMYHM";
+    private const string SeedBonesLostCofferPhialHolster = "DQRFL68A1EVP";
     
     // Attack and block pots from Phial, attack pot from Coffer
-    private const string SeedBonesPhialCofferDupePotions = "X0Y73RTVGBQ6";
+    private const string SeedBonesPhialCofferDupePotions = "4556YJAKN70U";
     
     [TestInitialize]
     public void Setup()
@@ -165,8 +165,8 @@ public class FilterManagerTests
     public void CreateFiltersFromSettings_WhenOptionsOverlap_RequiresConfiguredOrderWithoutOutcomeFilters()
     {
         FilterTheSpire2Config.NeowOptions = NeowOptions.NeowsBones;
-        FilterTheSpire2Config.NeowsBonesRelicOption1 = NeowOptions.NewLeaf;
-        FilterTheSpire2Config.NeowsBonesRelicOption2 = NeowOptions.Kaleidoscope;
+        FilterTheSpire2Config.NeowsBonesRelicOption1 = NeowOptions.Kaleidoscope;
+        FilterTheSpire2Config.NeowsBonesRelicOption2 = NeowOptions.PhialHolster;
 
         // Leave NewLeaf and Kaleidoscope card selections as Any so no outcome
         // filters are created. Ordering should still come from option metadata.
@@ -175,24 +175,24 @@ public class FilterManagerTests
 
         Assert.IsTrue(bonesFilter.IsSeedValid(
             FilterTestHelpers.Request(),
-            SeedBonesNewLeafKaleidoscope));
+            SeedBonesKaleidoscopeSlot1PhialHolsterSlot2));
     }
 
     [TestMethod]
     public void CreateFiltersFromSettings_WhenOverlappingOptionsConfiguredInWrongOrder_RejectsSeed()
     {
         FilterTheSpire2Config.NeowOptions = NeowOptions.NeowsBones;
-        FilterTheSpire2Config.NeowsBonesRelicOption1 = NeowOptions.Kaleidoscope;
-        FilterTheSpire2Config.NeowsBonesRelicOption2 = NeowOptions.NewLeaf;
+        FilterTheSpire2Config.NeowsBonesRelicOption1 = NeowOptions.PhialHolster;
+        FilterTheSpire2Config.NeowsBonesRelicOption2 = NeowOptions.Kaleidoscope;
 
         // No outcome filters are configured. The manager must still recognize
-        // that both options consume Niche RNG and require sequence.
+        // that both options consume NonCombatGeneration RNG and require sequence.
         var filters = FilterManager.CreateFiltersFromSettings();
         var bonesFilter = filters.OfType<NeowsBonesFilter>().Single();
 
         Assert.IsFalse(bonesFilter.IsSeedValid(
             FilterTestHelpers.Request(),
-            SeedBonesNewLeafKaleidoscope));
+            SeedBonesKaleidoscopeSlot1PhialHolsterSlot2));
     }
     
     [TestMethod]

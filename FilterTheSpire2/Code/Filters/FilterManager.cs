@@ -424,8 +424,7 @@ public static class FilterManager
         None = 0,
         Rewards = 1 << 0,
         Transformations = 1 << 1,
-        Niche = 1 << 2,
-        CombatPotionGeneration = 1 << 3
+        NonCombatGeneration = 1 << 2,
     }
 
     private static RngStreams GetRngStreams(NeowOptions option)
@@ -439,10 +438,10 @@ public static class FilterManager
                 NeowOptions.ArcaneScroll or
                 NeowOptions.ScrollBoxes => RngStreams.Rewards,
 
-            NeowOptions.Kaleidoscope => RngStreams.Rewards | RngStreams.Niche,
+            NeowOptions.Kaleidoscope => RngStreams.Rewards | RngStreams.NonCombatGeneration,
             NeowOptions.LeafyPoultice => RngStreams.Transformations,
-            NeowOptions.NewLeaf => RngStreams.Niche,
-            NeowOptions.PhialHolster => RngStreams.CombatPotionGeneration,
+            NeowOptions.NewLeaf => RngStreams.Transformations,
+            NeowOptions.PhialHolster => RngStreams.NonCombatGeneration,
             _ => RngStreams.None
         };
     }
@@ -466,7 +465,7 @@ public static class FilterManager
             NeowOptions.ArcaneScroll => new PriorRngConsumption(1, 0),
             NeowOptions.LeafyPoultice => new PriorRngConsumption(0, 2),
             NeowOptions.NewLeaf => new PriorRngConsumption(0, 1),
-            NeowOptions.PhialHolster => new PriorRngConsumption(0, 0, 4),
+            NeowOptions.PhialHolster => new PriorRngConsumption(0, 0, NonCombatGenerationRngSteps: 4),
 
             NeowOptions.ScrollBoxes => PriorRngConsumption.None,
             _ => PriorRngConsumption.None
@@ -507,7 +506,7 @@ public static class FilterManager
         {
             filters.Add(new PhialHolsterFilter(
                 selectedPotions,
-                RngHelper.GetNeowsBonesBaseConsumption().CombatPotionGenerationRngSteps));
+                RngHelper.GetNeowsBonesBaseConsumption().NonCombatGenerationRngSteps));
         }
         else if (option2 == NeowOptions.PhialHolster)
         {
@@ -517,7 +516,7 @@ public static class FilterManager
 
             filters.Add(new PhialHolsterFilter(
                 selectedPotions,
-                priorConsumption.CombatPotionGenerationRngSteps));
+                priorConsumption.NonCombatGenerationRngSteps));
         }
     }
 
@@ -590,7 +589,6 @@ public static class FilterManager
         return new PriorRngConsumption(
             RewardsRngSteps: a.RewardsRngSteps + b.RewardsRngSteps,
             TransformationsRngSteps: a.TransformationsRngSteps + b.TransformationsRngSteps,
-            CombatPotionGenerationRngSteps: a.CombatPotionGenerationRngSteps + b.CombatPotionGenerationRngSteps,
             NonCombatGenerationRngSteps: a.NonCombatGenerationRngSteps + b.NonCombatGenerationRngSteps);
     }
 

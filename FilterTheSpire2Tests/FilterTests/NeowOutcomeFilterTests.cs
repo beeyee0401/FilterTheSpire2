@@ -12,13 +12,13 @@ namespace FilterTheSpire2Tests.FilterTests;
 [DoNotParallelize]
 public class NeowOutcomeFilterTests
 {
-    private const string SeedLeadPaperweightTarget = "HE68L49HK02W"; // Master of Strat
-    private const string SeedNewLeafTarget = "86LMS1VBD7Y7"; // BTrance
+    private const string SeedLeadPaperweightTarget = "YEU4U145L6K5"; // Master of Strat
+    private const string SeedNewLeafTarget = "HBSSM7ABKAVA"; // BTrance
     private const string SeedLeafyPoulticeTwoTargets = "379JUJCAQ0Q8"; // Shrug and BTrance
     private const string SeedLostCofferTarget = "V2VL1EU5PJ04"; // Btrance
-    private const string SeedKaleidoscopeTwoTargets = "VW5LX2R4XT89"; // Backstab and Ball lightning
+    private const string SeedKaleidoscopeTwoTargets = "LM3DSF4WXHNP"; // Backstab and Ball lightning
     private const string SeedArcaneScrollTarget = "KBCDV2VBPUS3"; // Feed
-    private const string SeedPhialHolsterAttackAndBlockPotions = "WZ7P8J75YJME";
+    private const string SeedPhialHolsterAttackAndBlockPotions = "6BBD076NBKBX";
     private const string SeedLostCofferBeetleJuicePotion = "RQ6EF252FEPZ";
     private const string SeedLostCofferAggressionAndAshwaterPotion = "9AX9GGVT9SR4";
 

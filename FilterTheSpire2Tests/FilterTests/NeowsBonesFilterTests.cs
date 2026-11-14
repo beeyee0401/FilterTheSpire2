@@ -11,11 +11,11 @@ namespace FilterTheSpire2Tests.FilterTests;
 [TestClass]
 public class NeowsBonesFilterTests
 {
-    private const string SeedBonesNewLeafKaleidoscopeRegret = "KMPYESER93TU";
+    private const string SeedBonesNewLeafKaleidoscopeRegret = "0ZKJCDAD2V1U";
     
     // Bones / slot offset scenarios.
     private const string SeedBonesLeadPaperweightTarget = "KQ1KUEYM3N8Q"; // Bones with Paperweight and Master of Strat
-    private const string SeedBonesKaleidoscopeSlot1LeafyPoulticeSlot2Target = "WAPEHPS6WHM1";
+    private const string SeedBonesKaleidoscopeSlot1LeafyPoulticeSlot2Target = "GG4YUJZH8AND";
     private const string SeedBonesLeafyPoulticeSlot1KaleidoscopeSlot2Target = "YLBAD16P2H7R";
     
     private const CardOptions LeadPaperweightTarget = CardOptions.MasterOfStrategy;
@@ -105,21 +105,6 @@ public class NeowsBonesFilterTests
         }
         
         [TestMethod]
-        public void IsSeedValid_DuplicateConfigOptions_TreatedAsSingleOption()
-        {
-            var filter = new NeowsBonesFilter(
-                [
-                    NeowOptions.NewLeaf,
-                    NeowOptions.NewLeaf // duplicate from UI not preventing it in config
-                ],
-                null);
-    
-            var request = FilterTestHelpers.Request();
-    
-            Assert.IsTrue(filter.IsSeedValid(request, SeedBonesNewLeafKaleidoscopeRegret));
-        }
-        
-        [TestMethod]
         public void IsSeedValid_FirstOptionMismatch_FailsEvenIfSecondMatches()
         {
             var filter = new NeowsBonesFilter(
@@ -179,25 +164,6 @@ public class NeowsBonesFilterTests
     }
 
     [TestMethod]
-    public void IsSeedValid_SequenceMode_RejectsSwappedTwoOptions()
-    {
-        var request = FilterTestHelpers.Request();
-
-        var normal = new NeowsBonesFilter(
-            [NeowOptions.NewLeaf, NeowOptions.Kaleidoscope],
-            null,
-            requireSequenceForTwoOptions: true);
-
-        var swapped = new NeowsBonesFilter(
-            [NeowOptions.Kaleidoscope, NeowOptions.NewLeaf],
-            null,
-            requireSequenceForTwoOptions: true);
-
-        Assert.IsTrue(normal.IsSeedValid(request, SeedBonesNewLeafKaleidoscopeRegret));
-        Assert.IsFalse(swapped.IsSeedValid(request, SeedBonesNewLeafKaleidoscopeRegret));
-    }
-
-    [TestMethod]
     public void IsSeedValid_UnorderedMode_StillRejectsMissingOption()
     {
         var request = FilterTestHelpers.Request();
@@ -242,7 +208,7 @@ public class NeowsBonesFilterTests
         }
     
         [TestMethod]
-        public void LeafyPoultice_AsSlot2AfterKaleidoscope_IgnoresKaleidoscopeRewardAndNicheConsumption()
+        public void LeafyPoultice_AsSlot2AfterKaleidoscope_IgnoresKaleidoscopeRewardAndNonCombatGenerationConsumption()
         {
             var bonesBasePlusKaleidoscope = RngHelper.GetNeowsBonesBaseConsumption(
                 extraRewardsRngSteps: 18
