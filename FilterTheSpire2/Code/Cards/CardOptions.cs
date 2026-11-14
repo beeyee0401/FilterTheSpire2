@@ -477,7 +477,7 @@ public enum CardOptions
       ChoLimbs, 
       ChoReady, 
       Coda, 
-      Compost, 
+      // Compost, 
       // CoveringFire,
       DeepStretch, 
       DefendFool, 

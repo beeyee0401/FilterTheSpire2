@@ -487,7 +487,6 @@ public static class CardRules
         new(CardOptions.ChoLimbs, CharacterOptions.Fool, CardRarity.Uncommon),
         new(CardOptions.ChoReady, CharacterOptions.Fool, CardRarity.Common),
         new(CardOptions.Coda, CharacterOptions.Fool, CardRarity.Rare),
-        new(CardOptions.Compost, CharacterOptions.Fool, CardRarity.Uncommon),
         new(CardOptions.DeepStretch, CharacterOptions.Fool, CardRarity.Common),
         new(CardOptions.DefendFool, CharacterOptions.Fool, CardRarity.Basic),
         new(CardOptions.DislikeYou, CharacterOptions.Fool, CardRarity.Uncommon),

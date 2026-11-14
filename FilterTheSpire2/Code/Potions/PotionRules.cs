@@ -91,6 +91,12 @@ public static class PotionRules
         new(PotionOptions.EssenceOfDarkness, CharacterOptions.Defect, PotionRarity.Rare),
         new(PotionOptions.PotionOfCapacity, CharacterOptions.Defect, PotionRarity.Uncommon),
         #endregion
+        
+        #region Fool pool
+        new(PotionOptions.PrecisionPotion, CharacterOptions.Fool, PotionRarity.Common),
+        new(PotionOptions.BottledSong, CharacterOptions.Fool, PotionRarity.Rare),
+        new(PotionOptions.CrystallineEuphoria, CharacterOptions.Fool, PotionRarity.Uncommon),
+        #endregion
     ];
 
     private static readonly ImmutableArray<PotionDefinition> SharedPotions =
