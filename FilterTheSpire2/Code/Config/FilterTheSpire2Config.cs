@@ -1,4 +1,5 @@
 using System.Reflection;
+using BaseLib;
 using BaseLib.Config;
 using BaseLib.Config.UI;
 using FilterTheSpire2.Code.Acts;
@@ -10,6 +11,9 @@ using FilterTheSpire2.Code.Events;
 using FilterTheSpire2.Code.Potions;
 using FilterTheSpire2.Code.Relics;
 using Godot;
+using MegaCrit.Sts2.Core.Localization;
+using MegaCrit.Sts2.Core.Saves;
+using MegaCrit.Sts2.Core.Unlocks;
 
 namespace FilterTheSpire2.Code.Config;
 
@@ -184,6 +188,22 @@ public class FilterTheSpire2Config : SimpleModConfig
     
     public override void SetupConfigUI(Control optionContainer)
     {
+        if (SaveManager.Instance.GetUnlocksRemaining() > 0)
+        {
+            var label = new Label
+            {
+                Text = LocString.GetIfExists("settings_ui", $"{ModPrefix}unlock_message")?.GetRawText() ?? 
+                       "You must have everything unlocked to use Filter the Spire. Play more or use the 'unlock all' console command!",
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center,
+                AutowrapMode = TextServer.AutowrapMode.WordSmart
+            };
+            
+            label.AddThemeFontSizeOverride("font_size", 24);
+
+            optionContainer.AddChild(label);
+            return;
+        }
         base.SetupConfigUI(optionContainer);
 
         for (var i = 1; i <= 3; i++)

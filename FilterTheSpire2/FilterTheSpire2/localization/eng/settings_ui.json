@@ -1,5 +1,6 @@
 {
   "FILTERTHESPIRE2.mod_title": "Filter the Spire 2",
+  "FILTERTHESPIRE2-unlock_message": "You must have everything unlocked to use Filter the Spire 2. Play more or use the 'unlock all' console command!",
   "FILTERTHESPIRE2-CHARACTER.hover.desc": "Only needed if you want to set filters for character specific relics or cards",
   
   "FILTERTHESPIRE2-ACT1_SECTION.title": "Act 1 filters",
