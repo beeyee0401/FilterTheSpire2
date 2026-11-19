@@ -10,6 +10,7 @@ using MegaCrit.Sts2.Core.Multiplayer.Game.Lobby;
 using MegaCrit.Sts2.Core.Nodes.CommonUi;
 using MegaCrit.Sts2.Core.Nodes.GodotExtensions;
 using MegaCrit.Sts2.Core.Nodes.Screens.CharacterSelect;
+using MegaCrit.Sts2.Core.Nodes.Screens.MainMenu;
 using MegaCrit.Sts2.Core.Runs;
 using MegaCrit.Sts2.Core.Unlocks;
 
@@ -19,6 +20,7 @@ namespace FilterTheSpire2.Code.Patches;
 internal class BeginRunForAllPlayersPatch
 {
     private static bool _searching = false;
+    private static GameMode[] filterableGameModes = [GameMode.Standard, GameMode.Dread];
 
     private sealed class SearchUiState
     {
@@ -34,7 +36,7 @@ internal class BeginRunForAllPlayersPatch
     private static bool Prefix(StartRunLobby __instance, ref string seed, List<ModifierModel> modifiers)
     {
         if (_searching ||
-            __instance.GameMode != GameMode.Standard ||
+            !filterableGameModes.Contains(__instance.GameMode) ||
             __instance.IsCustom ||
             __instance.Players.Count > 1 ||
             __instance.Players[0].unlockState.UnlockedEpochs.Count != UnlockState.all.EpochUnlockCount())
@@ -56,7 +58,8 @@ internal class BeginRunForAllPlayersPatch
     {
         using var cts = new CancellationTokenSource();
 
-        var screen = instance.LobbyListener as NCharacterSelectScreen;
+        var screen = instance.LobbyListener as NSubmenu;
+
         CanvasLayer? overlay = null;
         RichTextLabel? statusLabel = null;
         SearchUiState? uiState = null;
@@ -70,7 +73,8 @@ internal class BeginRunForAllPlayersPatch
 
         var request = new SeedSearchRequest
         {
-            AscensionLevel = (AscensionLevel)instance.Ascension,
+            AscensionLevel = instance.GameMode == GameMode.Dread ? 
+                AscensionLevel.DoubleBoss : (AscensionLevel)instance.Ascension,
             Filters = filters,
             ThreadCount = 6
         };
@@ -165,7 +169,7 @@ internal class BeginRunForAllPlayersPatch
         BeginRunWithSeed(instance, foundSeed, modifiers, filteredSeedRun: true);
     }
 
-    private static SearchUiState HideSearchUi(NCharacterSelectScreen screen)
+    private static SearchUiState HideSearchUi(NSubmenu screen)
     {
         var screenTraverse = Traverse.Create(screen);
 
@@ -178,26 +182,31 @@ internal class BeginRunForAllPlayersPatch
             button.Disable();
         }
 
-        var ascensionPanel = screenTraverse.Field("_ascensionPanel").GetValue<NAscensionPanel>();
-        var ascensionTraverse = Traverse.Create(ascensionPanel);
+        var state = new SearchUiState();
 
-        var leftArrow = ascensionTraverse.Field("_leftArrow").GetValue<NButton>();
-        var rightArrow = ascensionTraverse.Field("_rightArrow").GetValue<NButton>();
-        var leftTriggerIcon = ascensionTraverse.Field("_leftTabIcon").GetValue<NHotkeyIcon>();
-        var rightTriggerIcon = ascensionTraverse.Field("_rightTabIcon").GetValue<NHotkeyIcon>();
-
-        var state = new SearchUiState
+        if (screen is NCharacterSelectScreen)
         {
-            LeftArrowWasVisible = leftArrow.Visible,
-            RightArrowWasVisible = rightArrow.Visible,
-            LeftTabIconWasVisible = leftTriggerIcon.Visible,
-            RightTabIconWasVisible = rightTriggerIcon.Visible
-        };
+            var ascensionPanel = screenTraverse.Field("_ascensionPanel").GetValue<NAscensionPanel>();
+            var ascensionTraverse = Traverse.Create(ascensionPanel);
 
-        leftArrow.Visible = false;
-        rightArrow.Visible = false;
-        leftTriggerIcon.Visible = false;
-        rightTriggerIcon.Visible = false;
+            var leftArrow = ascensionTraverse.Field("_leftArrow").GetValue<NButton>();
+            var rightArrow = ascensionTraverse.Field("_rightArrow").GetValue<NButton>();
+            var leftTriggerIcon = ascensionTraverse.Field("_leftTabIcon").GetValue<NHotkeyIcon>();
+            var rightTriggerIcon = ascensionTraverse.Field("_rightTabIcon").GetValue<NHotkeyIcon>();
+
+            state = new SearchUiState
+            {
+                LeftArrowWasVisible = leftArrow.Visible,
+                RightArrowWasVisible = rightArrow.Visible,
+                LeftTabIconWasVisible = leftTriggerIcon.Visible,
+                RightTabIconWasVisible = rightTriggerIcon.Visible
+            };
+
+            leftArrow.Visible = false;
+            rightArrow.Visible = false;
+            leftTriggerIcon.Visible = false;
+            rightTriggerIcon.Visible = false;
+        }
 
         return state;
     }
@@ -259,7 +268,7 @@ internal class BeginRunForAllPlayersPatch
         return (overlay, label);
     }
 
-    private static void RestoreScreenUi(NCharacterSelectScreen? screen, SearchUiState? state)
+    private static void RestoreScreenUi(NSubmenu? screen, SearchUiState? state)
     {
         if (screen == null || state == null)
         {
@@ -272,7 +281,7 @@ internal class BeginRunForAllPlayersPatch
                 MegaInput.cancel,
                 state.CancelAction);
         }
-
+        
         var screenTraverse = Traverse.Create(screen);
 
         screenTraverse.Field("_embarkButton").GetValue<NConfirmButton>().Enable();
@@ -284,18 +293,21 @@ internal class BeginRunForAllPlayersPatch
             button.Enable();
         }
 
-        var ascensionPanel = screenTraverse.Field("_ascensionPanel").GetValue<NAscensionPanel>();
-        var ascensionTraverse = Traverse.Create(ascensionPanel);
+        if (screen is NCharacterSelectScreen)
+        {
+            var ascensionPanel = screenTraverse.Field("_ascensionPanel").GetValue<NAscensionPanel>();
+            var ascensionTraverse = Traverse.Create(ascensionPanel);
 
-        ascensionTraverse.Field("_leftArrow").GetValue<NButton>().Visible = state.LeftArrowWasVisible;
-        ascensionTraverse.Field("_rightArrow").GetValue<NButton>().Visible = state.RightArrowWasVisible;
-        ascensionTraverse.Field("_leftTabIcon").GetValue<NHotkeyIcon>().Visible = state.LeftTabIconWasVisible;
-        ascensionTraverse.Field("_rightTabIcon").GetValue<NHotkeyIcon>().Visible = state.RightTabIconWasVisible;
+            ascensionTraverse.Field("_leftArrow").GetValue<NButton>().Visible = state.LeftArrowWasVisible;
+            ascensionTraverse.Field("_rightArrow").GetValue<NButton>().Visible = state.RightArrowWasVisible;
+            ascensionTraverse.Field("_leftTabIcon").GetValue<NHotkeyIcon>().Visible = state.LeftTabIconWasVisible;
+            ascensionTraverse.Field("_rightTabIcon").GetValue<NHotkeyIcon>().Visible = state.RightTabIconWasVisible;
         
-        RestoreCharacterFocus(screen);
+            RestoreCharacterFocus(screen);
+        }
     }
     
-    private static void RestoreCharacterFocus(NCharacterSelectScreen screen)
+    private static void RestoreCharacterFocus(NSubmenu? screen)
     {
         var screenTraverse = Traverse.Create(screen);
         var selectedButton = screenTraverse
