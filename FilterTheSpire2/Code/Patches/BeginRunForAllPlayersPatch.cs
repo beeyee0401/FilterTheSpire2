@@ -20,7 +20,7 @@ namespace FilterTheSpire2.Code.Patches;
 internal class BeginRunForAllPlayersPatch
 {
     private static bool _searching = false;
-    private static GameMode[] filterableGameModes = [GameMode.Standard, GameMode.Dread];
+    private static GameMode[] _filterableGameModes = [GameMode.Standard, GameMode.Dread];
 
     private sealed class SearchUiState
     {
@@ -36,7 +36,7 @@ internal class BeginRunForAllPlayersPatch
     private static bool Prefix(StartRunLobby __instance, ref string seed, List<ModifierModel> modifiers)
     {
         if (_searching ||
-            !filterableGameModes.Contains(__instance.GameMode) ||
+            !_filterableGameModes.Contains(__instance.GameMode) ||
             __instance.IsCustom ||
             __instance.Players.Count > 1 ||
             __instance.Players[0].unlockState.UnlockedEpochs.Count != UnlockState.all.EpochUnlockCount())
@@ -157,7 +157,7 @@ internal class BeginRunForAllPlayersPatch
         finally
         {
             overlay?.QueueFree();
-            RestoreScreenUi(screen, uiState);
+            RestoreScreenUi(screen, overlay, uiState);
         }
 
         if (cts.IsCancellationRequested || foundSeed == null)
@@ -256,6 +256,7 @@ internal class BeginRunForAllPlayersPatch
 
         NHotkeyManager.Instance!.PushHotkeyPressedBinding(
             MegaInput.cancel,
+            overlay,
             uiState.CancelAction);
 
         vbox.AddChild(label);
@@ -268,17 +269,18 @@ internal class BeginRunForAllPlayersPatch
         return (overlay, label);
     }
 
-    private static void RestoreScreenUi(NSubmenu? screen, SearchUiState? state)
+    private static void RestoreScreenUi(NSubmenu? screen, CanvasLayer? overlay, SearchUiState? state)
     {
         if (screen == null || state == null)
         {
             return;
         }
 
-        if (state.CancelAction != null)
+        if (state.CancelAction != null && overlay != null)
         {
             NHotkeyManager.Instance!.RemoveHotkeyPressedBinding(
                 MegaInput.cancel,
+                overlay,
                 state.CancelAction);
         }
         

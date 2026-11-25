@@ -458,7 +458,7 @@ public enum CardOptions
       Zap,
       #endregion
 
-      #region Food pool
+      #region Fool pool
 
       AllIsWell, 
       Anguish,
@@ -512,13 +512,14 @@ public enum CardOptions
       MourningBlow,
       MythicForm, 
       Nail, 
-      Nock, 
+      Nock,
+      Optimism,
       PunchOfJoy, 
       QuickShot,
       Quietus, 
       Quiver, 
       RainShot, 
-      RapidShot, 
+      TwinShot, 
       Recall, 
       RepeatShot, 
       RhythmStrike,
